@@ -22,15 +22,15 @@ def stuff():
     """
     name = request.form['name']
     email = request.form['email']
-    roll_number = request.form['roll_number']
-    img = qrcode.make("Name: {}\nEmail: {}\nRoll Number: {}\n".format(name, email, roll_number))
+    techo_id = request.form['techo_id']
+    img = qrcode.make("Techo ID: TECHO-{}\nName: {}\nEmail: {}\n".format(techo_id, name, email))
     img.save('qr.png')
     img_data = open('qr.png', 'rb').read()
     encoded = base64.b64encode(img_data).decode()
 
     from_email = Email(FROM_EMAIL)
     to_email = Email(email)
-    subject = 'Registration for {}'.format(roll_number)
+    subject = 'Registration for TECHO-{}'.format(techo_id)
     content = Content('text/plain', 'QR code attached below!')
     mail = Mail(from_email, subject, to_email, content)
 
