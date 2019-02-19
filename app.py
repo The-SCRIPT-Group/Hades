@@ -8,9 +8,12 @@ from sendgrid.helpers.mail import Email, Content, Mail, Attachment
 import sendgrid
 import qrcode
 
+SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY', None)
+FROM_EMAIL = os.getenv('FROM_EMAIL', None)
+
 # pylint: disable=invalid-name
 app = Flask(__name__)
-sg = sendgrid.SendGridAPIClient(apikey=os.getenv('SENDGRID_API_KEY', None))
+sg = sendgrid.SendGridAPIClient(apikey=SENDGRID_API_KEY)
 
 @app.route('/submit', methods=['POST'])
 def stuff():
@@ -25,7 +28,7 @@ def stuff():
     img_data = open('qr.png', 'rb').read()
     encoded = base64.b64encode(img_data).decode()
 
-    from_email = Email('script.mailus@gmail.com')
+    from_email = Email(FROM_EMAIL)
     to_email = Email(email)
     subject = 'Registration for {}'.format(roll_number)
     content = Content('text/plain', 'QR code attached below!')
