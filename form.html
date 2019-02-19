@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <title>Registration Form</title>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    </head>
+    <body>
+    <div class="container">
+        <form method="post" action="/submit">
+            <div class="form-group">
+                <hr>
+                <input type="text" name="name" placeholder="Enter your name" maxlength="30" required class="form-control"/>
+                <hr>
+                <input type="text" name="roll_number" placeholder="Enter your roll number (6 digits)" maxlength="6" required class="form-control" pattern="[0-9]{6}"/>
+                <hr>
+                <input type="email" name="email" placeholder="Enter your email address" maxlength="50" required class="form-control" />
+                <hr>
+            </div>
+            <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+    </div>
+    </body>
+</html>
