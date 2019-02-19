@@ -31,7 +31,7 @@ def stuff():
     from_email = Email(FROM_EMAIL)
     to_email = Email(email)
     subject = 'Registration for TECHO-{}'.format(techo_id)
-    content = Content('text/plain', 'QR code attached below!')
+    content = Content('text/plain', 'QR code has been attached below! You\'re required to present this on the day of the event.')
     mail = Mail(from_email, subject, to_email, content)
 
     attachment = Attachment()
