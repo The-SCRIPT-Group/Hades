@@ -1,4 +1,4 @@
 flask
 gunicorn
-qrcode
+qrcode[pil]
 sendgrid
