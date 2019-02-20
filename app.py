@@ -1,6 +1,10 @@
+#!/usr/bin/env python3
 """
 Flask application to accept some details, generate, display, and email a QR code to users
 """
+
+# pylint: disable=invalid-name, too-many-locals
+
 import base64
 import os
 from flask import Flask, request
@@ -11,9 +15,9 @@ import qrcode
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY', None)
 FROM_EMAIL = os.getenv('FROM_EMAIL', None)
 
-# pylint: disable=invalid-name
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 sg = sendgrid.SendGridAPIClient(apikey=SENDGRID_API_KEY)
+
 
 @app.route('/submit', methods=['POST'])
 def stuff():
@@ -22,8 +26,12 @@ def stuff():
     """
     name = request.form['name']
     email = request.form['email']
-    techo_id = request.form['techo_id']
-    img = qrcode.make("Techo ID: TECHO-{}\nName: {}\nEmail: {}\n".format(techo_id, name, email))
+    roll_number = request.form['roll_number']
+    phone_number = request.form['phone_number']
+    techo_id = get_current_id()
+    department = request.form['department']
+    img = qrcode.make("\nName: {}\nEmail: {}\nRoll Number: {}\nID: {}\nPhone Number: {}\n\
+            Department: {}\n".format(name, email, roll_number, techo_id, phone_number, department))
     img.save('qr.png')
     img_data = open('qr.png', 'rb').read()
     encoded = base64.b64encode(img_data).decode()
@@ -31,7 +39,8 @@ def stuff():
     from_email = Email(FROM_EMAIL)
     to_email = Email(email)
     subject = 'Registration for TECHO-{}'.format(techo_id)
-    content = Content('text/plain', 'QR code has been attached below! You\'re required to present this on the day of the event.')
+    content = Content('text/plain', 'QR code has been attached below! You\'re required to present\
+            this on the day of the event.')
     mail = Mail(from_email, subject, to_email, content)
 
     attachment = Attachment()
@@ -47,16 +56,24 @@ def stuff():
     print(response.headers)
 
     return 'Please save this QR Code. It has also been emailed to you.<br><img src=\
-            "data:image/jpeg;base64, {}"/>'.format(encoded)
+            "data:image/png;base64, {}"/>'.format(encoded)
+
 
 @app.route('/')
 def root():
     """
     Main endpoint. Display the form to the user.
     """
-    with open('form.html', 'r') as file:
-        data = file.read()
-    return data
+    return app.send_static_file('form.html')
+
+
+def get_current_id():
+    """
+    Function to return the latest ID
+    """
+    # Just a stub for now
+    # TODO - Check database and return newest unused ID
+    return '001'
 
 if __name__ == '__main__':
     app.run()

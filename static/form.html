@@ -8,12 +8,22 @@
         <form method="post" action="/submit">
             <div class="form-group">
                 <hr>
+                <p>Name (required)</p>
                 <input type="text" name="name" placeholder="Enter your name" maxlength="30" required class="form-control"/>
                 <hr>
-                <input type="text" name="techo_id" placeholder="Enter your Techo ID (eg:Enter 001 for TECHO-001)" maxlength="3" required class="form-control" pattern="[0-9]{3}"/>
+                <p>Roll Number (required)</p>
+                <input type="text" name="roll_number" placeholder="Enter your roll number (6 digits)" maxlength="6" required class="form-control" pattern="[0-9]{6}"/>
                 <hr>
+                <p>Email (required)</p>
                 <input type="email" name="email" placeholder="Enter your email address" maxlength="50" required class="form-control" />
                 <hr>
+                <p>Phone Number (required)</p>
+                <input type="text" name="phone_number" placeholder="Enter your phone number (Excluding +91)" maxlength="10" required class="form-control" pattern="[0-9]{10}"/>
+                <hr>
+                <select name="department">
+                    <option value="cse" selected>Computer Science and Engineering</option>
+                    <option value="others">Others</option>
+                </select>
             </div>
             <button type="submit" class="btn btn-success">Submit</button>
         </form>
