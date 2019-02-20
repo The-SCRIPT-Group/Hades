@@ -3,7 +3,7 @@
 Flask application to accept some details, generate, display, and email a QR code to users
 """
 
-# pylint: disable=invalid-name, too-many-locals
+# pylint: disable=invalid-name
 
 import base64
 import os
@@ -24,20 +24,14 @@ def stuff():
     """
     Accept data from the form, generate, display, and email QR code to user
     """
-    name = request.form['name']
-    email = request.form['email']
-    roll_number = request.form['roll_number']
-    phone_number = request.form['phone_number']
     techo_id = get_current_id()
-    department = request.form['department']
-    img = qrcode.make("\nName: {}\nEmail: {}\nRoll Number: {}\nID: {}\nPhone Number: {}\n\
-            Department: {}\n".format(name, email, roll_number, techo_id, phone_number, department))
+    img = generate_qr(request.form, techo_id)
     img.save('qr.png')
     img_data = open('qr.png', 'rb').read()
     encoded = base64.b64encode(img_data).decode()
 
     from_email = Email(FROM_EMAIL)
-    to_email = Email(email)
+    to_email = Email(request.form['email'])
     subject = 'Registration for TECHO-{}'.format(techo_id)
     content = Content('text/plain', 'QR code has been attached below! You\'re required to present\
             this on the day of the event.')
@@ -74,6 +68,19 @@ def get_current_id():
     # Just a stub for now
     # TODO - Check database and return newest unused ID
     return '001'
+
+
+def generate_qr(form_data, techo_id):
+    """
+    Function to generate and return a QR code based on the given data
+    """
+    return qrcode.make("\nName: {}\nEmail: {}\nRoll Number: {}\nID: {}\nPhone Number: {}\n\
+            Department: {}\nYear: {}".format(form_data['name'], form_data['email'],
+                                             form_data['roll_number'], techo_id,
+                                             form_data['phone_number'],
+                                             form_data['department'],
+                                             form_data['year']))
+
 
 if __name__ == '__main__':
     app.run()
