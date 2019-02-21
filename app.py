@@ -42,12 +42,13 @@ class User(db.Model):
     roll_number = db.Column(db.Integer, unique=True)
     name = db.Column(db.String(30))
     email = db.Column(db.String(50), unique=True)
-    phone = db.Column(db.Integer, unique=True)
+    phone = db.Column(db.BigInteger, unique=True)
     department = db.Column(db.String(50))
     year = db.Column(db.Integer)
 
     def __repr__(self):
-        pass
+        return '%r' % [self.techo_id, self.name, self.roll_number, self.email, self.phone,
+                       self.department, self.year]
 
 
 @app.route('/submit', methods=['POST'])
@@ -56,7 +57,7 @@ def stuff():
     Accept data from the form, generate, display, and email QR code to user
     """
     techo_id = get_current_id()
-    img = generate_qr(request.form, techo_id)
+    img = generate_qr(request.form)
     img.save('qr.png')
     img_data = open('qr.png', 'rb').read()
     encoded = base64.b64encode(img_data).decode()
@@ -81,8 +82,9 @@ def stuff():
     print(response.headers)
 
     user = User(roll_number=request.form['roll_number'], name=request.form['name'],
-                email=request.form['email'], phone=request.form['phone'],
+                email=request.form['email'], phone=request.form['phone_number'],
                 department=DEPARTMENTS[request.form['department']], year=request.form['year'])
+
     db.session.add(user)
     db.session.commit()
 
@@ -102,18 +104,16 @@ def get_current_id():
     """
     Function to return the latest ID
     """
-    # Just a stub for now
-    # TODO - Check database and return newest unused ID
-    return '001'
+    return db.session.query(User).all()[-1].techo_id + 1
 
 
-def generate_qr(form_data, techo_id):
+def generate_qr(form_data):
     """
     Function to generate and return a QR code based on the given data
     """
     return qrcode.make("\nName: {}\nEmail: {}\nRoll Number: {}\nID: {}\nPhone Number: {}\n\
             Department: {}\nYear: {}".format(form_data['name'], form_data['email'],
-                                             form_data['roll_number'], techo_id,
+                                             form_data['roll_number'], get_current_id(),
                                              form_data['phone_number'],
                                              DEPARTMENTS[form_data['department']],
                                              form_data['year']))

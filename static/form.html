@@ -5,7 +5,7 @@
     </head>
     <body>
     <div class="container">
-        <form method="post" action="/submit">
+        <form method="post" action="/submit" enctype="multipart/form-data">
             <div class="form-group">
                 <hr>
                 <p>Name (required)</p>
@@ -20,7 +20,7 @@
                 <p>Phone Number (required)</p>
                 <input type="text" name="phone_number" placeholder="Enter your phone number (Excluding +91)" maxlength="10" required class="form-control" pattern="[0-9]{10}"/>
                 <hr>
-                <select name="department" class="form-control">
+                <select name="department" class="form-control" id="department">
                     <option value="cse" selected>Computer Science and Engineering</option>
                     <option value="ece">Electronics and Communication Engineering</option>
                     <option value="mech">Mechanical Engineering</option>
@@ -29,7 +29,7 @@
                     <option value="others">Others</option>
                 </select>
                 <hr>
-                <select name="year" class="form-control">
+                <select name="year" class="form-control" id="year">
                     <option value="1" selected>First Year</option>
                     <option value="2">Second Year</option>
                     <option value="3">Third Year</option>
