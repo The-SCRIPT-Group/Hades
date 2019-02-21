@@ -2,5 +2,6 @@ Flask-SQLAlchemy
 SQLAlchemy
 flask
 gunicorn
+psycopg2
 qrcode[pil]
 sendgrid
