@@ -12,17 +12,17 @@ import qrcode
 import sendgrid
 from sendgrid.helpers.mail import Attachment, Content, Email, Mail
 
-from flask import Flask, request
+from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 
 
-FROM_EMAIL = os.getenv('FROM_EMAIL', None)
-SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY', None)
+FROM_EMAIL = os.getenv('FROM_EMAIL')
+SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 
 app = Flask(__name__, static_url_path='')
 sg = sendgrid.SendGridAPIClient(apikey=SENDGRID_API_KEY)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', None)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 
 db = SQLAlchemy(app)
 
@@ -90,6 +90,26 @@ def stuff():
 
     return 'Please save this QR Code. It has also been emailed to you.<br><img src=\
             "data:image/png;base64, {}"/>'.format(encoded)
+
+
+@app.route('/users', methods=['GET', 'POST'])
+def do_login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        if username == os.getenv('USERNAME'):
+            if password == os.getenv('PASSWORD'):
+                return render_template('users.html', users=db.session.query(User).all())
+            return 'Invalid password!'
+        return 'Invalid user!'
+    else:
+        return '''
+            <form action="" method="post">
+                <p><input type=text name=username required>
+                <p><input type=password name=password required>
+                <p><input type=submit value=Login>
+            </form>
+            '''
 
 
 @app.route('/')
