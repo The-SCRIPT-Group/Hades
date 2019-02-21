@@ -1,3 +1,5 @@
+Flask-SQLAlchemy
+SQLAlchemy
 flask
 gunicorn
 qrcode[pil]
