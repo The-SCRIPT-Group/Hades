@@ -57,7 +57,7 @@ def stuff():
     Accept data from the form, generate, display, and email QR code to user
     """
     techo_id = get_current_id()
-    img = generate_qr(request.form)
+    img = generate_qr(request.form, techo_id)
     img.save('qr.png')
     img_data = open('qr.png', 'rb').read()
     encoded = base64.b64encode(img_data).decode()
@@ -131,13 +131,13 @@ def get_current_id():
     return techo_id
 
 
-def generate_qr(form_data):
+def generate_qr(form_data, techo_id):
     """
     Function to generate and return a QR code based on the given data
     """
     return qrcode.make("\nName: {}\nEmail: {}\nRoll Number: {}\nID: {}\nPhone Number: {}\n\
             Department: {}\nYear: {}".format(form_data['name'], form_data['email'],
-                                             form_data['roll_number'], get_current_id(),
+                                             form_data['roll_number'], techo_id,
                                              form_data['phone_number'],
                                              DEPARTMENTS[form_data['department']],
                                              form_data['year']))
