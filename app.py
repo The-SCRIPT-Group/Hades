@@ -104,7 +104,11 @@ def get_current_id():
     """
     Function to return the latest ID
     """
-    return db.session.query(User).all()[-1].techo_id + 1
+    try:
+        techo_id = db.session.query(User).all()[-1].techo_id + 1
+    except IndexError:
+        techo_id = 1
+    return techo_id
 
 
 def generate_qr(form_data):
