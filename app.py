@@ -50,12 +50,44 @@ class User(db.Model):
         return '%r' % [self.techo_id, self.name, self.roll_number, self.email, self.phone,
                        self.department, self.year]
 
+    def get_email(self):
+        """
+        Return User's email
+        """
+        return self.email
+
+    def get_phone(self):
+        """
+        Return User's phone number
+        """
+        return self.phone
+
+    def get_roll(self):
+        """
+        Return User's roll number
+        """
+        return self.roll_number
+
 
 @app.route('/submit', methods=['POST'])
 def stuff():
     """
     Accept data from the form, generate, display, and email QR code to user
     """
+
+    for user in db.session.query(User).all():
+        if request.form['email'] == user.get_email():
+            return 'Email address {} already found in database!\
+            Please re-enter the form correctly!'.format(request.form['email'])
+
+        if str(request.form['phone_number']) == str(user.get_phone()):
+            return 'Phone number {} already found in database!\
+            Please re-enter the form correctly!'.format(request.form['phone_number'])
+
+        if str(request.form['roll_number']) == str(user.get_roll()):
+            return 'Roll number {} already found in database!\
+            Please re-enter the form correctly!'.format(request.form['roll_number'])
+
     techo_id = get_current_id()
     img = generate_qr(request.form, techo_id)
     img.save('qr.png')
@@ -93,7 +125,10 @@ def stuff():
 
 
 @app.route('/users', methods=['GET', 'POST'])
-def do_login():
+def display_users():
+    """
+    Display the list of users, after authentication
+    """
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -102,8 +137,7 @@ def do_login():
                 return render_template('users.html', users=db.session.query(User).all())
             return 'Invalid password!'
         return 'Invalid user!'
-    else:
-        return '''
+    return '''
             <form action="" method="post">
                 <p><input type=text name=username required>
                 <p><input type=password name=password required>
