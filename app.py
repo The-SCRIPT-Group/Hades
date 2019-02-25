@@ -169,12 +169,10 @@ def generate_qr(form_data, techo_id):
     """
     Function to generate and return a QR code based on the given data
     """
-    return qrcode.make("\nName: {}\nEmail: {}\nRoll Number: {}\nID: {}\nPhone Number: {}\n\
-Department: {}\nYear: {}".format(form_data['name'], form_data['email'],
-                                 form_data['roll_number'], techo_id,
-                                 form_data['phone_number'],
-                                 DEPARTMENTS[form_data['department']],
-                                 form_data['year']))
+    return qrcode.make("\nName: {}\nEmail: {}\nRoll Number: {}\nID: {}\nPhone Number: {}"
+                       .format(form_data['name'], form_data['email'],
+                               form_data['roll_number'], techo_id,
+                               form_data['phone_number']))
 
 
 if __name__ == '__main__':
