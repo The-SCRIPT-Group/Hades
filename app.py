@@ -114,7 +114,7 @@ def stuff():
     print(response.headers)
 
     user = User(roll_number=request.form['roll_number'], name=request.form['name'],
-                email=request.form['email'], phone=request.form['phone_number'],
+                email=request.form['email'], phone=request.form['phone_number'], techo_id=techo_id,
                 department=DEPARTMENTS[request.form['department']], year=request.form['year'])
 
     db.session.add(user)
