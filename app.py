@@ -30,7 +30,8 @@ DEPARTMENTS = {'cse': 'Computer Science and Engineering',
                'ece': 'Electronics and Communication Engineering',
                'mech': 'Mechanical Engineering',
                'civil': 'Civil Engineering',
-               'chem': 'Chemical Engineering'}
+               'chem': 'Chemical Engineering',
+               'others': 'Others'}
 
 
 class User(db.Model):
