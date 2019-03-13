@@ -14,6 +14,7 @@ from sendgrid.helpers.mail import Attachment, Content, Email, Mail
 
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import exc
 
 
 FROM_EMAIL = os.getenv('FROM_EMAIL')
@@ -90,6 +91,16 @@ def stuff():
             Please re-enter the form correctly!'.format(request.form['roll_number'])
 
     techo_id = get_current_id()
+
+    user = User(roll_number=request.form['roll_number'], name=request.form['name'],
+                email=request.form['email'], phone=request.form['phone_number'], techo_id=techo_id,
+                department=DEPARTMENTS[request.form['department']], year=request.form['year'])
+    try:
+        db.session.add(user)
+        db.session.commit()
+    except exc.IntegrityError:
+        return "Error occurred trying to enter values into the database!"
+
     img = generate_qr(request.form, techo_id)
     img.save('qr.png')
     img_data = open('qr.png', 'rb').read()
@@ -113,13 +124,6 @@ def stuff():
     print(response.status_code)
     print(response.body)
     print(response.headers)
-
-    user = User(roll_number=request.form['roll_number'], name=request.form['name'],
-                email=request.form['email'], phone=request.form['phone_number'], techo_id=techo_id,
-                department=DEPARTMENTS[request.form['department']], year=request.form['year'])
-
-    db.session.add(user)
-    db.session.commit()
 
     return 'Please save this QR Code. It has also been emailed to you.<br><img src=\
             "data:image/png;base64, {}"/>'.format(encoded)
