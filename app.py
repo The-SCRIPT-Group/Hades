@@ -124,7 +124,7 @@ def stuff():
     print(response)
 
     if request.form['email_second_person']:
-        mail = Mail(from_email, subject, request.form['email_second_person'], content)
+        mail = Mail(from_email, subject, Email(request.form['email_second_person']), content)
         mail.add_attachment(attachment)
         response = sg.client.mail.send.post(request_body=mail.get())
         print(response)
