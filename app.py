@@ -108,9 +108,9 @@ def stuff():
 
     from_email = Email(FROM_EMAIL)
     to_email = Email(request.form['email'])
-    subject = 'Registration for CodeX-{}'.format(codex_id)
-    content = Content('text/plain', 'QR code has been attached below! You\'re required to present\
-            this on the day of the event.')
+    subject = 'Registration for CodeX April 2019- ID {}'.format(codex_id)
+    content = Content('text/html', 'A QR code has been attached below! You\'re <b>required</b>\
+            to present this on the day of the event.')
     mail = Mail(from_email, subject, to_email, content)
 
     attachment = Attachment()
@@ -121,9 +121,6 @@ def stuff():
     mail.add_attachment(attachment)
 
     response = sg.client.mail.send.post(request_body=mail.get())
-    print(response.status_code)
-    print(response.body)
-    print(response.headers)
 
     return 'Please save this QR Code. It has also been emailed to you.<br><img src=\
             "data:image/png;base64, {}"/>'.format(encoded)
@@ -174,7 +171,7 @@ def generate_qr(form_data, codex_id):
     """
     Function to generate and return a QR code based on the given data
     """
-    return qrcode.make("\nName: {}\nEmail: {}\nRoll Number: {}\nID: {}\nPhone Number: {}"
+    return qrcode.make("\nName: {}\nEmail: {}\nRoll Number: {}\nCodeX ID: {}\nPhone Number: {}"
                        .format(form_data['name'], form_data['email'],
                                form_data['roll_number'], codex_id,
                                form_data['phone_number']))
