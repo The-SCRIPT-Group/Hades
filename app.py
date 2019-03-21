@@ -119,6 +119,14 @@ def stuff():
         print(response.status_code)
         print(response.body)
         print(response.headers)
+
+    mail = Mail(from_email, subject, from_email, content)
+    mail.add_attachment(attachment)
+    response = sg.client.mail.send.post(request_body=mail.get())
+    print(response.status_code)
+    print(response.body)
+    print(response.headers)
+        
     return 'Please save this QR Code. It has also been emailed to you.<br><img src=\
             "data:image/png;base64, {}"/>'.format(encoded)
 
