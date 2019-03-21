@@ -41,16 +41,13 @@ class User(db.Model):
     """
     __tablename__ = 'users'
     codex_id = db.Column(db.Integer, primary_key=True)
-    roll_number = db.Column(db.Integer, unique=True)
     name = db.Column(db.String(30))
     email = db.Column(db.String(50), unique=True)
     phone = db.Column(db.BigInteger, unique=True)
     department = db.Column(db.String(50))
-    year = db.Column(db.Integer)
 
     def __repr__(self):
-        return '%r' % [self.codex_id, self.name, self.roll_number, self.email, self.phone,
-                       self.department, self.year]
+        return '%r' % [self.codex_id, self.name, self.email, self.phone, self.department]
 
     def get_email(self):
         """
@@ -63,12 +60,6 @@ class User(db.Model):
         Return User's phone number
         """
         return self.phone
-
-    def get_roll(self):
-        """
-        Return User's roll number
-        """
-        return self.roll_number
 
 
 @app.route('/submit', methods=['POST'])
@@ -86,15 +77,11 @@ def stuff():
             return 'Phone number {} already found in database!\
             Please re-enter the form correctly!'.format(request.form['phone_number'])
 
-        if str(request.form['roll_number']) == str(user.get_roll()):
-            return 'Roll number {} already found in database!\
-            Please re-enter the form correctly!'.format(request.form['roll_number'])
-
     codex_id = get_current_id()
 
-    user = User(roll_number=request.form['roll_number'], name=request.form['name'],
-                email=request.form['email'], phone=request.form['phone_number'], codex_id=codex_id,
-                department=DEPARTMENTS[request.form['department']], year=request.form['year'])
+    user = User(name=request.form['name'], email=request.form['email'],
+                phone=request.form['phone_number'], codex_id=codex_id,
+                department=DEPARTMENTS[request.form['department']])
     try:
         db.session.add(user)
         db.session.commit()
@@ -178,10 +165,9 @@ def generate_qr(form_data, codex_id):
     """
     Function to generate and return a QR code based on the given data
     """
-    return qrcode.make("\nName: {}\nEmail: {}\nRoll Number: {}\nCodeX ID: {}\nPhone Number: {}"
+    return qrcode.make("\nName: {}\nEmail: {}\nCodeX ID: {}\nPhone Number: {}"
                        .format(form_data['name'], form_data['email'],
-                               form_data['roll_number'], codex_id,
-                               form_data['phone_number']))
+                               codex_id, form_data['phone_number']))
 
 
 if __name__ == '__main__':

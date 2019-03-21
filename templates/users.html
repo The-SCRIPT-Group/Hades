@@ -7,21 +7,17 @@
         <tr>
             <th>CodeX ID</th>
             <th>Name</th>
-            <th>Roll Number</th>
             <th>Email</th>
             <th>Phone Number</th>
             <th>Department</th>
-            <th>Year</th>
         </tr>
         {% for user in users %}
             <tr>
                 <td>{{ user['codex_id'] }}</td>
                 <td>{{ user['name'] }}</td>
-                <td>{{ user['roll_number'] }}</td>
                 <td>{{ user['email'] }}</td>
                 <td>{{ user['phone'] }}</td>
                 <td>{{ user['department'] }}</td>
-                <td>{{ user['year'] }}</td>
             </tr>
         {% endfor %}
     </table>
