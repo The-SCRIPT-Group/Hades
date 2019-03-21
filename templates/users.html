@@ -1,11 +1,11 @@
 <head>
     <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-    <title>All Registrations</title>
+    <title>All CodeX Registrations</title>
 </head>
 <body>
     <table border="1">
         <tr>
-            <th>Techo ID</th>
+            <th>CodeX ID</th>
             <th>Name</th>
             <th>Roll Number</th>
             <th>Email</th>
@@ -15,7 +15,7 @@
         </tr>
         {% for user in users %}
             <tr>
-                <td>{{ user['techo_id'] }}</td>
+                <td>{{ user['codex_id'] }}</td>
                 <td>{{ user['name'] }}</td>
                 <td>{{ user['roll_number'] }}</td>
                 <td>{{ user['email'] }}</td>

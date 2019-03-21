@@ -40,7 +40,7 @@ class User(db.Model):
     Database model class
     """
     __tablename__ = 'users'
-    techo_id = db.Column(db.Integer, primary_key=True)
+    codex_id = db.Column(db.Integer, primary_key=True)
     roll_number = db.Column(db.Integer, unique=True)
     name = db.Column(db.String(30))
     email = db.Column(db.String(50), unique=True)
@@ -49,7 +49,7 @@ class User(db.Model):
     year = db.Column(db.Integer)
 
     def __repr__(self):
-        return '%r' % [self.techo_id, self.name, self.roll_number, self.email, self.phone,
+        return '%r' % [self.codex_id, self.name, self.roll_number, self.email, self.phone,
                        self.department, self.year]
 
     def get_email(self):
@@ -90,10 +90,10 @@ def stuff():
             return 'Roll number {} already found in database!\
             Please re-enter the form correctly!'.format(request.form['roll_number'])
 
-    techo_id = get_current_id()
+    codex_id = get_current_id()
 
     user = User(roll_number=request.form['roll_number'], name=request.form['name'],
-                email=request.form['email'], phone=request.form['phone_number'], techo_id=techo_id,
+                email=request.form['email'], phone=request.form['phone_number'], codex_id=codex_id,
                 department=DEPARTMENTS[request.form['department']], year=request.form['year'])
     try:
         db.session.add(user)
@@ -101,14 +101,14 @@ def stuff():
     except exc.IntegrityError:
         return "Error occurred trying to enter values into the database!"
 
-    img = generate_qr(request.form, techo_id)
+    img = generate_qr(request.form, codex_id)
     img.save('qr.png')
     img_data = open('qr.png', 'rb').read()
     encoded = base64.b64encode(img_data).decode()
 
     from_email = Email(FROM_EMAIL)
     to_email = Email(request.form['email'])
-    subject = 'Registration for TECHO-{}'.format(techo_id)
+    subject = 'Registration for CodeX-{}'.format(codex_id)
     content = Content('text/plain', 'QR code has been attached below! You\'re required to present\
             this on the day of the event.')
     mail = Mail(from_email, subject, to_email, content)
@@ -164,19 +164,19 @@ def get_current_id():
     Function to return the latest ID
     """
     try:
-        techo_id = db.session.query(User).all()[-1].techo_id
+        codex_id = db.session.query(User).all()[-1].codex_id
     except IndexError:
-        techo_id = 0
-    return int(techo_id) + 1
+        codex_id = 0
+    return int(codex_id) + 1
 
 
-def generate_qr(form_data, techo_id):
+def generate_qr(form_data, codex_id):
     """
     Function to generate and return a QR code based on the given data
     """
     return qrcode.make("\nName: {}\nEmail: {}\nRoll Number: {}\nID: {}\nPhone Number: {}"
                        .format(form_data['name'], form_data['email'],
-                               form_data['roll_number'], techo_id,
+                               form_data['roll_number'], codex_id,
                                form_data['phone_number']))
 
 
