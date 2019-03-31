@@ -96,9 +96,13 @@ def stuff():
     name = request.form['name']
     from_email = Email(FROM_EMAIL)
     to_email = Email(request.form['email'])
-    if request.form['email_second_person']:
+    p = None
+    if request.form['email_second_person'] and request.form['name_second_person']:
         cc_email = Email(request.form['email_second_person'])
         name += ', {}'.format(request.form['name_second_person'])
+        p = Personalization()
+        p.add_to(cc_email)
+
     subject = 'Registration for CodeX April 2019 - ID {}'.format(codex_id)
     message = """<img src='https://drive.google.com/uc?id=12VCUzNvU53f_mR7Hbumrc6N66rCQO5r-&export=download'>
     <hr>
@@ -108,11 +112,10 @@ def stuff():
     <br/>
     You're <b>required</b> to present this on the day of the event.
     """.format(name)
-    p = Personalization()
-    p.add_to(cc_email)
     content = Content('text/html', message)
     mail = Mail(from_email, subject, to_email, content)
-    mail.add_personalization(p)
+    if p:
+        mail.add_personalization(p)
 
     attachment = Attachment()
     attachment.type = 'image/png'
