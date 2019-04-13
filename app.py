@@ -21,7 +21,7 @@ FROM_EMAIL = os.getenv('FROM_EMAIL')
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 
 app = Flask(__name__, static_url_path='')
-sg = sendgrid.SendGridAPIClient(apikey=SENDGRID_API_KEY)
+sg = sendgrid.SendGridAPIClient(SENDGRID_API_KEY)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 
