@@ -13,19 +13,19 @@ import sendgrid
 from sendgrid.helpers.mail import Attachment, Content, Email, Mail, Personalization
 
 from flask import Flask, render_template, request
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import exc
+from flask_sqlalchemy import SQLAlchemy
 
 
 FROM_EMAIL = os.getenv('FROM_EMAIL')
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 
-app = Flask(__name__, static_url_path='')
+app = Flask(__name__)
+db = SQLAlchemy(app)
 sg = sendgrid.SendGridAPIClient(SENDGRID_API_KEY)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 
-db = SQLAlchemy(app)
 
 DEPARTMENTS = {'cse': 'Computer Science and Engineering',
                'ece': 'Electronics and Communication Engineering',
@@ -35,75 +35,57 @@ DEPARTMENTS = {'cse': 'Computer Science and Engineering',
                'others': 'Others'}
 
 
-class User(db.Model):
+@app.route('/submit_codex', methods=['POST'])
+def submit_codex():
+    return submit(CodexUsers, "CodeX", request.form)
+
+
+@app.route('/submit_techo', methods=['POST'])
+def submit_techo():
+    return submit(TechoUsers, "Techo", request.form)
+
+
+def submit(table: db.Model, event_name: str, form_data):
     """
-    Database model class
-    """
-    __tablename__ = 'users'
-    codex_id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30))
-    email = db.Column(db.String(50), unique=True)
-    phone = db.Column(db.BigInteger, unique=True)
-    department = db.Column(db.String(50))
-
-    def __repr__(self):
-        return '%r' % [self.codex_id, self.name, self.email, self.phone, self.department]
-
-    def get_email(self):
-        """
-        Return User's email
-        """
-        return self.email
-
-    def get_phone(self):
-        """
-        Return User's phone number
-        """
-        return self.phone
-
-
-@app.route('/submit', methods=['POST'])
-def stuff():
-    """
-    Accept data from the form, generate, display, and email QR code to user
+    Take data from the form, generate, display, and email QR code to user
     """
 
-    for user in db.session.query(User).all():
-        if request.form['email'] == user.get_email():
+    for user in db.session.query(table).all():
+        if form_data['email'] == user.email:
             return 'Email address {} already found in database!\
-            Please re-enter the form correctly!'.format(request.form['email'])
+            Please re-enter the form correctly!'.format(form_data['email'])
 
-        if str(request.form['phone_number']) == str(user.get_phone()):
+        if str(form_data['phone_number']) == str(user.phone):
             return 'Phone number {} already found in database!\
-            Please re-enter the form correctly!'.format(request.form['phone_number'])
+            Please re-enter the form correctly!'.format(form_data['phone_number'])
 
-    codex_id = get_current_id()
+    id = get_current_id(table)
 
-    user = User(name=request.form['name'], email=request.form['email'],
-                phone=request.form['phone_number'], codex_id=codex_id,
-                department=DEPARTMENTS[request.form['department']])
+    user = table(name=form_data['name'], email=form_data['email'],
+                 phone=form_data['phone_number'], id=id,
+                 department=DEPARTMENTS[form_data['department']])
     try:
         db.session.add(user)
         db.session.commit()
     except exc.IntegrityError:
         return "Error occurred trying to enter values into the database!"
 
-    img = generate_qr(request.form, codex_id)
+    img = generate_qr(form_data, id)
     img.save('qr.png')
     img_data = open('qr.png', 'rb').read()
     encoded = base64.b64encode(img_data).decode()
 
-    name = request.form['name']
+    name = form_data['name']
     from_email = Email(FROM_EMAIL)
-    to_email = Email(request.form['email'])
+    to_email = Email(form_data['email'])
     p = None
-    if request.form['email_second_person'] and request.form['name_second_person']:
-        cc_email = Email(request.form['email_second_person'])
-        name += ', {}'.format(request.form['name_second_person'])
+    if form_data['email_second_person'] and form_data['name_second_person']:
+        cc_email = Email(form_data['email_second_person'])
+        name += ', {}'.format(form_data['name_second_person'])
         p = Personalization()
         p.add_to(cc_email)
 
-    subject = 'Registration for CodeX April 2019 - ID {}'.format(codex_id)
+    subject = 'Registration for {} April 2019 - ID {}'.format(event_name, id)
     message = """<img src='https://drive.google.com/uc?id=12VCUzNvU53f_mR7Hbumrc6N66rCQO5r-&export=download'>
     <hr>
     {}, your registration is done!
@@ -133,6 +115,16 @@ def stuff():
             "data:image/png;base64, {}"/>'.format(encoded)
 
 
+@app.route('/codex')
+def codex():
+    return render_template('form.html', event='CodeX', group=True, submit='submit_codex')
+
+
+@app.route('/techo')
+def techo():
+    return render_template('form.html', event='Techo', group=False, submit='submit_techo')
+
+
 @app.route('/users', methods=['GET', 'POST'])
 def display_users():
     """
@@ -143,7 +135,7 @@ def display_users():
         password = request.form['password']
         if username == os.getenv('USERNAME'):
             if password == os.getenv('PASSWORD'):
-                return render_template('users.html', users=db.session.query(User).all())
+                return render_template('users.html', users=db.session.query(request.form['table']).all())
             return 'Invalid password!'
         return 'Invalid user!'
     return '''
@@ -151,6 +143,10 @@ def display_users():
                 <p><input type=text name=username required>
                 <p><input type=password name=password required>
                 <p><input type=submit value=Login>
+                <select name="table" id="table">
+                    <option value="codex_users" selected>CodeX</option>
+                    <option value="techo_users">Techo</option>
+                </select>                
             </form>
             '''
 
@@ -160,27 +156,57 @@ def root():
     """
     Main endpoint. Display the form to the user.
     """
-    return app.send_static_file('form.html')
+    return "<b>Nothing to see here!</b>"
 
 
-def get_current_id():
+def get_current_id(table: db.Model):
     """
     Function to return the latest ID
     """
     try:
-        codex_id = db.session.query(User).all()[-1].codex_id
+        id = db.session.query(table).all()[-1].id
     except IndexError:
-        codex_id = 0
-    return int(codex_id) + 1
+        id = 0
+    return int(id) + 1
 
 
-def generate_qr(form_data, codex_id):
+def generate_qr(form_data, id):
     """
     Function to generate and return a QR code based on the given data
     """
-    return qrcode.make("\nName: {}\nEmail: {}\nCodeX ID: {}\nPhone Number: {}"
+    return qrcode.make("\nName: {}\nEmail: {}\nID: {}\nPhone Number: {}"
                        .format(form_data['name'], form_data['email'],
-                               codex_id, form_data['phone_number']))
+                               id, form_data['phone_number']))
+
+
+class CodexUsers(db.Model):
+    """
+    Database model class
+    """
+    __tablename__ = 'codex_users'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30))
+    email = db.Column(db.String(50), unique=True)
+    phone = db.Column(db.BigInteger, unique=True)
+    department = db.Column(db.String(50))
+
+    def __repr__(self):
+        return '%r' % [self.id, self.name, self.email, self.phone, self.department]
+
+
+class TechoUsers(db.Model):
+    """
+    Database model class
+    """
+    __tablename__ = 'techo_users'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30))
+    email = db.Column(db.String(50), unique=True)
+    phone = db.Column(db.BigInteger, unique=True)
+    department = db.Column(db.String(50))
+
+    def __repr__(self):
+        return '%r' % [self.id, self.name, self.email, self.phone, self.department]
 
 
 if __name__ == '__main__':

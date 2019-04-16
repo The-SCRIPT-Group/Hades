@@ -1,11 +1,11 @@
 <html>
     <head>
-        <title>CodeX Registration Form</title>
+        <title>{{ event }} Registration Form</title>
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     </head>
     <body>
     <div class="container">
-        <form method="post" action="/submit" enctype="multipart/form-data">
+        <form method="post" action="/{{ submit }}" enctype="multipart/form-data">
             <div class="form-group">
                 <hr>
                 <p>Name (required)</p>
@@ -14,12 +14,14 @@
                 <p>Email (required)</p>
                 <input type="email" name="email" placeholder="Enter your email address" maxlength="50" required class="form-control" />
                 <hr>
-                <p>2nd person's Name</p>
-                <input type="text" name="name_second_person" placeholder="Enter the second person's name" maxlength="30" class="form-control"/>
-                <hr>
-                <p>2nd person's email</p>
-                <input type="email" name="email_second_person" placeholder="Enter the second person's email address" maxlength="50" class="form-control" />
-                <hr>
+                {% if group %}
+                    <p>2nd person's Name</p>
+                    <input type="text" name="name_second_person" placeholder="Enter the second person's name" maxlength="30" class="form-control"/>
+                    <hr>
+                    <p>2nd person's email</p>
+                    <input type="email" name="email_second_person" placeholder="Enter the second person's email address" maxlength="50" class="form-control" />
+                    <hr>
+                {% endif %}
                 <p>Phone Number (required)</p>
                 <input type="text" name="phone_number" placeholder="Enter your phone number (Excluding +91)" maxlength="10" required class="form-control" pattern="[0-9]{10}"/>
                 <hr>
