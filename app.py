@@ -45,6 +45,11 @@ def submit_techo():
     return submit(TechoUsers, "Techo", request.form)
 
 
+@app.route('/submit_workshop', methods=['POST'])
+def submit_workshop():
+    return submit(WorkshopUsers, "CPP Workshop", request.form)
+
+
 def submit(table: db.Model, event_name: str, form_data):
     """
     Take data from the form, generate, display, and email QR code to user
@@ -62,8 +67,11 @@ def submit(table: db.Model, event_name: str, form_data):
     id = get_current_id(table)
 
     user = table(name=form_data['name'], email=form_data['email'],
-                 phone=form_data['phone_number'], id=id,
-                 department=DEPARTMENTS[form_data['department']])
+                 phone=form_data['phone_number'], id=id)
+
+    if form_data['department']:
+        user.department = form_data['department']
+
     try:
         db.session.add(user)
         db.session.commit()
@@ -117,12 +125,12 @@ def submit(table: db.Model, event_name: str, form_data):
 
 @app.route('/codex')
 def codex():
-    return render_template('form.html', event='CodeX', group=True, submit='submit_codex')
+    return render_template('form.html', event='CodeX', group=True, submit='submit_codex', department_generic=True)
 
 
 @app.route('/techo')
 def techo():
-    return render_template('form.html', event='Techo', group=False, submit='submit_techo')
+    return render_template('form.html', event='Techo', group=False, submit='submit_techo', department_generic=True)
 
 
 @app.route('/users', methods=['GET', 'POST'])
@@ -146,6 +154,7 @@ def display_users():
                 <select name="table" id="table">
                     <option value="codex_users" selected>CodeX</option>
                     <option value="techo_users">Techo</option>
+                    <option value="workshop_users">CPP Workshop</option>
                 </select>                
             </form>
             '''
@@ -156,7 +165,7 @@ def root():
     """
     Main endpoint. Display the form to the user.
     """
-    return "<b>Nothing to see here!</b>"
+    return render_template('form.html', event='CPP Workshop', group=False, submit='submit_workshop', department_generic=False)
 
 
 def get_current_id(table: db.Model):
@@ -207,6 +216,20 @@ class TechoUsers(db.Model):
 
     def __repr__(self):
         return '%r' % [self.id, self.name, self.email, self.phone, self.department]
+
+
+class WorkshopUsers(db.Model):
+    """
+    Database model class
+    """
+    __tablename__ = 'workshop_users'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30))
+    email = db.Column(db.String(50), unique=True)
+    phone = db.Column(db.BigInteger, unique=True)
+
+    def __repr__(self):
+        return '%r' % [self.id, self.name, self.email, self.phone]
 
 
 if __name__ == '__main__':
