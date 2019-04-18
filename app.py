@@ -69,7 +69,7 @@ def submit(table: db.Model, event_name: str, form_data):
     user = table(name=form_data['name'], email=form_data['email'],
                  phone=form_data['phone_number'], id=id)
 
-    if form_data['department']:
+    if 'department' in form_data:
         user.department = form_data['department']
 
     try:
@@ -87,7 +87,7 @@ def submit(table: db.Model, event_name: str, form_data):
     from_email = Email(FROM_EMAIL)
     to_email = Email(form_data['email'])
     p = None
-    if form_data['email_second_person'] and form_data['name_second_person']:
+    if 'email_second_person' in form_data and 'name_second_person' in form_data:
         cc_email = Email(form_data['email_second_person'])
         name += ', {}'.format(form_data['name_second_person'])
         p = Personalization()
