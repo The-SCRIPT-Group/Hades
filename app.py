@@ -143,19 +143,33 @@ def display_users():
         password = request.form['password']
         if username == os.getenv('USERNAME'):
             if password == os.getenv('PASSWORD'):
-                return render_template('users.html', users=db.session.query(request.form['table']).all())
+                table = request.form['table']
+
+                if table == 'codex_users':
+                    table = CodexUsers
+                elif table == 'techo_users':
+                    table = TechoUsers
+                else:
+                    table = WorkshopUsers
+
+                user_data = db.session.query(table).all()
+                if user_data:
+                    return render_template('users.html', users=user_data)
+                else:
+                    return f"No users found in table {request.form['table']}"
             return 'Invalid password!'
         return 'Invalid user!'
     return '''
             <form action="" method="post">
                 <p><input type=text name=username required>
                 <p><input type=password name=password required>
-                <p><input type=submit value=Login>
+                <br/>
                 <select name="table" id="table">
-                    <option value="codex_users" selected>CodeX</option>
-                    <option value="techo_users">Techo</option>
-                    <option value="workshop_users">CPP Workshop</option>
-                </select>                
+                    <option value="CodexUsers" selected>CodeX</option>
+                    <option value="TechoUsers">Techo</option>
+                    <option value="WorkshopUsers">CPP Workshop</option>
+                </select>
+                <p><input type=submit value=Login>
             </form>
             '''
 

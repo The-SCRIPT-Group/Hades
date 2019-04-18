@@ -17,7 +17,11 @@
                 <td>{{ user['name'] }}</td>
                 <td>{{ user['email'] }}</td>
                 <td>{{ user['phone'] }}</td>
-                <td>{{ user['department'] }}</td>
+                {% if user['department'] %}
+                    <td>{{ user['department'] }}</td>
+                {% else %}
+                    <td>Computer Science and Engineering</td>
+                {% endif %}
             </tr>
         {% endfor %}
     </table>
