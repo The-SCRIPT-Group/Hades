@@ -16,7 +16,6 @@ from flask import Flask, render_template, request
 from sqlalchemy import exc
 from flask_sqlalchemy import SQLAlchemy
 
-
 FROM_EMAIL = os.getenv('FROM_EMAIL')
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 
@@ -32,6 +31,10 @@ DEPARTMENTS = {'cse': 'Computer Science and Engineering',
                'civil': 'Civil Engineering',
                'chem': 'Chemical Engineering',
                'others': 'Others'}
+
+from tsg_registration.models.codex import CodexUsers
+from tsg_registration.models.techo import TechoUsers
+from tsg_registration.models.workshop import WorkshopUsers
 
 
 @app.route('/submit_codex', methods=['POST'])
@@ -194,51 +197,3 @@ def generate_qr(form_data, id):
     return qrcode.make("\nName: {}\nEmail: {}\nID: {}\nPhone Number: {}"
                        .format(form_data['name'], form_data['email'],
                                id, form_data['phone_number']))
-
-
-class CodexUsers(db.Model):
-    """
-    Database model class
-    """
-    __tablename__ = 'codex_users'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30))
-    email = db.Column(db.String(50), unique=True)
-    phone = db.Column(db.BigInteger, unique=True)
-    department = db.Column(db.String(50))
-
-    def __repr__(self):
-        return '%r' % [self.id, self.name, self.email, self.phone, self.department]
-
-
-class TechoUsers(db.Model):
-    """
-    Database model class
-    """
-    __tablename__ = 'techo_users'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30))
-    email = db.Column(db.String(50), unique=True)
-    phone = db.Column(db.BigInteger, unique=True)
-    department = db.Column(db.String(50))
-
-    def __repr__(self):
-        return '%r' % [self.id, self.name, self.email, self.phone, self.department]
-
-
-class WorkshopUsers(db.Model):
-    """
-    Database model class
-    """
-    __tablename__ = 'workshop_users'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30))
-    email = db.Column(db.String(50), unique=True)
-    phone = db.Column(db.BigInteger, unique=True)
-
-    def __repr__(self):
-        return '%r' % [self.id, self.name, self.email, self.phone]
-
-
-if __name__ == '__main__':
-    app.run()
