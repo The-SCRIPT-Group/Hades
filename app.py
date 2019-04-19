@@ -9,8 +9,8 @@ import base64
 import os
 
 import qrcode
-import sendgrid
-from sendgrid.helpers.mail import Attachment, Content, Email, Mail, Personalization
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Attachment, Content, Mail, Personalization
 
 from flask import Flask, render_template, request
 from sqlalchemy import exc
@@ -22,7 +22,6 @@ SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
-sg = sendgrid.SendGridAPIClient(SENDGRID_API_KEY)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 
@@ -84,40 +83,35 @@ def submit(table: db.Model, event_name: str, form_data):
     encoded = base64.b64encode(img_data).decode()
 
     name = form_data['name']
-    from_email = Email(FROM_EMAIL)
-    to_email = Email(form_data['email'])
-    p = None
+    from_email = FROM_EMAIL
+    to_emails = []
+    email_1 = (form_data['email'], form_data['name'])
+    to_emails.append(email_1)
     if 'email_second_person' in form_data and 'name_second_person' in form_data:
-        cc_email = Email(form_data['email_second_person'])
+        email_2 = form_data['email_second_person'], form_data['name_second_person']
         name += ', {}'.format(form_data['name_second_person'])
-        p = Personalization()
-        p.add_to(cc_email)
+        to_emails.append(email_2)
 
     subject = 'Registration for {} April 2019 - ID {}'.format(event_name, id)
     message = """<img src='https://drive.google.com/uc?id=12VCUzNvU53f_mR7Hbumrc6N66rCQO5r-&export=download'>
-    <hr>
-    {}, your registration is done!
-    <br/>
-    A QR code has been attached below!
-    <br/>
-    You're <b>required</b> to present this on the day of the event.
-    """.format(name)
+<hr>
+{}, your registration is done!
+<br/>
+A QR code has been attached below!
+<br/>
+You're <b>required</b> to present this on the day of the event.""".format(name)
     content = Content('text/html', message)
-    mail = Mail(from_email, subject, to_email, content)
-    if p:
-        mail.add_personalization(p)
+    mail = Mail(from_email, to_emails, subject, html_content=content)
+    mail.add_attachment(Attachment(encoded, 'qr.png', 'image/png'))
 
-    attachment = Attachment()
-    attachment.type = 'image/png'
-    attachment.filename = 'qr.png'
-    attachment.content = encoded
-
-    mail.add_attachment(attachment)
-
-    response = sg.client.mail.send.post(request_body=mail.get())
-    print(response.status_code)
-    print(response.body)
-    print(response.headers)
+    try:
+        sg = SendGridAPIClient(SENDGRID_API_KEY)
+        response = sg.send(mail)
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
+    except Exception as e:
+        print(e)
 
     return 'Please save this QR Code. It has also been emailed to you.<br><img src=\
             "data:image/png;base64, {}"/>'.format(encoded)
