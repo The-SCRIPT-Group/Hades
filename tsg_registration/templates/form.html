@@ -2,43 +2,65 @@
     <head>
         <title>{{ event }} Registration Form</title>
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" href="css/w3.css">
+        <link rel="stylesheet" href="css/homepage.css">
     </head>
     <body>
-    <div class="container">
-        <form method="post" action="/{{ submit }}" enctype="multipart/form-data">
-            <div class="form-group">
-                <hr>
-                <p>Name (required)</p>
-                <input type="text" name="name" placeholder="Enter your name" maxlength="30" required class="form-control"/>
-                <hr>
-                <p>Email (required)</p>
-                <input type="email" name="email" placeholder="Enter your email address" maxlength="50" required class="form-control" />
-                <hr>
-                {% if group %}
-                    <p>2nd person's Name</p>
-                    <input type="text" name="name_second_person" placeholder="Enter the second person's name" maxlength="30" class="form-control"/>
-                    <hr>
-                    <p>2nd person's email</p>
-                    <input type="email" name="email_second_person" placeholder="Enter the second person's email address" maxlength="50" class="form-control" />
-                    <hr>
-                {% endif %}
-                <p>Phone Number (required)</p>
-                <input type="text" name="phone_number" placeholder="Enter your phone number (Excluding +91)" maxlength="10" required class="form-control" pattern="[0-9]{10}"/>
-                <hr>
-                {% if department_generic %}
-                    <select name="department" class="form-control" id="department">
-                        <option value="cse" selected>Computer Science and Engineering</option>
-                        <option value="ece">Electronics and Communication Engineering</option>
-                        <option value="mech">Mechanical Engineering</option>
-                        <option value="civil">Civil Engineering</option>
-                        <option value="chem">Chemical Engineering</option>
-                        <option value="others">Others</option>
-                    </select>
-                    <hr>
-                {% endif %}
+        <div class="w3-container w3-padding-top w3-margin-top">
+            <div class="w3-container w3-card-4 w3-black w3-row w3-hide-medium w3-hide-small opacity-prop">
+                <div class="w3-col" style="width: 30%;">
+                    <img src="images/LogoTransp.png" style="float: left; width: 100%; height: auto; padding: 8px;">
+                </div>
+                <div class="w3-col w3-center" style="width: 40%;">
+                    <br>
+                    <h2 style="text-align: center;">C++ Workshop Registration</h2>
+                </div>
             </div>
-            <button type="submit" class="btn btn-success">Submit</button>
-        </form>
-    </div>
+
+            <div class="w3-card-4 w3-black w3-row w3-hide-large">
+                <div class="w3-col" style="width: 40%;">
+                    <img src="images/LogoTransp.png" style="float: left; width: 100%; height: auto; padding: 8px;">
+                </div>
+                <br>
+                <div class="w3-col w3-center" style="width: 60%;">
+                    <h2 style="text-align: center;">C++ Workshop Registrations</h2>
+                </div>
+            </div>
+        
+            <form method="post" action="/{{ submit }}" enctype="multipart/form-data">
+                <div class="form-group">
+                    <hr>
+                    <p>Name (required)</p>
+                    <input type="text" name="name" placeholder="Enter your name" maxlength="30" required class="form-control" />
+                    <hr>
+                    <p>Email (required)</p>
+                    <input type="email" name="email" placeholder="Enter your email address" maxlength="50" required class="form-control" />
+                    <hr>
+                    {% if group %}
+                        <p>2nd person's Name</p>
+                        <input type="text" name="name_second_person" placeholder="Enter the second person's name" maxlength="30" class="form-control"/>
+                        <hr>
+                        <p>2nd person's email</p>
+                        <input type="email" name="email_second_person" placeholder="Enter the second person's email address" maxlength="50" class="form-control" />
+                        <hr>
+                    {% endif %}
+                    <p>Phone Number (required)</p>
+                    <input type="text" name="phone_number" placeholder="Enter your phone number (Excluding +91)" maxlength="10" required class="form-control" pattern="[0-9]{10}"/>
+                    <hr>
+                    {% if department_generic %}
+                        <select name="department" class="form-control" id="department">
+                            <option value="cse" selected>Computer Science and Engineering</option>
+                            <option value="ece">Electronics and Communication Engineering</option>
+                            <option value="mech">Mechanical Engineering</option>
+                            <option value="civil">Civil Engineering</option>
+                            <option value="chem">Chemical Engineering</option>
+                            <option value="others">Others</option>
+                        </select>
+                        <hr>
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn btn-success">Submit</button>
+            </form>
+        </div>
     </body>
 </html>

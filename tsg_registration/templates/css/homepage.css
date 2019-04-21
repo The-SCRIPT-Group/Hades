@@ -1,0 +1,92 @@
+
+.bgimg{
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.bgimg{
+	min-height: 100%;
+	background-image: url("../images/background.jpg");
+}
+
+.field-prop{
+	border: 1px solid #555;
+	margin : 4px;
+	width: 100%;
+	border-radius: 8px;
+	padding: 8px;
+}
+
+.missing-prop{
+	border: 1px solid #FF0000;
+	margin : 4px;
+	width: 100%;
+	border-radius: 8px;
+	padding: 8px;
+}
+
+.button {
+  border-radius: 4px;
+  background-color: #f4511e;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 20px;
+  padding: 20px;
+  width: 150px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.button span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.show{
+  display: block;
+}
+
+.hide{
+  display: none;
+}
+
+.button span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.button:hover span {
+  padding-right: 25px;
+}
+
+.button:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: white;
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: red;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: red;
+}
+
+.opacity-prop{
+  opacity: 0.8;
+}
