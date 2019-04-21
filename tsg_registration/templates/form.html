@@ -2,28 +2,28 @@
     <head>
         <title>{{ event }} Registration Form</title>
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <link rel="stylesheet" href="css/w3.css">
-        <link rel="stylesheet" href="css/homepage.css">
+        <link rel="stylesheet" href="{{ url_for(endpoint='static', filename='css/w3.css') }}" rel="stylesheet">
+        <link rel="stylesheet" href="{{ url_for(endpoint='static', filename='css/homepage.css') }}" rel="stylesheet">
     </head>
     <body>
         <div class="w3-container w3-padding-top w3-margin-top">
             <div class="w3-container w3-card-4 w3-black w3-row w3-hide-medium w3-hide-small opacity-prop">
                 <div class="w3-col" style="width: 30%;">
-                    <img src="images/LogoTransp.png" style="float: left; width: 100%; height: auto; padding: 8px;">
+                    <img src="{{ url_for(endpoint='static', filename='images/LogoTransp.png') }}" style="float: left; width: 100%; height: auto; padding: 8px;">
                 </div>
                 <div class="w3-col w3-center" style="width: 40%;">
                     <br>
-                    <h2 style="text-align: center;">C++ Workshop Registration</h2>
+                    <h2 style="text-align: center;">{{ event }} Registration</h2>
                 </div>
             </div>
 
             <div class="w3-card-4 w3-black w3-row w3-hide-large">
                 <div class="w3-col" style="width: 40%;">
-                    <img src="images/LogoTransp.png" style="float: left; width: 100%; height: auto; padding: 8px;">
+                    <img src="{{ url_for(endpoint='static', filename='images/LogoTransp.png') }}" style="float: left; width: 100%; height: auto; padding: 8px;">
                 </div>
                 <br>
                 <div class="w3-col w3-center" style="width: 60%;">
-                    <h2 style="text-align: center;">C++ Workshop Registrations</h2>
+                    <h2 style="text-align: center;">{{ event }} Registrations</h2>
                 </div>
             </div>
         
