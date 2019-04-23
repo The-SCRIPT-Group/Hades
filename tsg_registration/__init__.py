@@ -57,10 +57,12 @@ def submit_techo():
 
 @app.route('/submit_workshop', methods=['POST'])
 def submit_workshop():
-    return submit(WorkshopUsers, "CPP Workshop", request.form)
+    message = """We are commencing the workshop sessions!<br/>Our <b>first session</b> is on Wednesday, 24/4/2019, at 3:45
+pm, in D203<br/><br/>Hope to see you there!<br/><br/>Regards"""
+    return submit(WorkshopUsers, "CPP Workshop", request.form, message)
 
 
-def submit(table: db.Model, event_name: str, form_data):
+def submit(table: db.Model, event_name: str, form_data, extra_message: str):
     """
     Take data from the form, generate, display, and email QR code to user
     """
@@ -111,6 +113,8 @@ def submit(table: db.Model, event_name: str, form_data):
 A QR code has been attached below!
 <br/>
 You're <b>required</b> to present this on the day of the event.""".format(name)
+    if extra_message:
+        message += "<br/>" + extra_message
     content = Content('text/html', message)
     mail = Mail(from_email, to_emails, subject, html_content=content)
     mail.add_attachment(Attachment(encoded, 'qr.png', 'image/png'))
