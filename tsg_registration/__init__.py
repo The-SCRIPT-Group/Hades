@@ -106,7 +106,7 @@ def submit(table: db.Model, event_name: str, form_data, extra_message: str):
         to_emails.append(email_2)
 
     subject = 'Registration for {} April 2019 - ID {}'.format(event_name, id)
-    message = """<img src='https://drive.google.com/uc?id=12VCUzNvU53f_mR7Hbumrc6N66rCQO5r-&export=download'>
+    message = """<img src='https://drive.google.com/uc?id=12VCUzNvU53f_mR7Hbumrc6N66rCQO5r-&export=download' style="width:50%;height:50%">
 <hr>
 {}, your registration is done!
 <br/>
