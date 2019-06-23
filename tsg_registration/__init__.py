@@ -8,6 +8,8 @@ Flask application to accept some details, generate, display, and email a QR code
 import base64
 import os
 
+from datetime import datetime
+
 import qrcode
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Attachment, Content, Mail, Personalization
@@ -105,7 +107,8 @@ def submit(table: db.Model, event_name: str, form_data, extra_message: str):
         name += ', {}'.format(form_data['name_second_person'])
         to_emails.append(email_2)
 
-    subject = 'Registration for {} April 2019 - ID {}'.format(event_name, id)
+    month, year = datetime.now().strftime("%B,%Y").split(',')
+    subject = 'Registration for {} {} {} - ID {}'.format(event_name, month, year, id)
     message = """<img src='https://drive.google.com/uc?id=12VCUzNvU53f_mR7Hbumrc6N66rCQO5r-&export=download' style="width:50%;height:50%">
 <hr>
 {}, your registration is done!
