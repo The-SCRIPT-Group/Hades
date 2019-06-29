@@ -14,7 +14,7 @@ import qrcode
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Attachment, Content, Mail, Personalization
 
-from flask import Flask, render_template, request
+from flask import Flask, redirect, render_template, request, url_for
 from sqlalchemy import exc
 from flask_sqlalchemy import SQLAlchemy
 
@@ -42,49 +42,43 @@ DEPARTMENTS = {'cse': 'Computer Science and Engineering',
                'chem': 'Chemical Engineering',
                'others': 'Others'}
 
-from tsg_registration.models.codex import CodexUsers
-from tsg_registration.models.techo import TechoUsers
-from tsg_registration.models.workshop import WorkshopUsers
+from tsg_registration.models.codex import CodexApril2019
+from tsg_registration.models.techo import EHJuly2019
+from tsg_registration.models.workshop import CPPWSMay2019
 
 
-@app.route('/submit_codex', methods=['POST'])
-def submit_codex():
-    return submit(CodexUsers, "CodeX", request.form)
+def get_db_by_name(name: str) -> db.Model:
+    if name == 'codex_april_2019':
+        return CodexApril2019
+    elif name == 'cpp_workshop_may_2019':
+        return CPPWSMay2019
+    else:
+        return EHJuly2019
 
 
-@app.route('/submit_techo', methods=['POST'])
-def submit_techo():
-    return submit(TechoUsers, "Techo", request.form)
-
-
-@app.route('/submit_workshop', methods=['POST'])
-def submit_workshop():
-    message = """We are commencing the workshop sessions!<br/>Our <b>first session</b> is on Wednesday, 24/4/2019, at 3:45
-pm, in D203<br/><br/>Hope to see you there!<br/><br/>Regards"""
-    return submit(WorkshopUsers, "CPP Workshop", request.form, message)
-
-
-def submit(table: db.Model, event_name: str, form_data, extra_message: str):
+@app.route('/submit', methods=['POST'])
+def submit():
     """
     Take data from the form, generate, display, and email QR code to user
     """
-
+    table = get_db_by_name(request.form['db'])
+    event_name = request.form['event']
     for user in db.session.query(table).all():
-        if form_data['email'] == user.email:
+        if request.form['email'] == user.email:
             return 'Email address {} already found in database!\
-            Please re-enter the form correctly!'.format(form_data['email'])
+            Please re-enter the form correctly!'.format(request.form['email'])
 
-        if str(form_data['phone_number']) == str(user.phone):
+        if str(request.form['phone_number']) == str(user.phone):
             return 'Phone number {} already found in database!\
-            Please re-enter the form correctly!'.format(form_data['phone_number'])
+            Please re-enter the form correctly!'.format(request.form['phone_number'])
 
     id = get_current_id(table)
 
-    user = table(name=form_data['name'], email=form_data['email'],
-                 phone=form_data['phone_number'], id=id)
+    user = table(name=request.form['name'], email=request.form['email'],
+                 phone=request.form['phone_number'], id=id)
 
-    if 'department' in form_data:
-        user.department = form_data['department']
+    if 'department' in request.form:
+        user.department = request.form['department']
 
     try:
         db.session.add(user)
@@ -92,19 +86,19 @@ def submit(table: db.Model, event_name: str, form_data, extra_message: str):
     except exc.IntegrityError:
         return "Error occurred trying to enter values into the database!"
 
-    img = generate_qr(form_data, id)
+    img = generate_qr(request.form, id)
     img.save('qr.png')
     img_data = open('qr.png', 'rb').read()
     encoded = base64.b64encode(img_data).decode()
 
-    name = form_data['name']
+    name = request.form['name']
     from_email = FROM_EMAIL
     to_emails = []
-    email_1 = (form_data['email'], form_data['name'])
+    email_1 = (request.form['email'], request.form['name'])
     to_emails.append(email_1)
-    if 'email_second_person' in form_data and 'name_second_person' in form_data:
-        email_2 = form_data['email_second_person'], form_data['name_second_person']
-        name += ', {}'.format(form_data['name_second_person'])
+    if 'email_second_person' in request.form and 'name_second_person' in request.form:
+        email_2 = request.form['email_second_person'], request.form['name_second_person']
+        name += ', {}'.format(request.form['name_second_person'])
         to_emails.append(email_2)
 
     month, year = datetime.now().strftime("%B,%Y").split(',')
@@ -116,8 +110,10 @@ def submit(table: db.Model, event_name: str, form_data, extra_message: str):
 A QR code has been attached below!
 <br/>
 You're <b>required</b> to present this on the day of the event.""".format(name)
-    if extra_message:
-        message += "<br/>" + extra_message
+    try:
+        message += "<br/>" + request.form['extra_message']
+    except KeyError:
+        pass
     content = Content('text/html', message)
     mail = Mail(from_email, to_emails, subject, html_content=content)
     mail.add_attachment(Attachment(encoded, 'qr.png', 'image/png'))
@@ -135,16 +131,6 @@ You're <b>required</b> to present this on the day of the event.""".format(name)
             "data:image/png;base64, {}"/>'.format(encoded)
 
 
-@app.route('/codex')
-def codex():
-    return render_template('form.html', event='CodeX', group=True, submit='submit_codex', department_generic=True)
-
-
-@app.route('/techo')
-def techo():
-    return render_template('form.html', event='Techo', group=False, submit='submit_techo', department_generic=True)
-
-
 @app.route('/users', methods=['GET', 'POST'])
 def display_users():
     """
@@ -155,15 +141,7 @@ def display_users():
         password = request.form['password']
         if username == os.getenv('USERNAME'):
             if password == os.getenv('PASSWORD'):
-                table = request.form['table']
-
-                if table == 'codex_users':
-                    table = CodexUsers
-                elif table == 'techo_users':
-                    table = TechoUsers
-                else:
-                    table = WorkshopUsers
-
+                table = get_db_by_name(request.form['table'])
                 user_data = db.session.query(table).all()
                 if user_data:
                     return render_template('users.html', users=user_data)
@@ -175,15 +153,26 @@ def display_users():
             <form action="" method="post">
                 <p><input type=text name=username required>
                 <p><input type=password name=password required>
-                <br/>
+                <p>
                 <select name="table" id="table">
-                    <option value="CodexUsers" selected>CodeX</option>
-                    <option value="TechoUsers">Techo</option>
-                    <option value="WorkshopUsers">CPP Workshop</option>
+                    <option value="codex_april_2019" selected>CodeX April 2019</option>
+                    <option value="eh_july_2019">Ethical Hacking July 2019</option>
+                    <option value="cpp_workshop_may_2019">CPP Workshop May 2019</option>
                 </select>
+                </p>
                 <p><input type=submit value=Login>
             </form>
             '''
+
+
+@app.route('/codex')
+def codex():
+    return redirect(url_for("/"))
+
+
+@app.route('/techo')
+def techo():
+    return redirect(url_for("/"))
 
 
 @app.route('/')
@@ -191,7 +180,8 @@ def root():
     """
     Main endpoint. Display the form to the user.
     """
-    return render_template('form.html', event='CPP Workshop', group=False, submit='submit_workshop', department_generic=False)
+    return render_template('form.html', event='Ethical Hacking', group=False, department_generic=True,
+                           date='July 2019', db='eh_july_2019')
 
 
 def get_current_id(table: db.Model):
