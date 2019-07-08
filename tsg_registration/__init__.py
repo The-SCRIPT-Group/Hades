@@ -101,7 +101,10 @@ def submit():
         name += ', {}'.format(request.form['name_second_person'])
         to_emails.append(email_2)
 
-    month, year = datetime.now().strftime("%B,%Y").split(',')
+    try:
+        month, year = request.form['date'].split(' ')
+    except KeyError:
+        month, year = datetime.now().strftime("%B,%Y").split(',')
     subject = 'Registration for {} {} {} - ID {}'.format(event_name, month, year, id)
     message = """<img src='https://drive.google.com/uc?id=12VCUzNvU53f_mR7Hbumrc6N66rCQO5r-&export=download' style="width:50%;height:50%">
 <hr>
