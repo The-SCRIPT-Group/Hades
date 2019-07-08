@@ -122,8 +122,7 @@ You're <b>required</b> to present this on the day of the event.""".format(name)
     mail.add_attachment(Attachment(encoded, 'qr.png', 'image/png'))
 
     try:
-        sg = SendGridAPIClient(SENDGRID_API_KEY)
-        response = sg.send(mail)
+        response = SendGridAPIClient(SENDGRID_API_KEY).send(mail)
         print(response.status_code)
         print(response.body)
         print(response.headers)
