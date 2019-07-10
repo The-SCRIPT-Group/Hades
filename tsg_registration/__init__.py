@@ -102,10 +102,10 @@ def submit():
         to_emails.append(email_2)
 
     try:
-        month, year = request.form['date'].split(' ')
+        date = request.form['date']
     except KeyError:
-        month, year = datetime.now().strftime("%B,%Y").split(',')
-    subject = 'Registration for {} {} {} - ID {}'.format(event_name, month, year, id)
+        date = datetime.now().strftime("%B,%Y")
+    subject = 'Registration for {} - {} - ID {}'.format(event_name, date, id)
     message = """<img src='https://drive.google.com/uc?id=12VCUzNvU53f_mR7Hbumrc6N66rCQO5r-&export=download' style="width:50%;height:50%">
 <hr>
 {}, your registration is done!
@@ -183,7 +183,7 @@ def root():
     Main endpoint. Display the form to the user.
     """
     return render_template('form.html', event='Ethical Hacking', group=False, department_generic=True,
-                           date='July 2019', db='eh_july_2019')
+                           date='22-23rd July 2019', db='eh_july_2019')
 
 
 def get_current_id(table: db.Model):
