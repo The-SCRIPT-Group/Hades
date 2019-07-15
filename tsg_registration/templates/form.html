@@ -5,6 +5,9 @@
         <link rel="stylesheet" href="{{ url_for(endpoint='static', filename='css/w3.css') }}" rel="stylesheet">
         <link rel="stylesheet" href="{{ url_for(endpoint='static', filename='css/homepage.css') }}" rel="stylesheet">
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        {% if extra_info %}
+        <script>alert("{{ extra_info }}");</script>
+        {% endif %}
     </head>
     <body>
         <div class="w3-container w3-padding-top w3-margin-top">

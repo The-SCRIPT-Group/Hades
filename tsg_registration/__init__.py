@@ -183,7 +183,7 @@ def root():
     Main endpoint. Display the form to the user.
     """
     return render_template('form.html', event='Ethical Hacking', group=False, department_generic=True,
-                           date='22-23rd July 2019', db='eh_july_2019')
+                           date='22-23rd July 2019', db='eh_july_2019', extra_info='You need to carry your own laptop for this event! Ubuntu or similar Linux distribution is required!')
 
 
 def get_current_id(table: db.Model):
