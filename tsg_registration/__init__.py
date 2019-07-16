@@ -50,10 +50,9 @@ from tsg_registration.models.workshop import CPPWSMay2019
 def get_db_by_name(name: str) -> db.Model:
     if name == 'codex_april_2019':
         return CodexApril2019
-    elif name == 'cpp_workshop_may_2019':
+    if name == 'cpp_workshop_may_2019':
         return CPPWSMay2019
-    else:
-        return EHJuly2019
+    return EHJuly2019
 
 
 @app.route('/submit', methods=['POST'])
@@ -147,8 +146,7 @@ def display_users():
                 user_data = db.session.query(table).all()
                 if user_data:
                     return render_template('users.html', users=user_data)
-                else:
-                    return f"No users found in table {request.form['table']}"
+                return f"No users found in table {request.form['table']}"
             return 'Invalid password!'
         return 'Invalid user!'
     return '''
