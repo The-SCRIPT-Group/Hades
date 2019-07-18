@@ -180,9 +180,10 @@ def root():
     """
     Main endpoint. Display the form to the user.
     """
-    return render_template('form.html', event='Ethical Hacking', group=False, department_generic=True,
-                           date='22-23rd July 2019', db='eh_july_2019', extra_message='Please download <a href="https://drive.google.com/drive/folders/1JlTKhFfykKRayT5Rfqh1U1_ePrnfczU6">this</a> before coming for the event',
-                           extra_info='You need to carry your own laptop for this event! Ubuntu or similar Linux distribution is required! Information collected by us is in accordance with our Privacy Policy.')
+    #return render_template('form.html', event='Ethical Hacking', group=False, department_generic=True,
+    #                       date='22-23rd July 2019', db='eh_july_2019', extra_message='Please download <a href="https://drive.google.com/drive/folders/1JlTKhFfykKRayT5Rfqh1U1_ePrnfczU6">this</a> before coming for the event',
+    #                       extra_info='You need to carry your own laptop for this event! Ubuntu or similar Linux distribution is required! Information collected by us is in accordance with our Privacy Policy.')
+    return app.send_static_file('html/registrations-full.html')
 
 
 def get_current_id(table: db.Model):
