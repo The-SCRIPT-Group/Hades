@@ -8,7 +8,7 @@ itsdangerous==1.1.0
 Jinja2==2.10.1
 MarkupSafe==1.1.1
 Pillow==6.0.0
-psycopg2==2.8.3
+psycopg2-binary==2.8.3
 python-http-client==3.1.0
 qrcode==6.1
 sendgrid==6.0.5
