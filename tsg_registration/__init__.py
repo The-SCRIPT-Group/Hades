@@ -15,7 +15,7 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Attachment, Content, Mail, Personalization
 
 from flask import Flask, redirect, render_template, request, url_for
-from sqlalchemy import exc
+from sqlalchemy import desc, exc
 from flask_sqlalchemy import SQLAlchemy
 
 import sentry_sdk
@@ -192,8 +192,8 @@ def get_current_id(table: db.Model):
     Function to return the latest ID
     """
     try:
-        id = db.session.query(table).all()[-1].id
-    except IndexError:
+        id = db.session.query(table).order_by(desc(table.id)).first().id
+    except Exception:
         id = 0
     return int(id) + 1
 
