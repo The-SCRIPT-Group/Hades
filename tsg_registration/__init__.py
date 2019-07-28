@@ -86,7 +86,7 @@ def submit():
     if "year" in request.form:
         user.year = request.form["year"]
 
-    if "whatsapp_number" in request.form:
+    if request.form['whatsapp_number'] is not None:
         user.phone += f"|{request.form['whatsapp_number']}"
 
     try:
