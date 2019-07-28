@@ -50,7 +50,7 @@
                     <p>Phone Number (required)</p>
                     <input type="text" name="phone_number" placeholder="Enter your phone number (Excluding +91)" maxlength="10" required class="form-control" pattern="[0-9]{10}"/>
                     <hr>
-                    {% if department_generic %}
+                    {% if department %}
                         <select name="department" class="form-control" id="department">
                             <option value="cse" selected>Computer Science and Engineering</option>
                             <option value="ece">Electronics and Communication Engineering</option>
@@ -58,6 +58,14 @@
                             <option value="civil">Civil Engineering</option>
                             <option value="chem">Chemical Engineering</option>
                             <option value="others">Others</option>
+                        </select>
+                        <hr>
+                    {% endif %}
+                    {% if year %}
+                        <select name="year" class="form-control" id="year">
+                            <option value="1st">FYBtech</option>
+                            <option value="2nd">SYBtech</option>
+                            <option value="3rd" selected>TYBtech</option>
                         </select>
                         <hr>
                     {% endif %}

@@ -36,7 +36,7 @@ DEPARTMENTS = {
     "others": "Others",
 }
 
-from tsg_registration.models.codex import CodexApril2019
+from tsg_registration.models.codex import CodexApril2019, RSC2019
 from tsg_registration.models.techo import EHJuly2019
 from tsg_registration.models.workshop import CPPWSMay2019
 
@@ -46,7 +46,9 @@ def get_db_by_name(name: str) -> db.Model:
         return CodexApril2019
     if name == "cpp_workshop_may_2019":
         return CPPWSMay2019
-    return EHJuly2019
+    if name == "eh_july_2019":
+        return EHJuly2019
+    return RSC2019
 
 
 @app.route("/submit", methods=["POST"])
@@ -80,6 +82,9 @@ def submit():
 
     if "department" in request.form:
         user.department = request.form["department"]
+
+    if "year" in request.form:
+        user.year = request.form["year"]
 
     try:
         db.session.add(user)
@@ -190,7 +195,8 @@ def root():
     """
     Main endpoint. Display the form to the user.
     """
-    return app.send_static_file("html/registrations-full.html")
+    return render_template('form.html', event='Ready Set Code 2019', group=False, department=True,
+                           date='5th and 7th August 2019', db='rsc_2019', year=True)
 
 
 def get_current_id(table: db.Model):
