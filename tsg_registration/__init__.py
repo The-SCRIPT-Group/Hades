@@ -65,7 +65,7 @@ def submit():
                 request.form["email"]
             )
 
-        if str(request.form["phone_number"]) == str(user.phone):
+        if request.form["phone_number"] in user.phone:
             return "Phone number {} already found in database!\
             Please re-enter the form correctly!".format(
                 request.form["phone_number"]
