@@ -10,6 +10,7 @@
             <th>Email</th>
             <th>Phone Number</th>
             <th>Department</th>
+            <th>WhatsApp Link</th>
         </tr>
         {% for user in users %}
             <tr>
@@ -22,6 +23,7 @@
                 {% else %}
                     <td>Computer Science and Engineering</td>
                 {% endif %}
+                <td><a href="https://api.whatsapp.com/send?phone=91{{ user['phone'] }}">WhatsApp</a></td>
             </tr>
         {% endfor %}
     </table>
