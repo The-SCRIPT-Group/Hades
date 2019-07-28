@@ -31,4 +31,11 @@ class RSC2019(db.Model):
     year = db.Column(db.String)
 
     def __repr__(self):
-        return "%r" % [self.id, self.name, self.email, self.phone, self.department, self.year]
+        return "%r" % [
+            self.id,
+            self.name,
+            self.email,
+            self.phone,
+            self.department,
+            self.year,
+        ]
