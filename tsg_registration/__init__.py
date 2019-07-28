@@ -170,9 +170,10 @@ def display_users():
                 <p><input type=password name=password required>
                 <p>
                 <select name="table" id="table">
-                    <option value="codex_april_2019" selected>CodeX April 2019</option>
+                    <option value="codex_april_2019">CodeX April 2019</option>
                     <option value="eh_july_2019">Ethical Hacking July 2019</option>
                     <option value="cpp_workshop_may_2019">CPP Workshop May 2019</option>
+                    <option value="rsc_2019" selected>RSC 2019</option>
                 </select>
                 </p>
                 <p><input type=submit value=Login>
