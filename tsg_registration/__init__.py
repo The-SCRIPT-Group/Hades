@@ -18,16 +18,8 @@ from flask import Flask, redirect, render_template, request, url_for
 from sqlalchemy import desc, exc
 from flask_sqlalchemy import SQLAlchemy
 
-import sentry_sdk
-from sentry_sdk.integrations.flask import FlaskIntegration
-
 FROM_EMAIL = os.getenv('FROM_EMAIL')
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
-
-sentry_sdk.init(
-    dsn=os.getenv('SENTRY_DSN'),
-    integrations=[FlaskIntegration()]
-)
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
