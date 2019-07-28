@@ -10,7 +10,7 @@ class EHJuly2019(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
     email = db.Column(db.String(50), unique=True)
-    phone = db.Column(db.BigInteger, unique=True)
+    phone = db.Column(db.String(21), unique=True)
     department = db.Column(db.String(50))
 
     def __repr__(self):

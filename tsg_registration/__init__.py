@@ -86,6 +86,9 @@ def submit():
     if "year" in request.form:
         user.year = request.form["year"]
 
+    if "whatsapp_number" in request.form:
+        user.phone += f"|{request.form['whatsapp_number']}"
+
     try:
         db.session.add(user)
         db.session.commit()
