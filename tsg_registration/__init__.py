@@ -204,7 +204,7 @@ def root():
         event="Ready Set Code 2019",
         group=False,
         department=True,
-        date="5th and 7th August 2019",
+        date="26th and 27th August 2019",
         db="rsc_2019",
         year=True,
     )
