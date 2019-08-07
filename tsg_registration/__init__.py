@@ -94,7 +94,7 @@ def submit():
         db.session.commit()
     except exc.IntegrityError as e:
         print(e)
-        return "Error occurred trying to enter values into the database!"
+        return """It appears there was an error while trying to enter your data into our database.<br/>Kindly contact someone from the team and we will have this resolved ASAP"""
 
     img = generate_qr(request.form, id)
     img.save("qr.png")
