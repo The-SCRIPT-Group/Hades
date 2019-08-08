@@ -201,10 +201,10 @@ def root():
     """
     return render_template(
         "form.html",
-        event="Ready Set Code 2019",
+        event="Ready Set Code 2019 - Round 1",
         group=False,
         department=True,
-        date="26th and 27th August 2019",
+        date="26th August 2019",
         db="rsc_2019",
         year=True,
     )
