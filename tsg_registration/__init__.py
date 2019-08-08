@@ -236,7 +236,11 @@ def generate_qr(form_data, id):
     Function to generate and return a QR code based on the given data
     """
     return qrcode.make(
-        "\nName: {}\nEmail: {}\nID: {}\nPhone Number: {}".format(
-            form_data["name"], form_data["email"], id, form_data["phone_number"]
+        "{}|{}|{}|{}|{}".format(
+            form_data["event"],
+            form_data["name"],
+            form_data["email"],
+            id,
+            form_data["phone_number"],
         )
     )
