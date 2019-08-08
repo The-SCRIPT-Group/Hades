@@ -217,6 +217,7 @@ def root():
         date="26th August 2019",
         db="rsc_2019",
         year=True,
+        extra_message="""Please create a HackerRank id. You could practise on it, as preparation for RSC (RSC is hosted on https://hackerrank.com, so the ID is required)""",
     )
 
 
