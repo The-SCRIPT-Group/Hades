@@ -18,6 +18,11 @@ from flask import Flask, redirect, render_template, request, url_for
 from sqlalchemy import desc, exc
 from flask_sqlalchemy import SQLAlchemy
 
+from telegram import ChatAction
+from telegram.ext import Updater
+
+updater = Updater(os.getenv("BOT_API_KEY"))
+
 FROM_EMAIL = os.getenv("FROM_EMAIL")
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 
@@ -148,6 +153,10 @@ You're <b>required</b> to present this on the day of the event.""".format(
             "data:image/png;base64, {}"/>'.format(
         encoded
     )
+    chat_id = os.getenv("GROUP_ID")
+    updater.bot.sendChatAction(chat_id, action=ChatAction.TYPING)
+    updater.bot.sendMessage(chat_id, "New registration!")
+    updater.bot.sendPhoto(chat_id, photo=open("qr.png", "rb"), caption=f"ID: {user.id}")
 
 
 @app.route("/users", methods=["GET", "POST"])
