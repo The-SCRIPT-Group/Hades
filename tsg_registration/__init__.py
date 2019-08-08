@@ -149,14 +149,15 @@ You're <b>required</b> to present this on the day of the event.""".format(
     except Exception as e:
         print(e)
 
-    return 'Please save this QR Code. It has also been emailed to you.<br><img src=\
-            "data:image/png;base64, {}"/>'.format(
-        encoded
-    )
     chat_id = os.getenv("GROUP_ID")
     updater.bot.sendChatAction(chat_id, action=ChatAction.TYPING)
     updater.bot.sendMessage(chat_id, "New registration!")
     updater.bot.sendPhoto(chat_id, photo=open("qr.png", "rb"), caption=f"ID: {user.id}")
+
+    return 'Please save this QR Code. It has also been emailed to you.<br><img src=\
+            "data:image/png;base64, {}"/>'.format(
+        encoded
+    )
 
 
 @app.route("/users", methods=["GET", "POST"])
