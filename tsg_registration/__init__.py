@@ -154,7 +154,11 @@ You're <b>required</b> to present this on the day of the event.""".format(
     chat_id = os.getenv("GROUP_ID")
     updater.bot.sendChatAction(chat_id, action=ChatAction.TYPING)
     updater.bot.sendMessage(chat_id, f"New registration for {event_name}!")
-    updater.bot.sendPhoto(chat_id, photo=open("qr.png", "rb"), caption=f"Name: {user.name} | ID: {user.id}")
+    updater.bot.sendDocument(
+        chat_id,
+        document=open("qr.png", "rb"),
+        caption=f"Name: {user.name} | ID: {user.id}",
+    )
 
     return 'Please save this QR Code. It has also been emailed to you.<br><img src=\
             "data:image/png;base64, {}"/>'.format(
