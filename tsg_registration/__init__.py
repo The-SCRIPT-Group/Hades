@@ -43,7 +43,7 @@ DEPARTMENTS = {
 
 from tsg_registration.models.codex import CodexApril2019, RSC2019
 from tsg_registration.models.techo import EHJuly2019
-from tsg_registration.models.workshop import CPPWSMay2019
+from tsg_registration.models.workshop import CPPWSMay2019, CCPPWSMay2019
 
 
 def get_db_by_name(name: str) -> db.Model:
@@ -53,6 +53,8 @@ def get_db_by_name(name: str) -> db.Model:
         return CPPWSMay2019
     if name == "eh_july_2019":
         return EHJuly2019
+    if name == "c_cpp_workshop_september_2019":
+        return CCPPWSMay2019
     return RSC2019
 
 
@@ -218,6 +220,18 @@ def root():
         db="rsc_2019",
         year=True,
         extra_message="""Please create a HackerRank id. You could practise on it, as preparation for RSC (RSC is hosted on https://hackerrank.com, so the ID is required)""",
+    )
+
+
+@app.route("/workshop")
+def workshop():
+    return render_template(
+        "form.html",
+        event="Some workshop",
+        group=False,
+        department=False,
+        date="TBD",
+        db="c_cpp_workshop_september_2019",
     )
 
 
