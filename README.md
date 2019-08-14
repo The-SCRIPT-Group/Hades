@@ -24,6 +24,19 @@ A few environment variables should be set for proper functionality
 
 `PASSWORD` - Password to access the /users endpoint
 
+To test locally if everything is deployed on heroku
+
+```bash
+heroku config -a the-script-group --shell > .env
+heroku local
+```
+
+To export everything in .env
+```bash
+for f in $(awk -F'=' '{print $1}' .env); do export $f; done
+```
+
+
 There are various ways to run it
 
 ```bash
