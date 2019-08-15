@@ -23,8 +23,6 @@ from telegram.ext import Updater
 
 updater = Updater(os.getenv("BOT_API_KEY"))
 
-updater.bot.sendMessage(chat_id=os.getenv("NOTIFY_ID"), text="QRStuff is up")
-
 FROM_EMAIL = os.getenv("FROM_EMAIL")
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 
