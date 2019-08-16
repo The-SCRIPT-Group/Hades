@@ -1,4 +1,5 @@
 from tsg_registration import db
+from tsg_registration.utils import validate
 
 
 class CodexApril2019(db.Model):
@@ -15,6 +16,9 @@ class CodexApril2019(db.Model):
 
     def __repr__(self):
         return "%r" % [self.id, self.name, self.email, self.phone, self.department]
+
+    def validate(self):
+        return validate(self, CodexApril2019)
 
 
 class RSC2019(db.Model):
@@ -39,3 +43,6 @@ class RSC2019(db.Model):
             self.department,
             self.year,
         ]
+
+    def validate(self):
+        return validate(self, RSC2019)

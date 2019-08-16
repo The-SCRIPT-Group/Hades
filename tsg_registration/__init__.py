@@ -43,7 +43,7 @@ DEPARTMENTS = {
 
 from tsg_registration.models.codex import CodexApril2019, RSC2019
 from tsg_registration.models.techo import EHJuly2019
-from tsg_registration.models.workshop import CPPWSMay2019, CCPPWSMay2019
+from tsg_registration.models.workshop import CPPWSMay2019, CCPPWSAugust2019
 
 
 def get_db_by_name(name: str) -> db.Model:
@@ -53,8 +53,8 @@ def get_db_by_name(name: str) -> db.Model:
         return CPPWSMay2019
     if name == "eh_july_2019":
         return EHJuly2019
-    if name == "c_cpp_workshop_september_2019":
-        return CCPPWSMay2019
+    if name == "c_cpp_workshop_august_2019":
+        return CCPPWSAugust2019
     return RSC2019
 
 
@@ -65,18 +65,6 @@ def submit():
     """
     table = get_db_by_name(request.form["db"])
     event_name = request.form["event"]
-    for user in db.session.query(table).all():
-        if request.form["email"] == user.email:
-            return "Email address {} already found in database!\
-            Please re-enter the form correctly!".format(
-                request.form["email"]
-            )
-
-        if request.form["phone_number"] in user.phone:
-            return "Phone number {} already found in database!\
-            Please re-enter the form correctly!".format(
-                request.form["phone_number"]
-            )
 
     id = get_current_id(table)
 
@@ -95,6 +83,10 @@ def submit():
 
     if request.form["whatsapp_number"]:
         user.phone += f"|{request.form['whatsapp_number']}"
+
+    data = user.validate()
+    if data is not True:
+        return data
 
     try:
         db.session.add(user)
@@ -193,6 +185,7 @@ def display_users():
                     <option value="eh_july_2019">Ethical Hacking July 2019</option>
                     <option value="cpp_workshop_may_2019">CPP Workshop May 2019</option>
                     <option value="rsc_2019" selected>RSC 2019</option>
+                    <option value="c_cpp_workshop_august_2019">C/C++ August 2019</option>
                 </select>
                 </p>
                 <p><input type=submit value=Login>
@@ -231,11 +224,11 @@ def root():
 def workshop():
     return render_template(
         "form.html",
-        event="Some workshop",
-        group=False,
-        department=False,
-        date="TBD",
-        db="c_cpp_workshop_september_2019",
+        event="C/C++ Workshop",
+        date="21st-23rd August 2019",
+        db="c_cpp_workshop_august_2019",
+        extra_info="This is only for FY students!",
+        year=True,
     )
 
 
