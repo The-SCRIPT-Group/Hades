@@ -36,8 +36,11 @@ DEPARTMENTS = {
     "cse": "Computer Science and Engineering",
     "ece": "Electronics and Communication Engineering",
     "mech": "Mechanical Engineering",
+    "r&a": "Robotics and Automation",
     "civil": "Civil Engineering",
     "chem": "Chemical Engineering",
+    "polymer": "Polymer Engineering",
+    "petroleum": "Petroleum Engineering",
     "others": "Others",
 }
 
