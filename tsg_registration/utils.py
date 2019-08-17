@@ -9,8 +9,8 @@ def validate(data, table):
                 data.email
             )
 
-        input_phone = data.phone.split('|')[0]
-        user_phone = user.phone.split('|')[0]
+        input_phone = data.phone.split("|")[0]
+        user_phone = user.phone.split("|")[0]
 
         if input_phone == user_phone:
             return "Phone number {} already found in database!\

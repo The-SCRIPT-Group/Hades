@@ -30,10 +30,18 @@ class CCPPWSAugust2019(db.Model):
     name = db.Column(db.String(30))
     email = db.Column(db.String(50), unique=True)
     phone = db.Column(db.String(21), unique=True)
+    department = db.Column(db.String(50))
     year = db.Column(db.String)
 
     def __repr__(self):
-        return "%r" % [self.id, self.name, self.email, self.phone, self.year]
+        return "%r" % [
+            self.id,
+            self.name,
+            self.email,
+            self.phone,
+            self.department,
+            self.year,
+        ]
 
     def validate(self):
         if self.year == "1st":
