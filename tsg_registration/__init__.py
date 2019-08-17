@@ -229,6 +229,7 @@ def workshop():
         db="c_cpp_workshop_august_2019",
         extra_info="This is only for FY students!",
         year=True,
+        department=True,
     )
 
 
