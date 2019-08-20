@@ -227,7 +227,7 @@ def root():
     )
 
 
-@app.route("/workshop_management")
+@app.route("/workshop_management", methods=["GET", "POST"])
 def workshop():
     if request.method == "POST":
         username = request.form["username"]
