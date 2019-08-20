@@ -224,6 +224,33 @@ def root():
     )
 
 
+@app.route("/workshop_management")
+def workshop():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        if username == os.getenv("USERNAME"):
+            if password == os.getenv("PASSWORD"):
+                return render_template(
+                    "form.html",
+                    event="C/C++ Workshop",
+                    date="21st-23rd August 2019",
+                    db="c_cpp_workshop_august_2019",
+                    extra_info="This is only for FY students!",
+                    year=True,
+                    department=True,
+                )
+            return "Invalid password!"
+        return "Invalid user!"
+    return """
+            <form action="" method="post">
+                <p><input type=text name=username required>
+                <p><input type=password name=password required>
+                <p><input type=submit value=Login>
+            </form>
+            """
+
+
 def get_current_id(table: db.Model):
     """
     Function to return the latest ID
