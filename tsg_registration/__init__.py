@@ -24,7 +24,7 @@ from telegram.ext import Updater
 updater = Updater(os.getenv("BOT_API_KEY"))
 updater.bot.sendMessage(
     chat_id=os.getenv("NOTIFY_ID"),
-    text="Meow 🐱. Who hunts for lab after registrations?.",
+    text="Meow 🐱. Who hunts for lab after registrations?",
 )
 
 FROM_EMAIL = os.getenv("FROM_EMAIL")
@@ -39,6 +39,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 DEPARTMENTS = {
     "cse": "Computer Science and Engineering",
     "ece": "Electronics and Communication Engineering",
+    "ee": "Electrical Engineering",
     "mech": "Mechanical Engineering",
     "r&a": "Robotics and Automation",
     "civil": "Civil Engineering",
