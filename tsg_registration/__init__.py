@@ -15,7 +15,7 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Attachment, Content, Mail, Personalization
 
 from flask import Flask, redirect, render_template, request, url_for
-from sqlalchemy import desc, exc
+from sqlalchemy import asc, desc, exc
 from flask_sqlalchemy import SQLAlchemy
 
 from telegram import ChatAction
@@ -173,7 +173,7 @@ def display_users():
         if username == os.getenv("USERNAME"):
             if password == os.getenv("PASSWORD"):
                 table = get_db_by_name(request.form["table"])
-                user_data = db.session.query(table).all()
+                user_data = db.session.query(table).order_by(asc(table.id))
                 if user_data:
                     return render_template("users.html", users=user_data)
                 return f"No users found in table {request.form['table']}"
