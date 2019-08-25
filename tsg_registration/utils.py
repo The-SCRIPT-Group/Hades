@@ -1,5 +1,7 @@
 from tsg_registration import db
 
+import json
+
 
 def validate(data, table):
     for user in db.session.query(table).all():
@@ -19,3 +21,11 @@ def validate(data, table):
             )
 
     return True
+
+
+def users_to_json(users):
+    json_data = {}
+    for user in users:
+        json_data[user.id] = {"name": user.name, "phone": user.phone}
+
+    return json.dumps(json_data)

@@ -14,7 +14,7 @@ import qrcode
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Attachment, Content, Mail, Personalization
 
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, redirect, render_template, request, url_for, jsonify
 from sqlalchemy import asc, desc, exc
 from flask_sqlalchemy import SQLAlchemy
 
@@ -28,6 +28,8 @@ SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
+
+from tsg_registration.utils import users_to_json
 
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 
@@ -195,6 +197,16 @@ def display_users():
                 <p><input type=submit value=Login>
             </form>
             """
+
+
+@app.route("/users_json")
+def users_json():
+    authorization_token = request.headers.get("Authorization")
+    if authorization_token == os.getenv("AUTHORIZATION_TOKEN"):
+        table = get_db_by_name(request.args.get("table"))
+        user_data = db.session.query(table).order_by(asc(table.id))
+        return users_to_json(user_data)
+    return jsonify({"message": "Unauthorized"}), 401
 
 
 @app.route("/codex")
