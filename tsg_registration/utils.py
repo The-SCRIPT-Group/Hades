@@ -26,6 +26,10 @@ def validate(data, table):
 def users_to_json(users):
     json_data = {}
     for user in users:
-        json_data[user.id] = {"name": user.name, "phone": user.phone}
+        json_data[user.id] = {
+            "name": user.name,
+            "email": user.email,
+            "phone": user.phone,
+        }
 
     return json.dumps(json_data)
