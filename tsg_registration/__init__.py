@@ -224,43 +224,7 @@ def root():
     """
     Main endpoint. Display the form to the user.
     """
-    return render_template(
-        "form.html",
-        event="Ready Set Code 2019 - Round 1",
-        group=False,
-        department=True,
-        date="26th August 2019",
-        db="rsc_2019",
-        year=True,
-        extra_message="""Please create a HackerRank id. You could practise on it, as preparation for RSC (RSC is hosted on https://hackerrank.com, so the ID is required)""",
-    )
-
-
-@app.route("/workshop_management", methods=["GET", "POST"])
-def workshop():
-    if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        if username == os.getenv("USERNAME"):
-            if password == os.getenv("PASSWORD"):
-                return render_template(
-                    "form.html",
-                    event="C/C++ Workshop",
-                    date="21st-23rd August 2019",
-                    db="c_cpp_workshop_august_2019",
-                    extra_info="This is only for FY students!",
-                    year=True,
-                    department=True,
-                )
-            return "Invalid password!"
-        return "Invalid user!"
-    return """
-            <form action="" method="post">
-                <p><input type=text name=username required>
-                <p><input type=password name=password required>
-                <p><input type=submit value=Login>
-            </form>
-            """
+    return "<marquee>Nothing here</marquee>"
 
 
 def get_current_id(table: db.Model):
