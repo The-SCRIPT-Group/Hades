@@ -7,17 +7,14 @@ Flask application to accept some details, generate, display, and email a QR code
 
 import base64
 import os
-
 from datetime import datetime
 
 import qrcode
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Attachment, Content, Mail, Personalization
-
 from flask import Flask, redirect, render_template, request, url_for, jsonify
-from sqlalchemy import asc, desc, exc
 from flask_sqlalchemy import SQLAlchemy
-
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Attachment, Content, Mail
+from sqlalchemy import asc, desc, exc
 from telegram import ChatAction
 from telegram.ext import Updater
 
@@ -32,7 +29,6 @@ db = SQLAlchemy(app)
 from tsg_registration.utils import users_to_json
 
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
-
 
 DEPARTMENTS = {
     "cse": "Computer Science and Engineering",
