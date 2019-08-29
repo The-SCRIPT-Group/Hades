@@ -34,7 +34,7 @@
                 <div class="form-group">
                     <hr>
                     <p>Name (required)</p>
-                    <input type="text" name="name" placeholder="Enter your name" maxlength="30" required class="form-control" />
+                    <input type="text" name="name" placeholder="Enter your name" maxlength="30" required class="form-control" pattern="^\w[\w, ]+$"/>
                     <hr>
                     <p>Email (required)</p>
                     <input type="email" name="email" placeholder="Enter your email address" maxlength="50" required class="form-control" />
@@ -48,10 +48,10 @@
                         <hr>
                     {% endif %}
                     <p>Phone Number (required)</p>
-                    <input type="text" name="phone_number" placeholder="Enter your phone number (Excluding +91)" maxlength="10" required class="form-control" pattern="[0-9]{10}"/>
+                    <input type="text" name="phone_number" placeholder="Enter your phone number (Excluding +91)" maxlength="10" required class="form-control" pattern="[\d]{10}"/>
                     <hr>
                     <p>WhatsApp Number (if different from above)</p>
-                    <input type="text" name="whatsapp_number" placeholder="Enter your WhatsApp number (Excluding +91)"  maxlength="10" class="form-control" pattern="[0-9]{10}"/>
+                    <input type="text" name="whatsapp_number" placeholder="Enter your WhatsApp number (Excluding +91)"  maxlength="10" class="form-control" pattern="[\d]{10}"/>
                     <hr>
                     {% if department %}
                         <select name="department" class="form-control" id="department">
