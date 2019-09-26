@@ -75,4 +75,4 @@ class Hacktoberfest2019(db.Model):
         ]
 
     def validate(self):
-        return validate(self, CPPWSMay2019)
+        return validate(self, Hacktoberfest2019)

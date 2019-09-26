@@ -45,7 +45,11 @@ DEPARTMENTS = {
 
 from tsg_registration.models.codex import CodexApril2019, RSC2019
 from tsg_registration.models.techo import EHJuly2019
-from tsg_registration.models.workshop import CPPWSMay2019, CCPPWSAugust2019
+from tsg_registration.models.workshop import (
+    CPPWSMay2019,
+    CCPPWSAugust2019,
+    Hacktoberfest2019,
+)
 
 
 def get_db_by_name(name: str) -> db.Model:
@@ -57,7 +61,9 @@ def get_db_by_name(name: str) -> db.Model:
         return EHJuly2019
     if name == "c_cpp_workshop_august_2019":
         return CCPPWSAugust2019
-    return RSC2019
+    if name == "rsc_2019":
+        return RSC2019
+    return Hacktoberfest2019
 
 
 @app.route("/submit", methods=["POST"])
@@ -189,8 +195,9 @@ def display_users():
                     <option value="codex_april_2019">CodeX April 2019</option>
                     <option value="eh_july_2019">Ethical Hacking July 2019</option>
                     <option value="cpp_workshop_may_2019">CPP Workshop May 2019</option>
-                    <option value="rsc_2019" selected>RSC 2019</option>
+                    <option value="rsc_2019">RSC 2019</option>
                     <option value="c_cpp_workshop_august_2019">C/C++ August 2019</option>
+                    <option value="do_hacktoberfest_2019" selected>DigitalOcean Hacktoberfest 2019</option>
                 </select>
                 </p>
                 <p><input type=submit value=Login>
