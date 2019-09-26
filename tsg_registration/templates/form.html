@@ -57,7 +57,7 @@
                         <select name="department" class="form-control" id="department">
                             <option value="cse" selected>Computer Science and Engineering</option>
                             <option value="ece">Electronics and Communication Engineering</option>
-			<option value="ee">Electrical Engineering</option>
+			    <option value="ee">Electrical Engineering</option>
                             <option value="mech">Mechanical Engineering</option>
                             <option value="r&a">Robotics and Automation Engineering</option>
                             <option value="civil">Civil Engineering</option>
@@ -75,6 +75,9 @@
                             <option value="3rd">TYBtech</option>
                         </select>
                         <hr>
+                    {% endif %}
+                    {% if miscellaneous %}
+                        {{ miscellaneous|safe }}
                     {% endif %}
                 </div>
                 <input type="text" id="event" name="event" style="visibility: hidden" value="{{ event }}" contenteditable="false">

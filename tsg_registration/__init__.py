@@ -86,6 +86,9 @@ def submit():
     if request.form["whatsapp_number"]:
         user.phone += f"|{request.form['whatsapp_number']}"
 
+    if request.form["miscellaneous"]:
+        user.miscellaneous = request.form["miscellaneous"]
+
     data = user.validate()
     if data is not True:
         return data
@@ -220,7 +223,22 @@ def root():
     """
     Main endpoint. Display the form to the user.
     """
-    return "<marquee>Nothing here</marquee>"
+    return render_template(
+        "form.html",
+        event="DigitalOcean Hacktoberfest",
+        group=False,
+        department=True,
+        date="16th/17th October 2019",
+        db="do_hacktoberfest_2019",
+        year=True,
+        extra_message="""Please carry your laptops for the event, and please create an ID on https://github.com beforehand""",
+        miscellaneous="""
+        <select name="miscellaneous" class="form-control" id="miscellaneous" required>
+        <option value="16">16th October 2019</option>
+        <option value="17">17th October 2019</option>
+        </select>
+        """,
+    )
 
 
 def get_current_id(table: db.Model):

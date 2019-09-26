@@ -12,6 +12,7 @@
             <th>Department</th>
             <th>WhatsApp Link</th>
             <th>Year</th>
+            <th>Miscellaneous</th>
         </tr>
         {% for user in users %}
             <tr>
@@ -32,6 +33,10 @@
                 {% if user['year'] %}
                     <td>{{ user['year'] }}</td>
                 {% endif %}
+                {% if user['miscellaneous'] %}
+                    <td>{{ user['miscellaneous'] }}</td>
+                {% endif %}
+
             </tr>
         {% endfor %}
     </table>
