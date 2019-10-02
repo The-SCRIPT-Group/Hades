@@ -27,7 +27,7 @@ A few environment variables should be set for proper functionality
 To test locally if everything is deployed on heroku
 
 ```bash
-heroku config -a the-script-group --shell > .env
+heroku config -a thescriptgroup --shell > .env
 heroku local
 ```
 
