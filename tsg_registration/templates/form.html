@@ -135,10 +135,12 @@
                     <input type="text" id="event" name="event" style="visibility: hidden" value="{{ event }}" contenteditable="false">
                     <input type="text" id="db" name="db" style="visibility: hidden" value="{{ db }}" contenteditable="false">
                     <input type="text" id="date" name="date" style="visibility: hidden" value="{{ date }}" contenteditable="false">
-                    <p>I have read the code of conduct. <a href="https://docs.google.com/document/d/1gFKOhyUqMZzrZcbq8A_TpO5x9J9HK6agv70awCH8pyI/edit">(Click here to read the code of conduct)</a></p>
+                    <br>
+                    <a href="https://docs.google.com/document/d/1gFKOhyUqMZzrZcbq8A_TpO5x9J9HK6agv70awCH8pyI/edit">(Click here to read the code of conduct)</a>
                     {% if extra_message %}
                         <input type="text" id="extra_message" name="extra_message" style="visibility: hidden" value="{{ extra_message }}" contenteditable="false">
                     {% endif %}
+                    <br>
                     <button type="submit" class="btn btn-success">Submit</button>
                 </form>
             </div>
