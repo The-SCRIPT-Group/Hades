@@ -10,85 +10,138 @@
         {% endif %}
     </head>
     <body>
-        <div class="w3-container w3-padding-top w3-margin-top">
-            <div class="w3-container w3-card-4 w3-black w3-row w3-hide-medium w3-hide-small opacity-prop">
-                <div class="w3-col" style="width: 30%;">
-                    <img src="{{ url_for(endpoint='static', filename='images/LogoTransp.png') }}" class = "w3-center" style="width: 100%; height: auto; padding-top: 8px;">
+        <div class="bg">
+            <div class="w3-container w3-padding-top w3-margin-top">
+                <div class="w3-container w3-card-4 w3-black w3-row w3-hide-medium w3-hide-small opacity-prop">
+                    <div class="w3-col" style="width: 30%;">
+                        <img src="{{ url_for(endpoint='static', filename='images/LogoTransp.png') }}" class = "w3-center" style="width: 100%; height: auto; padding-top: 8px;">
+                    </div>
+                    <div class="w3-col w3-center" style="width: 40%;">
+                        <br>
+                        <p style="text-align: center; font-size: 2.5vw; padding-top: 8px;">Registration Form</p >
+                    </div>
+                    <div class="w3-col" style="width: 30%;">
+                        <a href="https://hacktoberfest.digitalocean.com" target="_blank"><img src="{{ url_for(endpoint='static', filename='images/hacktober1.png') }}" class = "w3-center" style="width: 70%; height: auto; padding-top: 8px;"></a>
+                    </div>
                 </div>
-                <div class="w3-col w3-center" style="width: 30%;">
-                    <br>
-                    <p style="text-align: center; font-size: 2.5vw; padding-top: 8px;">Registration Form</p >
-                </div>
-            </div>
 
-            <div class="w3-card-4 w3-black w3-row w3-hide-large">
-                <div class="w3-col" style="width: 30%;">
-                    <img src="{{ url_for(endpoint='static', filename='images/LogoTransp.png') }}" style="float: left; width: 100%; height: auto; padding-top: 8px;">
+                <div class="w3-card-4 w3-black w3-row w3-hide-large">
+                    <div class="w3-col" style="width: 30%;">
+                        <img src="{{ url_for(endpoint='static', filename='images/LogoTransp.png') }}" style="float: left; width: 100%; height: auto; padding-top: 8px;">
+                    </div>
+                    <div class="w3-col w3-center" style="width: 40%;">
+                        <p class= "w3-center" style="text-align: center; font-size: 3.5vw; padding-top: 10px;">Registration Form</p>
+                    </div>
+                    <div class="w3-col" style="width: 30%;">
+                        <a href="https://hacktoberfest.digitalocean.com" target="_blank"><img src="{{ url_for(endpoint='static', filename='images/hacktober1.png') }}" class = "w3-center" style="width: 60%; height: auto; padding-top: 8px;"></a>
+                    </div>
                 </div>
-                <div class="w3-col w3-center" style="width: 30%;">
-                    <p class= "w3-center" style="text-align: center; font-size: 4vw; padding-top: 10px;">Registration Form</p>
+                <br>
+                <br>
+                <div class="w3-center">
+                    <button onclick="document.getElementById('id01').style.display='block'" class="w3-button w3-indigo">Event Details</button>
                 </div>
+                <br>
+                <br>
+                <div class="w3-center">
+                    <button onclick="document.getElementById('id02').style.display='block'" class="w3-button w3-indigo">Event Agenda</button>
+                </div>
+                <div id="id01" class="w3-modal w3-animate-opacity">
+                    <div class="w3-modal-content w3-card-4">
+                        <header class="w3-container w3-indigo"> 
+                            <span onclick="document.getElementById('id01').style.display='none'" 
+                            class="w3-button w3-large w3-display-topright">&times;</span>
+                            <h2>Event Details</h2>
+                        </header>
+                        <div class="w3-container">
+                            <br>
+                            <p><b>Dates:</b> 16th October, 2019. Repeat Event on 17th October, 2019</p>
+                            <p><b>Timing:</b> 10am - 2pm</p>
+                            <p><b>Location:</b> SL - 2,3 Lab (N110), MIT-WPU, Kothrud, Pune, Maharashtra, India</p>
+                        </div>
+                            <footer class="w3-container w3-indigo">
+                            <a href="https://hacktoberfest.digitalocean.com"><p>Visit HacktoberFest Website</p></a>
+                        </footer>
+                    </div>
+                </div>
+                <div id="id02" class="w3-modal w3-animate-opacity">
+                    <div class="w3-modal-content w3-card-4">
+                        <header class="w3-container w3-indigo"> 
+                            <span onclick="document.getElementById('id02').style.display='none'" 
+                            class="w3-button w3-large w3-display-topright">&times;</span>
+                            <h2>Event Agenda</h2>
+                        </header>
+                        <div class="w3-container">
+                            <br>
+                            <p>Hacktoberfest — brought to you by DigitalOcean in partnership with DEV — is a month-long celebration of open-source software.
+                                    <br>To qualify for the official limited edition Hacktoberfest shirt, you must register and make four pull requests between October 1-31. No contribution is too small — bug fixes and documentation updates are valid ways of participating.
+                            </p>
+                        </div>
+                            <footer class="w3-container w3-indigo">
+                            <a href="https://hacktoberfest.digitalocean.com"><p>Visit HacktoberFest Website</p></a>
+                        </footer>
+                    </div>
+                </div>
+                <form method="post" action="/submit" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <hr>
+                        <p>Name (required)</p>
+                        <input type="text" name="name" placeholder="Enter your name" maxlength="30" required class="form-control" pattern="^\w[\w, ]+$"/>
+                        <hr>
+                        <p>Email (required)</p>
+                        <input type="email" name="email" placeholder="Enter your email address" maxlength="50" required class="form-control" />
+                        <hr>
+                        {% if group %}
+                            <p>2nd person's Name</p>
+                            <input type="text" name="name_second_person" placeholder="Enter the second person's name" maxlength="30" class="form-control"/>
+                            <hr>
+                            <p>2nd person's email</p>
+                            <input type="email" name="email_second_person" placeholder="Enter the second person's email address" maxlength="50" class="form-control" />
+                            <hr>
+                        {% endif %}
+                        <p>Phone Number (required)</p>
+                        <input type="text" name="phone_number" placeholder="Enter your phone number (Excluding +91)" maxlength="10" required class="form-control" pattern="[\d]{10}"/>
+                        <hr>
+                        <p>WhatsApp Number (if different from above)</p>
+                        <input type="text" name="whatsapp_number" placeholder="Enter your WhatsApp number (Excluding +91)"  maxlength="10" class="form-control" pattern="[\d]{10}"/>
+                        <hr>
+                        {% if department %}
+                            <select name="department" class="form-control" id="department">
+                                <option value="cse" selected>Computer Science and Engineering</option>
+                                <option value="ece">Electronics and Communication Engineering</option>
+                                <option value="ee">Electrical Engineering</option>
+                                <option value="mech">Mechanical Engineering</option>
+                                <option value="r&a">Robotics and Automation Engineering</option>
+                                <option value="civil">Civil Engineering</option>
+                                <option value="chem">Chemical Engineering</option>
+                                <option value="polymer">Polymer Engineering</option>
+                                <option value="petroleum">Petroleum Engineering</option>
+                                <option value="others">Others</option>
+                            </select>
+                            <hr>
+                        {% endif %}
+                        {% if year %}
+                            <select name="year" class="form-control" id="year">
+                                <option value="1st" selected>FYBtech</option>
+                                <option value="2nd">SYBtech</option>
+                                <option value="3rd">TYBtech</option>
+                            </select>
+                            <hr>
+                        {% endif %}
+                        {% if miscellaneous %}
+                            {{ miscellaneous|safe }}
+                        {% endif %}
+                    </div>
+                    <input type="text" id="event" name="event" style="visibility: hidden" value="{{ event }}" contenteditable="false">
+                    <input type="text" id="db" name="db" style="visibility: hidden" value="{{ db }}" contenteditable="false">
+                    <input type="text" id="date" name="date" style="visibility: hidden" value="{{ date }}" contenteditable="false">
+                    <p>I have read the code of conduct. <a href="https://docs.google.com/document/d/1gFKOhyUqMZzrZcbq8A_TpO5x9J9HK6agv70awCH8pyI/edit">(Click here to read the code of conduct)</a></p>
+                    {% if extra_message %}
+                        <input type="text" id="extra_message" name="extra_message" style="visibility: hidden" value="{{ extra_message }}" contenteditable="false">
+                    {% endif %}
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </form>
             </div>
-        
-            <form method="post" action="/submit" enctype="multipart/form-data">
-                <div class="form-group">
-                    <hr>
-                    <p>Name (required)</p>
-                    <input type="text" name="name" placeholder="Enter your name" maxlength="30" required class="form-control" pattern="^\w[\w, ]+$"/>
-                    <hr>
-                    <p>Email (required)</p>
-                    <input type="email" name="email" placeholder="Enter your email address" maxlength="50" required class="form-control" />
-                    <hr>
-                    {% if group %}
-                        <p>2nd person's Name</p>
-                        <input type="text" name="name_second_person" placeholder="Enter the second person's name" maxlength="30" class="form-control"/>
-                        <hr>
-                        <p>2nd person's email</p>
-                        <input type="email" name="email_second_person" placeholder="Enter the second person's email address" maxlength="50" class="form-control" />
-                        <hr>
-                    {% endif %}
-                    <p>Phone Number (required)</p>
-                    <input type="text" name="phone_number" placeholder="Enter your phone number (Excluding +91)" maxlength="10" required class="form-control" pattern="[\d]{10}"/>
-                    <hr>
-                    <p>WhatsApp Number (if different from above)</p>
-                    <input type="text" name="whatsapp_number" placeholder="Enter your WhatsApp number (Excluding +91)"  maxlength="10" class="form-control" pattern="[\d]{10}"/>
-                    <hr>
-                    {% if department %}
-                        <select name="department" class="form-control" id="department">
-                            <option value="cse" selected>Computer Science and Engineering</option>
-                            <option value="ece">Electronics and Communication Engineering</option>
-			    <option value="ee">Electrical Engineering</option>
-                            <option value="mech">Mechanical Engineering</option>
-                            <option value="r&a">Robotics and Automation Engineering</option>
-                            <option value="civil">Civil Engineering</option>
-                            <option value="chem">Chemical Engineering</option>
-                            <option value="polymer">Polymer Engineering</option>
-                            <option value="petroleum">Petroleum Engineering</option>
-                            <option value="others">Others</option>
-                        </select>
-                        <hr>
-                    {% endif %}
-                    {% if year %}
-                        <select name="year" class="form-control" id="year">
-                            <option value="1st" selected>FYBtech</option>
-                            <option value="2nd">SYBtech</option>
-                            <option value="3rd">TYBtech</option>
-                        </select>
-                        <hr>
-                    {% endif %}
-                    {% if miscellaneous %}
-                        {{ miscellaneous|safe }}
-                    {% endif %}
-                </div>
-                <input type="text" id="event" name="event" style="visibility: hidden" value="{{ event }}" contenteditable="false">
-                <input type="text" id="db" name="db" style="visibility: hidden" value="{{ db }}" contenteditable="false">
-                <input type="text" id="date" name="date" style="visibility: hidden" value="{{ date }}" contenteditable="false">
-
-                {% if extra_message %}
-                    <input type="text" id="extra_message" name="extra_message" style="visibility: hidden" value="{{ extra_message }}" contenteditable="false">
-                {% endif %}
-                <button type="submit" class="btn btn-success">Submit</button>
-            </form>
         </div>
     </body>
 </html>
