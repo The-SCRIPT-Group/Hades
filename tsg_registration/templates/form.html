@@ -1,6 +1,7 @@
 <html>
     <head>
         <title>{{ event }} Registration Form</title>
+        <link rel = "stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" href="{{ url_for(endpoint='static', filename='css/w3.css') }}" rel="stylesheet">
         <link rel="stylesheet" href="{{ url_for(endpoint='static', filename='css/homepage.css') }}" rel="stylesheet">
@@ -37,15 +38,26 @@
                     </div>
                 </div>
                 <br>
-                <br>
-                <div class="w3-center">
-                    <button onclick="document.getElementById('id01').style.display='block'" class="w3-button w3-indigo">Event Details</button>
+                <div class="w3-row w3-padding w3-container">
+                    <div class="w3-col" style="width: 35%;">
+                        <div class="w3-center">
+                            <button onclick="document.getElementById('id01').style.display='block'" class="w3-button w3-indigo">Event Details</button>
+                        </div>
+                    </div>
+                    <div class="w3-col" style="width: 30%;">
+                        <div class="w3-center">
+                            <a href = "https://maps.app.goo.gl/zVeSyD8MQT9z4MWa6" target="_blank"><i class="fa fa-map-marker fa-3x w3-text-red" aria-hidden="true"></i></a>
+                            <p>Find us!</p>
+                        </div>
+                    </div>
+                    <div class="w3-col" style="width: 35%;">
+                        <div class="w3-center">
+                            <button onclick="document.getElementById('id02').style.display='block'" class="w3-button w3-indigo">Event Agenda</button>
+                        </div>
+                    </div>
                 </div>
                 <br>
                 <br>
-                <div class="w3-center">
-                    <button onclick="document.getElementById('id02').style.display='block'" class="w3-button w3-indigo">Event Agenda</button>
-                </div>
                 <div id="id01" class="w3-modal w3-animate-opacity">
                     <div class="w3-modal-content w3-card-4">
                         <header class="w3-container w3-indigo"> 
@@ -106,6 +118,7 @@
                         <input type="text" name="whatsapp_number" placeholder="Enter your WhatsApp number (Excluding +91)"  maxlength="10" class="form-control" pattern="[\d]{10}"/>
                         <hr>
                         {% if department %}
+                        <p>Select department</p>
                             <select name="department" class="form-control" id="department">
                                 <option value="cse" selected>Computer Science and Engineering</option>
                                 <option value="ece">Electronics and Communication Engineering</option>
@@ -121,6 +134,7 @@
                             <hr>
                         {% endif %}
                         {% if year %}
+                        <p>Select Year</p>
                             <select name="year" class="form-control" id="year">
                                 <option value="1st" selected>FYBtech</option>
                                 <option value="2nd">SYBtech</option>
@@ -129,6 +143,7 @@
                             <hr>
                         {% endif %}
                         {% if miscellaneous %}
+                        <p>Which day you wanna attend?</p> 
                             {{ miscellaneous|safe }}
                         {% endif %}
                     </div>
