@@ -53,6 +53,7 @@ from tsg_registration.models.workshop import (
 
 
 def get_db_by_name(name: str) -> db.Model:
+    """Returns the database model class corresponding to the given name."""
     if name == "codex_april_2019":
         return CodexApril2019
     if name == "cpp_workshop_may_2019":
@@ -68,9 +69,7 @@ def get_db_by_name(name: str) -> db.Model:
 
 @app.route("/submit", methods=["POST"])
 def submit():
-    """
-    Take data from the form, generate, display, and email QR code to user
-    """
+    """Take data from the form, generate, display, and email QR code to user."""
     table = get_db_by_name(request.form["db"])
     event_name = request.form["event"]
 
@@ -171,9 +170,7 @@ You're <b>required</b> to present this on the day of the event.""".format(
 
 @app.route("/users", methods=["GET", "POST"])
 def display_users():
-    """
-    Display the list of users, after authentication
-    """
+    """Display the list of users in the desired database, after authentication."""
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -207,6 +204,7 @@ def display_users():
 
 @app.route("/users_json")
 def users_json():
+    """Returns a JSON consisting of the users in the given table"""
     authorization_token = request.headers.get("Authorization")
     if authorization_token == os.getenv("AUTHORIZATION_TOKEN"):
         table = get_db_by_name(request.args.get("table"))
@@ -227,9 +225,7 @@ def techo():
 
 @app.route("/")
 def root():
-    """
-    Main endpoint. Display the form to the user.
-    """
+    """Root endpoint. Displays the form to the user."""
     return render_template(
         "form.html",
         event="DigitalOcean Hacktoberfest",
@@ -249,9 +245,7 @@ def root():
 
 
 def get_current_id(table: db.Model):
-    """
-    Function to return the latest ID
-    """
+    """Function to return the latest ID based on the database entries. 1 if DB is empty."""
     try:
         id = db.session.query(table).order_by(desc(table.id)).first().id
     except Exception:
@@ -260,9 +254,7 @@ def get_current_id(table: db.Model):
 
 
 def generate_qr(form_data, id):
-    """
-    Function to generate and return a QR code based on the given data
-    """
+    """Function to generate and return a QR code based on the given data."""
     return qrcode.make(
         "{}|{}|{}|{}|{}".format(
             form_data["event"],

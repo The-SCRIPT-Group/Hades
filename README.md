@@ -1,12 +1,14 @@
 # QRStuff
 
-This application python3.6 atleast
+This application requires atleast python3.6 to run.
 
 To install all requirements, please run
 
 ```bash
 pip install -r requirements.txt
 ```
+
+All the python code in this repository is formatted with [black](https://github.com/psf/black).
 
 A few environment variables should be set for proper functionality
 
@@ -31,18 +33,23 @@ heroku config -a thescriptgroup --shell > .env
 heroku local
 ```
 
-To export everything in .env
+`heroku local` loads a `.env` file by default. If you do not have access to the project (as external contributors wouldn't), you can simply manually fill in the values in a simple key=value format.
+
+To export everything in .env to your environment, you can simply run
 ```bash
 for f in $(awk -F'=' '{print $1}' .env); do export $f; done
 ```
 
+There are various ways to run the application
 
-There are various ways to run it
+- With gunicorn
 
 ```bash
 gunicorn tsg_registration:app
 ```
-or
+
+- Directly running the module
+
 ```bash
 python3 -m tsg_registration
 ```
