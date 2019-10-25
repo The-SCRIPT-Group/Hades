@@ -226,22 +226,7 @@ def techo():
 @app.route("/")
 def root():
     """Root endpoint. Displays the form to the user."""
-    return render_template(
-        "form.html",
-        event="DigitalOcean Hacktoberfest",
-        group=False,
-        department=True,
-        date="16th/17th October 2019",
-        db="do_hacktoberfest_2019",
-        year=True,
-        extra_message="""Please carry your laptops for the event, and please create an ID on https://github.com beforehand""",
-        miscellaneous="""
-        <select name="miscellaneous" class="form-control" id="miscellaneous" required>
-        <option value="16">16th October 2019</option>
-        <option value="17">17th October 2019</option>
-        </select>
-        """,
-    )
+    return "<marquee>Nothing here!</marquee>"
 
 
 def get_current_id(table: db.Model):
