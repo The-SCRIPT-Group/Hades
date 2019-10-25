@@ -8,7 +8,7 @@ To install all requirements, please run
 pip install -r requirements.txt
 ```
 
-All the python code in this repository is formatted with [black](https://github.com/psf/black).
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 A few environment variables should be set for proper functionality
 
