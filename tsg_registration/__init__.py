@@ -128,7 +128,7 @@ def submit():
     except KeyError:
         date = datetime.now().strftime("%B,%Y")
     subject = "Registration for {} - {} - ID {}".format(event_name, date, id)
-    message = """<img src='https://drive.google.com/uc?id=12VCUzNvU53f_mR7Hbumrc6N66rCQO5r-&export=download' style="width:50%;height:50%">
+    message = """<img src='https://drive.google.com/uc?id=12VCUzNvU53f_mR7Hbumrc6N66rCQO5r-&export=download' style="width:30%;height:50%">
 <hr>
 {}, your registration is done!
 <br/>
