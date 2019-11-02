@@ -266,7 +266,7 @@ def csi():
 @app.route("/csi_submit", methods=["POST"])
 def csi_submit():
     """Take data from the form, generate, display, and email QR code to user."""
-    table = get_db_by_name(request.form["db"])
+    table = CSINovember2019
     event_name = request.form["event"]
 
     id = get_current_id(table)
