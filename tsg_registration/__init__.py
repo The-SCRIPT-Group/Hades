@@ -254,7 +254,7 @@ def csi():
 @app.route("/")
 def root():
     """Root endpoint. Displays the form to the user."""
-    return redirect((url_for("csi")))
+    return "<marquee>Nothing here right now!</marquee>"
 
 
 def get_current_id(table: db.Model):
