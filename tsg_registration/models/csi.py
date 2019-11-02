@@ -14,7 +14,6 @@ class CSINovember2019(db.Model):
     phone = db.Column(db.String(21), unique=True)
     department = db.Column(db.String(50))
     year = db.Column(db.String)
-    miscellaneous = db.Column(db.String)
 
     prn = db.Column(db.Integer, unique=True)
     csi_id = db.Column(db.String(3), unique=True)
@@ -27,7 +26,8 @@ class CSINovember2019(db.Model):
             self.phone,
             self.department,
             self.year,
-            self.miscellaneous,
+            self.prn,
+            self.csi_id,
         ]
 
     def validate(self):
