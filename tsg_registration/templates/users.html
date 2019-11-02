@@ -12,7 +12,9 @@
             <th>Department</th>
             <th>WhatsApp Link</th>
             <th>Year</th>
-            <th>Miscellaneous</th>
+            {% for column in extra_columns.keys %}
+                <th>{{ column }}</th>
+            {% endfor %}
         </tr>
         {% for user in users %}
             <tr>
@@ -33,9 +35,9 @@
                 {% if user['year'] %}
                     <td>{{ user['year'] }}</td>
                 {% endif %}
-                {% if user['miscellaneous'] %}
-                    <td>{{ user['miscellaneous'] }}</td>
-                {% endif %}
+                {% for column in extra_columns.values() %}
+                    <td>{{ user[column] }}</td>
+                {% endfor %}
 
             </tr>
         {% endfor %}

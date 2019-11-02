@@ -5,9 +5,6 @@
         <link rel="stylesheet" href="{{ url_for(endpoint='static', filename='css/w3.css') }}" rel="stylesheet">
         <link rel="stylesheet" href="{{ url_for(endpoint='static', filename='css/homepage.css') }}" rel="stylesheet">
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        {% if extra_info %}
-        <script>alert("{{ extra_info }}");</script>
-        {% endif %}
     </head>
     <body>
         <div class="w3-container w3-padding-top w3-margin-top">
@@ -30,7 +27,7 @@
                 </div>
             </div>
         
-            <form method="post" action="/submit" enctype="multipart/form-data">
+            <form method="post" action="/csi_submit" enctype="multipart/form-data">
                 <div class="form-group">
                     <hr>
                     <p>Name (required)</p>
@@ -39,54 +36,33 @@
                     <p>Email (required)</p>
                     <input type="email" name="email" placeholder="Enter your email address" maxlength="50" required class="form-control" />
                     <hr>
-                    {% if group %}
-                        <p>2nd person's Name</p>
-                        <input type="text" name="name_second_person" placeholder="Enter the second person's name" maxlength="30" class="form-control"/>
-                        <hr>
-                        <p>2nd person's email</p>
-                        <input type="email" name="email_second_person" placeholder="Enter the second person's email address" maxlength="50" class="form-control" />
-                        <hr>
-                    {% endif %}
+                    <p>PRN (required)</p>
+                    <input type="text" name="prn" placeholder="Enter your PRN" maxlength="10" required class="form-control" pattern="[\d]{10}"/>
+                    <hr>
+                    <p>CSI ID (required)</p>
+                    <input type="text" name="csi_id" placeholder="Enter your CSI ID" maxlength="3" required class="form-control" pattern="A[\d]{1,2}"/>
+                    <hr>
                     <p>Phone Number (required)</p>
                     <input type="text" name="phone_number" placeholder="Enter your phone number (Excluding +91)" maxlength="10" required class="form-control" pattern="[\d]{10}"/>
                     <hr>
                     <p>WhatsApp Number (if different from above)</p>
                     <input type="text" name="whatsapp_number" placeholder="Enter your WhatsApp number (Excluding +91)"  maxlength="10" class="form-control" pattern="[\d]{10}"/>
                     <hr>
-                    {% if department %}
-                        <select name="department" class="form-control" id="department">
-                            <option value="cse" selected>Computer Science and Engineering</option>
-                            <option value="ece">Electronics and Communication Engineering</option>
-                            <option value="ee">Electrical Engineering</option>
-                            <option value="mech">Mechanical Engineering</option>
-                            <option value="r&a">Robotics and Automation Engineering</option>
-                            <option value="civil">Civil Engineering</option>
-                            <option value="chem">Chemical Engineering</option>
-                            <option value="polymer">Polymer Engineering</option>
-                            <option value="petroleum">Petroleum Engineering</option>
-                            <option value="others">Others</option>
-                        </select>
-                        <hr>
-                    {% endif %}
-                    {% if year %}
-                        <select name="year" class="form-control" id="year">
-                            <option value="1st" selected>FY</option>
-                            <option value="2nd">SY</option>
-                            <option value="3rd">TY</option>
-                        </select>
-                        <hr>
-                    {% endif %}
-                    {% if miscellaneous %}
-                        {{ miscellaneous|safe }}
-                    {% endif %}
+                    <select name="department" class="form-control" id="department">
+                        <option value="cse" selected>Computer Science and Engineering</option>
+                    </select>
+                    <hr>
+                    <select name="year" class="form-control" id="year">
+                        <option value="1st" selected>FY</option>
+                        <option value="2nd">SY</option>
+                        <option value="3rd">TY</option>
+                    </select>
+                    <hr>
                 </div>
                 <input type="text" id="event" name="event" style="visibility: hidden" value="{{ event }}" contenteditable="false">
                 <input type="text" id="db" name="db" style="visibility: hidden" value="{{ db }}" contenteditable="false">
                 <input type="text" id="date" name="date" style="visibility: hidden" value="{{ date }}" contenteditable="false">
 
-                {% if extra_message %}
-                    <input type="text" id="extra_message" name="extra_message" style="visibility: hidden" value="{{ extra_message }}" contenteditable="false">
-                {% endif %}
                 <button type="submit" class="btn btn-success">Submit</button>
             </form>
         </div>

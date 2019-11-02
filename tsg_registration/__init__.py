@@ -43,6 +43,7 @@ DEPARTMENTS = {
     "others": "Others",
 }
 
+from tsg_registration.models.csi import CSINovember2019
 from tsg_registration.models.codex import CodexApril2019, RSC2019
 from tsg_registration.models.techo import EHJuly2019
 from tsg_registration.models.workshop import (
@@ -202,6 +203,39 @@ def display_users():
             """
 
 
+@app.route("/csi_users", methods=["GET", "POST"])
+def display_csi_users():
+    """Display the list of users in the desired database, after authentication."""
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        if username == os.getenv("CSI_USERNAME"):
+            if password == os.getenv("CSI_PASSWORD"):
+                table = get_db_by_name(request.form["table"])
+                user_data = db.session.query(table).order_by(asc(table.id))
+                if user_data:
+                    return render_template(
+                        "users.html",
+                        users=user_data,
+                        extra_columns={"prn": "PRN", "csi_id": "CSI ID"},
+                    )
+                return f"No users found in table {request.form['table']}"
+            return "Invalid password!"
+        return "Invalid user!"
+    return """
+            <form action="" method="post">
+                <p><input type=text name=username required>
+                <p><input type=password name=password required>
+                <p>
+                <select name="table" id="table">
+                    <option value="csi_november_2019" selected>CSI Technovision</option>
+                </select>
+                </p>
+                <p><input type=submit value=Login>
+            </form>
+            """
+
+
 @app.route("/users_json")
 def users_json():
     """Returns a JSON consisting of the users in the given table"""
@@ -210,17 +244,104 @@ def users_json():
         table = get_db_by_name(request.args.get("table"))
         user_data = db.session.query(table).order_by(asc(table.id))
         return users_to_json(user_data)
+    elif authorization_token == os.getenv("CSI_AUTHORIZATION_TOKEN"):
+        table = CSINovember2019
+        user_data = db.session.query(table).order_by(asc(table.id))
+        return users_to_json(user_data)
     return jsonify({"message": "Unauthorized"}), 401
 
 
-@app.route("/codex")
-def codex():
-    return redirect(url_for("/"))
+@app.route("/csi")
+def csi():
+    return render_template(
+        "csi.html",
+        event="CSI Technovision",
+        date="9th November 2019",
+        db="csi_november_2019",
+        year=True,
+        extra_info="""Please only fill this form if you are a CSE student""",
+    )
 
 
-@app.route("/techo")
-def techo():
-    return redirect(url_for("/"))
+@app.route("/csi_submit", methods=["POST"])
+def csi_submit():
+    """Take data from the form, generate, display, and email QR code to user."""
+    table = get_db_by_name(request.form["db"])
+    event_name = request.form["event"]
+
+    id = get_current_id(table)
+
+    user = table(
+        name=request.form["name"],
+        email=request.form["email"],
+        phone=request.form["phone_number"],
+        id=id,
+        department=request.form["department"],
+        csi_id=request.form["csi_id"],
+        year=request.form["year"],
+        prn=request.form["prn"],
+    )
+
+    if request.form["whatsapp_number"]:
+        user.phone += f"|{request.form['whatsapp_number']}"
+
+    data = user.validate()
+    if data is not True:
+        return data
+
+    try:
+        db.session.add(user)
+        db.session.commit()
+    except exc.IntegrityError as e:
+        print(e)
+        return """It appears there was an error while trying to enter your data into our database.<br/>Kindly contact someone from the team and we will have this resolved ASAP"""
+
+    img = generate_qr(request.form, id)
+    img.save("qr.png")
+    img_data = open("qr.png", "rb").read()
+    encoded = base64.b64encode(img_data).decode()
+
+    name = request.form["name"]
+    from_email = FROM_EMAIL
+    to_emails = []
+    email = (request.form["email"], request.form["name"])
+    to_emails.append(email)
+    date = request.form["date"]
+    subject = "Registration for {} - {} - ID {}".format(event_name, date, id)
+    message = """<img src='https://drive.google.com/uc?id=12VCUzNvU53f_mR7Hbumrc6N66rCQO5r-&export=download' style="width:30%;height:50%">
+    <hr>
+    {}, your registration is done!
+    <br/>
+    A QR code has been attached below!
+    <br/>
+    You're <b>required</b> to present this on the day of the event.""".format(
+        name
+    )
+    content = Content("text/html", message)
+    mail = Mail(from_email, to_emails, subject, html_content=content)
+    mail.add_attachment(Attachment(encoded, "qr.png", "image/png"))
+
+    try:
+        response = SendGridAPIClient(SENDGRID_API_KEY).send(mail)
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
+    except Exception as e:
+        print(e)
+
+    chat_id = "-390535990"
+    updater.bot.sendChatAction(chat_id, action=ChatAction.TYPING)
+    updater.bot.sendMessage(chat_id, f"New registration for {event_name}!")
+    updater.bot.sendDocument(
+        chat_id,
+        document=open("qr.png", "rb"),
+        caption=f"Name: {user.name} | ID: {user.id}",
+    )
+
+    return 'Please save this QR Code. It has also been emailed to you.<br><img src=\
+                "data:image/png;base64, {}"/>'.format(
+        encoded
+    )
 
 
 @app.route("/")
