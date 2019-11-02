@@ -27,7 +27,7 @@
                 </div>
             </div>
         
-            <form method="post" action="/temp_submit" enctype="multipart/form-data">
+            <form method="post" action="/csi_submit" enctype="multipart/form-data">
                 <div class="form-group">
                     <hr>
                     <p>Name (required)</p>
@@ -39,8 +39,8 @@
                     <p>PRN (required)</p>
                     <input type="text" name="prn" placeholder="Enter your PRN" maxlength="10" required class="form-control" pattern="[\d]{10}"/>
                     <hr>
-                    <p>CSI ID</p>
-                    <input type="text" name="csi_id" placeholder="Enter your CSI ID" maxlength="2" required class="form-control" pattern="[\d]{2}"/>
+                    <p>CSI ID (required)</p>
+                    <input type="text" name="csi_id" placeholder="Enter your CSI ID" maxlength="2" required class="form-control" pattern="A[\d]{1,2}"/>
                     <hr>
                     <p>Phone Number (required)</p>
                     <input type="text" name="phone_number" placeholder="Enter your phone number (Excluding +91)" maxlength="10" required class="form-control" pattern="[\d]{10}"/>
@@ -58,17 +58,11 @@
                         <option value="3rd">TY</option>
                     </select>
                     <hr>
-                    {% if miscellaneous %}
-                        {{ miscellaneous|safe }}
-                    {% endif %}
                 </div>
                 <input type="text" id="event" name="event" style="visibility: hidden" value="{{ event }}" contenteditable="false">
                 <input type="text" id="db" name="db" style="visibility: hidden" value="{{ db }}" contenteditable="false">
                 <input type="text" id="date" name="date" style="visibility: hidden" value="{{ date }}" contenteditable="false">
 
-                {% if extra_message %}
-                    <input type="text" id="extra_message" name="extra_message" style="visibility: hidden" value="{{ extra_message }}" contenteditable="false">
-                {% endif %}
                 <button type="submit" class="btn btn-success">Submit</button>
             </form>
         </div>

@@ -17,7 +17,7 @@ class CSINovember2019(db.Model):
     miscellaneous = db.Column(db.String)
 
     prn = db.Column(db.Integer, unique=True)
-    csi_id = db.Column(db.Integer, unique=True)
+    csi_id = db.Column(db.String(3), unique=True)
 
     def __repr__(self):
         return "%r" % [
@@ -31,6 +31,4 @@ class CSINovember2019(db.Model):
         ]
 
     def validate(self):
-        if self.department == "CSE":
-            return validate(self, CSINovember2019)
-        return "<b>Only CSE members can take part!<b>"
+        return validate(self, CSINovember2019)
