@@ -14,7 +14,6 @@ class CSINovember2019(db.Model):
     phone = db.Column(db.String(21), unique=True)
     department = db.Column(db.String(50))
     year = db.Column(db.String)
-
     prn = db.Column(db.Integer, unique=True)
     csi_id = db.Column(db.String(3), unique=True)
 
@@ -31,4 +30,9 @@ class CSINovember2019(db.Model):
         ]
 
     def validate(self):
+        for user in db.session.query(CSINovember2019).all():
+            if user.csi_id == self.csi_id:
+                return f"CSI ID {self.csi_id} is already registered in the database"
+            if user.prn == int(self.prn):
+                return f"PRN {self.prn} is already registered in the database"
         return validate(self, CSINovember2019)
