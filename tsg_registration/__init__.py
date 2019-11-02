@@ -296,7 +296,7 @@ def csi_submit():
         print(e)
         return """It appears there was an error while trying to enter your data into our database.<br/>Kindly contact someone from the team and we will have this resolved ASAP"""
 
-    img = generate_qr(request.form, id)
+    img = generate_qr(request.form, csi_id)
     img.save("qr.png")
     img_data = open("qr.png", "rb").read()
     encoded = base64.b64encode(img_data).decode()
@@ -335,7 +335,7 @@ def csi_submit():
     updater.bot.sendDocument(
         chat_id,
         document=open("qr.png", "rb"),
-        caption=f"Name: {user.name} | ID: {user.id}",
+        caption=f"Name: {user.name} | ID: {user.csi_id}",
     )
 
     return 'Please save this QR Code. It has also been emailed to you.<br><img src=\
