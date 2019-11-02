@@ -296,7 +296,7 @@ def csi_submit():
         print(e)
         return """It appears there was an error while trying to enter your data into our database.<br/>Kindly contact someone from the team and we will have this resolved ASAP"""
 
-    img = generate_qr(request.form, csi_id)
+    img = generate_qr(request.form, user.csi_id)
     img.save("qr.png")
     img_data = open("qr.png", "rb").read()
     encoded = base64.b64encode(img_data).decode()
