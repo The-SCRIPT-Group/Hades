@@ -10,7 +10,7 @@ import os
 from datetime import datetime
 
 import qrcode
-from flask import Flask, redirect, render_template, request, url_for, jsonify
+from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Attachment, Content, Mail
@@ -65,6 +65,8 @@ def get_db_by_name(name: str) -> db.Model:
         return CCPPWSAugust2019
     if name == "rsc_2019":
         return RSC2019
+    if name == "csi_november_2019":
+        return CSINovember2019
     return Hacktoberfest2019
 
 
@@ -330,6 +332,82 @@ def csi_submit():
         print(e)
 
     chat_id = "-390535990"
+    updater.bot.sendChatAction(chat_id, action=ChatAction.TYPING)
+    updater.bot.sendMessage(chat_id, f"New registration for {event_name}!")
+    updater.bot.sendDocument(
+        chat_id,
+        document=open("qr.png", "rb"),
+        caption=f"Name: {user.name} | ID: {user.csi_id}",
+    )
+
+    return 'Please save this QR Code. It has also been emailed to you.<br><img src=\
+                "data:image/png;base64, {}"/>'.format(
+        encoded
+    )
+
+
+@app.route("/submit/<event_name>", methods=["POST"])
+def generic_submit(event_name):
+    """Take data from the form, generate, display, and email QR code to user."""
+    table = get_db_by_name(request.form['db'])
+
+    data = dict()
+    for key in request.form.keys():
+        if key in table.params:
+            data[key] = request.form[key]
+    data['id'] = get_current_id(table)
+
+    user = table(**data)
+
+    if request.form["whatsapp_number"]:
+        user.phone += f"|{request.form['whatsapp_number']}"
+
+    data = user.validate()
+    if data is not True:
+        return data
+
+    try:
+        db.session.add(user)
+        db.session.commit()
+    except exc.IntegrityError as e:
+        print(e)
+        return """It appears there was an error while trying to enter your data into our database.<br/>Kindly contact
+         someone from the team and we will have this resolved ASAP"""
+
+    img = generate_qr(data)
+    img.save("qr.png")
+    img_data = open("qr.png", "rb").read()
+    encoded = base64.b64encode(img_data).decode()
+
+    name = request.form["name"]
+    from_email = FROM_EMAIL
+    to_emails = []
+    email = (request.form["email"], request.form["name"])
+    to_emails.append(email)
+    date = request.form["date"]
+    subject = "Registration for {} - {} - ID {}".format(event_name, date, id)
+    message = """
+    <img src='https://drive.google.com/uc?id=12VCUzNvU53f_mR7Hbumrc6N66rCQO5r-&export=download' style="width:30%;height:50%">
+    <hr>
+    {}, your registration is done!
+    <br/>
+    A QR code has been attached below!
+    <br/>
+    You're <b>required</b> to present this on the day of the event.
+    """.format(name)
+    content = Content("text/html", message)
+    mail = Mail(from_email, to_emails, subject, html_content=content)
+    mail.add_attachment(Attachment(encoded, "qr.png", "image/png"))
+
+    try:
+        response = SendGridAPIClient(SENDGRID_API_KEY).send(mail)
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
+    except Exception as e:
+        print(e)
+
+    chat_id = os.getenv(request.form['org'] + "_GROUP_ID")
     updater.bot.sendChatAction(chat_id, action=ChatAction.TYPING)
     updater.bot.sendMessage(chat_id, f"New registration for {event_name}!")
     updater.bot.sendDocument(
