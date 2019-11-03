@@ -49,6 +49,7 @@ BLACKLISTED_FIELDS = (
     "db",
     "email_second_person",
     "event",
+    "extra_field_telegram",
     "extra_message",
     "name_second_person",
     "whatsapp_number",
@@ -182,13 +183,12 @@ You're <b>required</b> to present this on the day of the event.""".format(
     chat_id = (
         request.form["chat_id"] if "chat_id" in request.form else os.getenv("GROUP_ID")
     )
+    caption = f"Name: {user.name} | ID: {user.id}"
+    if "extra_field_telegram" in request.form:
+        caption += f" | {request.form['extra_field_telegram']} - {request.form[request.form['extra_field_telegram']]}"
     updater.bot.sendChatAction(chat_id, action=ChatAction.TYPING)
     updater.bot.sendMessage(chat_id, f"New registration for {event_name}!")
-    updater.bot.sendDocument(
-        chat_id,
-        document=open("qr.png", "rb"),
-        caption=f"Name: {user.name} | ID: {user.id}",
-    )
+    updater.bot.sendDocument(chat_id, document=open("qr.png", "rb"), caption=caption)
 
     return 'Please save this QR Code. It has also been emailed to you.<br><img src=\
             "data:image/png;base64, {}"/>'.format(
