@@ -264,8 +264,8 @@ def users_api():
 def csi():
     return render_template(
         "csi.html",
-        event="CSI Technovision",
-        date="9th November 2019",
+        event="CSI Technovision 2019",
+        date="9th November '19",
         db="csi_november_2019",
         year=True,
         chat_id="-390535990",
