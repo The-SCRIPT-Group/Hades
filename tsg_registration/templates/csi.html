@@ -68,6 +68,10 @@
             </select>
             <hr>
         </div>
+        <div class="form-check">
+            <input type="checkbox" required class="form-check-input" id="privpolicy">
+            <label class="form-check-label" for="exampleCheck1">By using this service, you hereby consent to our <a href="https://thescriptgroup.in/privacypolicy">Privacy Policy</a>.</label>
+        </div>
         <input type="text" id="event" name="event" style="visibility: hidden" value="{{ event }}"
                contenteditable="false">
         <input type="text" id="db" name="db" style="visibility: hidden" value="{{ db }}" contenteditable="false">
@@ -76,12 +80,12 @@
                contenteditable="false">
         <input type="text" id="extra_field_telegram" name="extra_field_telegram" style="visibility: hidden"
                value="csi_id" contenteditable="false">
-        <p align="center">
-            <button type="submit"
-                    style="margin:auto;display:block"
-                    class="btn btn-dark">Submit
-            </button>
-        </p>
+        
+        <button type="submit"
+                style="margin:auto;display:block"
+                class="btn btn-dark">Submit
+        </button>
+        
     </form>
 </div>
 </body>

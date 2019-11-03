@@ -29,7 +29,7 @@
                  style="float: left; width: 100%; height: auto; padding: 8px;">
         </div>
         <div class="w3-col w3-center" style="width: 40%;">
-            <h2 style="text-align: center;">{{ event }} Registrations<br/>{{ date }}</h2>
+            <h6 style="text-align: center;">{{ event }} Registrations<br/>{{ date }}</h6>
         </div>
     </div>
 
@@ -89,6 +89,10 @@
                 {{ miscellaneous|safe }}
             {% endif %}
         </div>
+        <div class="form-check">
+            <input type="checkbox" required class="form-check-input" id="privpolicy">
+            <label class="form-check-label" for="privpolicy">By using this service, you hereby consent to our <a href="https://thescriptgroup.in/privacypolicy">Privacy Policy</a>.</label>
+        </div>
         <input type="text" id="event" name="event" style="visibility: hidden" value="{{ event }}"
                contenteditable="false">
         <input type="text" id="db" name="db" style="visibility: hidden" value="{{ db }}" contenteditable="false">
@@ -98,7 +102,10 @@
             <input type="text" id="extra_message" name="extra_message" style="visibility: hidden"
                    value="{{ extra_message }}" contenteditable="false">
         {% endif %}
-        <button type="submit" class="btn btn-success">Submit</button>
+        <button type="submit"
+                style="margin:auto;display:block"
+                class="btn btn-dark">Submit
+        </button>
     </form>
 </div>
 </body>
