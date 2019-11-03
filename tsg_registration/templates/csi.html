@@ -1,73 +1,89 @@
 <html>
-    <head>
-        <title>{{ event }} Registration Form</title>
-        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <link rel="stylesheet" href="{{ url_for(endpoint='static', filename='css/w3.css') }}" rel="stylesheet">
-        <link rel="stylesheet" href="{{ url_for(endpoint='static', filename='css/homepage.css') }}" rel="stylesheet">
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-    </head>
-    <body>
-        <div class="w3-container w3-padding-top w3-margin-top">
-            <div class="w3-container w3-card-4 w3-black w3-row w3-hide-medium w3-hide-small opacity-prop">
-                <div class="w3-col" style="width: 30%;">
-                    <img src="{{ url_for(endpoint='static', filename='images/LogoTransp.png') }}" style="float: left; width: 80%; height: auto; padding: 8px;">
-                </div>
-                <div class="w3-col w3-center" style="width: 40%;">
-                    <br>
-                    <h2 style="text-align: center;">UI/UX<br/>{{ event }}<br/>{{ date }}</h2>
-                </div>
-            </div>
 
-            <div class="w3-card-4 w3-black w3-row w3-hide-large">
-                <div class="w3-col" style="width: 30%;">
-                    <img src="{{ url_for(endpoint='static', filename='images/LogoTransp.png') }}" style="float: left; width: 100%; height: auto; padding: 8px;">
-                </div>
-                <div class="w3-col w3-center" style="width: 40%;">
-                    <h2 style="text-align: center;">UI/UX</h2>
-                    <h5 style="text-align: center;"><br/>{{ event }}<br/>{{ date }}</h5>
-                </div>
-            </div>
-        
-            <form method="post" action="/submit" enctype="multipart/form-data">
-                <div class="form-group">
-                    <hr>
-                    <p>CSI ID (required)</p>
-                    <input type="text" name="csi_id" placeholder="Enter your CSI ID" maxlength="3" required class="form-control" pattern="A[\d]{1,2}"/>
-                    <hr>
-                    <p>Name (required)</p>
-                    <input type="text" name="name" placeholder="Enter your name" maxlength="30" required class="form-control" pattern="^\w[\w, ]+$"/>
-                    <hr>
-                    <p>Email (required)</p>
-                    <input type="email" name="email" placeholder="Enter your email address" maxlength="50" required class="form-control" />
-                    <hr>
-                    <p>PRN (required)</p>
-                    <input type="text" name="prn" placeholder="Enter your PRN" maxlength="10" required class="form-control" pattern="[\d]{10}"/>
-                    <hr>
-                    <p>Phone Number (required)</p>
-                    <input type="text" name="phone" placeholder="Enter your phone number (Excluding +91)" maxlength="10" required class="form-control" pattern="[\d]{10}"/>
-                    <hr>
-                    <p>WhatsApp Number (if different from above)</p>
-                    <input type="text" name="whatsapp_number" placeholder="Enter your WhatsApp number (Excluding +91)"  maxlength="10" class="form-control" pattern="[\d]{10}"/>
-                    <hr>
-                    <select name="department" class="form-control" id="department">
-                        <option value="cse" selected>Computer Science and Engineering</option>
-                    </select>
-                    <hr>
-                    <select name="year" class="form-control" id="year">
-                        <option value="2nd">SY</option>
-                        <option value="3rd">TY</option>
-                    </select>
-                    <hr>
-                </div>
-                <input type="text" id="event" name="event" style="visibility: hidden" value="{{ event }}" contenteditable="false">
-                <input type="text" id="db" name="db" style="visibility: hidden" value="{{ db }}" contenteditable="false">
-                <input type="text" id="date" name="date" style="visibility: hidden" value="{{ date }}" contenteditable="false">
-                <input type="text" id="chat_id" name="chat_id" style="visibility: hidden" value="{{ chat_id }}" contenteditable="false">
-                <input type="text" id="extra_field_telegram" name="extra_field_telegram" style="visibility: hidden" value="csi_id" contenteditable="false">
-                <p align="center">
-                	<button type="submit" style="margin-left:auto;margin-right:auto;display:block;margin-top:22%;margin-bottom:0%" class="btn btn-success">Submit</button>
-            	</p>
-            </form>
+<head>
+    <title>{{ event }} Registration Form</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for(endpoint='static', filename='css/w3.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for(endpoint='static', filename='css/homepage.css') }}" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+</head>
+
+<body>
+<div class="w3-container w3-padding-top w3-margin-top">
+    <div class="w3-container w3-card-4 w3-black w3-row w3-hide-medium w3-hide-small opacity-prop">
+        <div class="w3-col" style="width: 30%;">
+            <img src="{{ url_for(endpoint='static', filename='images/LogoTransp.png') }}"
+                 style="float: left; width: 80%; height: auto; padding: 8px;">
         </div>
-    </body>
+        <div class="w3-col w3-center" style="width: 40%;">
+            <br>
+            <h2 style="text-align: center;">UI/UX<br/>{{ event }}<br/>{{ date }}</h2>
+        </div>
+    </div>
+    <div class="w3-card-4 w3-black w3-row w3-hide-large">
+        <div class="w3-col" style="width: 30%;">
+            <img src="{{ url_for(endpoint='static', filename='images/LogoTransp.png') }}"
+                 style="float: left; width: 100%; height: auto; padding: 8px;">
+        </div>
+        <div class="w3-col w3-center" style="width: 40%;">
+            <h2 style="text-align: center;">UI/UX</h2>
+            <h5 style="text-align: center;"><br/>{{ event }}<br/>{{ date }}</h5>
+        </div>
+    </div>
+    <form method="post" action="/submit" enctype="multipart/form-data">
+        <div class="form-group">
+            <hr>
+            <p>CSI ID (required)</p>
+            <input type="text" name="csi_id" placeholder="Enter your CSI ID" maxlength="3" required class="form-control"
+                   pattern="A[\d]{1,2}"/>
+            <hr>
+            <p>Name (required)</p>
+            <input type="text" name="name" placeholder="Enter your name" maxlength="30" required class="form-control"
+                   pattern="^\w[\w, ]+$"/>
+            <hr>
+            <p>Email (required)</p>
+            <input type="email" name="email" placeholder="Enter your email address" maxlength="50" required
+                   class="form-control"/>
+            <hr>
+            <p>PRN (required)</p>
+            <input type="text" name="prn" placeholder="Enter your PRN" maxlength="10" required class="form-control"
+                   pattern="[\d]{10}"/>
+            <hr>
+            <p>Phone Number (required)</p>
+            <input type="text" name="phone" placeholder="Enter your phone number (Excluding +91)" maxlength="10"
+                   required class="form-control" pattern="[\d]{10}"/>
+            <hr>
+            <p>WhatsApp Number (if different from above)</p>
+            <input type="text" name="whatsapp_number" placeholder="Enter your WhatsApp number (Excluding +91)"
+                   maxlength="10" class="form-control" pattern="[\d]{10}"/>
+            <hr>
+            <select name="department" class="form-control" id="department">
+                <option value="cse" selected>Computer Science and Engineering</option>
+            </select>
+            <hr>
+            <select name="year" class="form-control" id="year">
+                <option value="2nd">SY</option>
+                <option value="3rd">TY</option>
+            </select>
+            <hr>
+        </div>
+        <input type="text" id="event" name="event" style="visibility: hidden" value="{{ event }}"
+               contenteditable="false">
+        <input type="text" id="db" name="db" style="visibility: hidden" value="{{ db }}" contenteditable="false">
+        <input type="text" id="date" name="date" style="visibility: hidden" value="{{ date }}" contenteditable="false">
+        <input type="text" id="chat_id" name="chat_id" style="visibility: hidden" value="{{ chat_id }}"
+               contenteditable="false">
+        <input type="text" id="extra_field_telegram" name="extra_field_telegram" style="visibility: hidden"
+               value="csi_id" contenteditable="false">
+        <p align="center">
+            <button type="submit"
+                    style="margin-left:auto;margin-right:auto;display:block;margin-top:22%;margin-bottom:0%"
+                    class="btn btn-success">Submit
+            </button>
+        </p>
+    </form>
+</div>
+</body>
+
 </html>
