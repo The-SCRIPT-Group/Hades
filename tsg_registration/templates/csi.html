@@ -10,7 +10,7 @@
         <div class="w3-container w3-padding-top w3-margin-top">
             <div class="w3-container w3-card-4 w3-black w3-row w3-hide-medium w3-hide-small opacity-prop">
                 <div class="w3-col" style="width: 30%;">
-                    <img src="{{ url_for(endpoint='static', filename='images/LogoTransp.png') }}" style="float: left; width: 100%; height: auto; padding: 8px;">
+                    <img src="{{ url_for(endpoint='static', filename='images/LogoTransp.png') }}" style="float: left; width: 80%; height: auto; padding: 8px;">
                 </div>
                 <div class="w3-col w3-center" style="width: 40%;">
                     <br>
@@ -30,6 +30,9 @@
             <form method="post" action="/submit" enctype="multipart/form-data">
                 <div class="form-group">
                     <hr>
+                    <p>CSI ID (required)</p>
+                    <input type="text" name="csi_id" placeholder="Enter your CSI ID" maxlength="3" required class="form-control" pattern="A[\d]{1,2}"/>
+                    <hr>
                     <p>Name (required)</p>
                     <input type="text" name="name" placeholder="Enter your name" maxlength="30" required class="form-control" pattern="^\w[\w, ]+$"/>
                     <hr>
@@ -38,9 +41,6 @@
                     <hr>
                     <p>PRN (required)</p>
                     <input type="text" name="prn" placeholder="Enter your PRN" maxlength="10" required class="form-control" pattern="[\d]{10}"/>
-                    <hr>
-                    <p>CSI ID (required)</p>
-                    <input type="text" name="csi_id" placeholder="Enter your CSI ID" maxlength="3" required class="form-control" pattern="A[\d]{1,2}"/>
                     <hr>
                     <p>Phone Number (required)</p>
                     <input type="text" name="phone" placeholder="Enter your phone number (Excluding +91)" maxlength="10" required class="form-control" pattern="[\d]{10}"/>
@@ -53,7 +53,6 @@
                     </select>
                     <hr>
                     <select name="year" class="form-control" id="year">
-                        <option value="1st" selected>FY</option>
                         <option value="2nd">SY</option>
                         <option value="3rd">TY</option>
                     </select>
