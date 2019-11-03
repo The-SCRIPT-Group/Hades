@@ -92,13 +92,18 @@ def get_db_by_name(name: str) -> db.Model:
     try:
         return EVENT_CLASSES[name]
     except KeyError:
-        return Hacktoberfest2019
+        return None
 
 
 @app.route("/submit", methods=["POST"])
 def submit():
     """Take data from the form, generate, display, and email QR code to user."""
     table = get_db_by_name(request.form["db"])
+
+    if table is None:
+        print(request.form["db"])
+        return "Error occurred. Kindly contact someone from the team and we will have this resolved ASAP"
+
     event_name = request.form["event"]
 
     id = get_current_id(table)
@@ -199,6 +204,8 @@ def login(user):
         password = request.form["password"]
         if password == os.getenv(f"{prefix}PASSWORD"):
             table = get_db_by_name(request.form["table"])
+            if table is None:
+                return f"Error while choosing table {request.form['table']}!"
             user_data = db.session.query(table).order_by(asc(table.id))
             if user_data:
                 try:
@@ -221,11 +228,25 @@ def login(user):
 
 @app.route("/users")
 def users():
+    """Just redirects to the new /login/tsg route"""
     return redirect(url_for("login", user="tsg"))
 
 
-@app.route("/users_json")
-def users_json():
+@app.route("/api/events")
+def events_api():
+    """Returns a JSON consisting of the tables the user has the permission to view"""
+    authorization_token = request.headers.get("Authorization")
+    if authorization_token == os.getenv("AUTHORIZATION_TOKEN"):
+        ret = (jsonify({"response": list(EVENTS.keys())}), 200)
+    elif authorization_token == os.getenv("CSI_AUTHORIZATION_TOKEN"):
+        ret = (jsonify({"response": ("csi_november_2019",)}), 200)
+    else:
+        ret = (jsonify({"message": "Unauthorized"}), 401)
+    return ret
+
+
+@app.route("/api/users")
+def users_api():
     """Returns a JSON consisting of the users in the given table"""
     authorization_token = request.headers.get("Authorization")
     if authorization_token == os.getenv("AUTHORIZATION_TOKEN"):
