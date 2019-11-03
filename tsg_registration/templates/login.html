@@ -4,10 +4,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
     </head>
     <body>
+    <div class=".mx-auto px-4">
         <br/>
         <form action="/login/{{ user }}" method="post">
             <div class="form-group">
-                <h3>Please enter your password, {{ user }}!</h3>
+                <h3 class="display-6">Please enter your password, {{ user }}!</h3>
                 <p><input type=password name=password placeholder="password" class="form-control" required>
                 <p>
                 <select name="table" id="table" class="form-control" required>
@@ -19,5 +20,6 @@
                 </div>
             <p><input type=submit value=Login>
         </form>
+        </div>
     </body>
 
