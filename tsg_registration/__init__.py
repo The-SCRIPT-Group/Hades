@@ -48,6 +48,8 @@ BLACKLISTED_FIELDS = (
     "chat_id",
     "date",
     "db",
+    "email_content",
+    "email_content_fields",
     "email_second_person",
     "event",
     "extra_field_telegram",
@@ -165,6 +167,12 @@ A QR code has been attached below!
 You're <b>required</b> to present this on the day of the event.""".format(
         name
     )
+    if "email_content" in request.form and "email_content_fields" in request.form:
+        d = {}
+        for f in request.form["email_content_fields"].split(","):
+            d[f] = request.form[f]
+
+        message = request.form["email_content"].format(**d)
     try:
         message += "<br/>" + request.form["extra_message"]
     except KeyError:
@@ -273,6 +281,15 @@ def csi():
         db="csi_november_2019",
         year=True,
         chat_id="-390535990",
+        email_content="""Thanks for registering for CSI Technovision '19, {name}!<br/>
+Our event is scheduled on {date}, from 9:30 am - 6:00 pm on 9th November.<br/>
+Please do get something to eat for yourself.<br/>
+<br/>
+Inauguration ceremony starts at 9:30 sharp, so it's advised you are present five minutes before it begin.<br/>
+<b>Venue : A 208 (Seminar Hall) Main MIT</b><br/>
+<br/>
+Your QR code will be scanned outside SL IV/V Lab, N-building (beside Dnyaneshwar Hall), after which you will be directed to the event""",
+        email_content_fields="name,date",
     )
 
 
