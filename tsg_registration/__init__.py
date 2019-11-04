@@ -18,10 +18,8 @@ from sqlalchemy import asc, desc, exc
 from telegram import ChatAction
 from telegram.ext import Updater
 
-updater = None
 bot_api_key = os.getenv("BOT_API_KEY")
-if bot_api_key is not None:
-    updater = Updater(os.getenv("BOT_API_KEY"))
+updater = Updater(bot_api_key) if bot_api_key is not None else None
 
 FROM_EMAIL = os.getenv("FROM_EMAIL")
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
