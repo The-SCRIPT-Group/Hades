@@ -44,11 +44,7 @@
             <hr>
             <p>Email (required)</p>
             <input type="email" name="email" placeholder="Enter your email address" maxlength="50" required
-                   class="form-control"/>
-            <hr>
-            <p>PRN (required)</p>
-            <input type="text" name="prn" placeholder="Enter your PRN" maxlength="10" required class="form-control"
-                   pattern="[\d]{10}"/>
+                   pattern="^.+@[^\.].*\.[a-z]{2,}$" class="form-control"/>
             <hr>
             <p>Phone Number (required)</p>
             <input type="text" name="phone" placeholder="Enter your phone number (Excluding +91)" maxlength="10"
