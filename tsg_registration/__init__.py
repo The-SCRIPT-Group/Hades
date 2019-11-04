@@ -66,7 +66,7 @@ EVENTS = {
     "csi_november_2019": "CSI November 2019",
 }
 
-EVENT_EXTRA_INFO = {"csi_november_2019": {"PRN": "prn", "CSI ID": "csi_id"}}
+EVENT_EXTRA_INFO = {"csi_november_2019": {"CSI ID": "csi_id"}}
 
 
 from tsg_registration.models.csi import CSINovember2019
