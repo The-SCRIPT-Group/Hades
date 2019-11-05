@@ -274,23 +274,7 @@ def users_api():
 
 @app.route("/csi")
 def csi():
-    return render_template(
-        "csi.html",
-        event="CSI Technovision 2019",
-        date="9th November '19",
-        db="csi_november_2019",
-        year=True,
-        chat_id="-390535990",
-        email_content="""Thanks for registering for CSI Technovision '19, {name}!<br/>
-Our event is scheduled on {date}, from 9:30 am - 6:00 pm on 9th November.<br/>
-Please do get something to eat for yourself.<br/>
-<br/>
-Inauguration ceremony starts at 9:30 sharp, so it's advised you are present five minutes before it begin.<br/>
-<b>Venue : A 208 (Seminar Hall) Main MIT</b><br/>
-<br/>
-Your QR code will be scanned outside SL IV/V Lab, N-building (beside Dnyaneshwar Hall), after which you will be directed to the event""",
-        email_content_fields="name,date",
-    )
+    return app.send_static_file("html/registrations-full.html")
 
 
 @app.route("/")
