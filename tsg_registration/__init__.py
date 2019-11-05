@@ -291,33 +291,7 @@ def users_api():
 
 @app.route("/csi")
 def csi():
-    return render_template(
-        "csi.html",
-        event="CSI Technovision 2019",
-        date="9th November '19",
-        db="csi_november_non_member_2019",
-        year=True,
-        chat_id="-390535990",
-        email_content="""Thanks for registering, {name}!<br/>
-Please make the payment for ₹100 on https://p-y.tm/P-ZA93j only. To get options for using non-PayTM UPI options, open the link in a browser window.<br/>
-<br/>
-Alternatively, pay to the QR below in PayTM or any UPI app<br/>
-<br/>
-For cash, please contact Prathamesh on +91-9284720948<br/>
-Please make the payment before the event!<br/>
-<br/>
-<br/>
-Send a screenshot of successful transaction as confirmation of your payment to support@thescriptgroup.in.<br/>
-Note that, without your payment confirmation, you might not be allowed to attend the event.<br/>
-<br/>
-<br/>
-The event is scheduled on {date}, from 9:30 AM - 6:00 PM. Please get something to eat.<br/>
-Inauguration ceremony starts at 9:30 sharp, so please don't be late.<br/>
-<br/>
-Your QR code will be scanned at the N-building ground floor entrance (beside Dnyaneshwar Hall), after which you will be directed to the event location.<br/><br/><br/>
-<img src="https://github.com/The-SCRIPT-Group/Media-Kit/raw/master/csi_payment.jpg">""",
-        email_content_fields="name,date",
-    )
+    return app.send_static_file("html/registrations-full.html")
 
 
 @app.route("/")
