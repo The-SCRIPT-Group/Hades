@@ -22,7 +22,7 @@
       <img class="mb-4" src="https://thescriptgroup.files.wordpress.com/2018/10/cropped-logotransp23.png" alt="" height="40%" width="40%">
       <h1 class="h3 mb-3 font-weight-normal">Please sign in, {{ user }}</h1>
       <label for="inputPassword" class="sr-only">Password</label>
-      <input type="password" id="inputPassword" class="form-control" placeholder="password" required>
+      <input type="password" id="inputPassword" class="form-control" placeholder="password" name="password" required>
       <p>
         <select name="table" id="table" class="form-control" required>
             {% for k, v in events.items() %}
