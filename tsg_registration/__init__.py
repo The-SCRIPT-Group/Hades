@@ -66,12 +66,16 @@ EVENTS = {
     "c_cpp_workshop_august_2019": "C/C++ August 2019",
     "do_hacktoberfest_2019": "DigitalOcean Hacktoberfest 2019",
     "csi_november_2019": "CSI November 2019",
+    "csi_november_non_member_2019": "CSI November 2019 (Non members)",
 }
 
-EVENT_EXTRA_INFO = {"csi_november_2019": {"CSI ID": "csi_id"}}
+EVENT_EXTRA_INFO = {
+    "csi_november_2019": {"CSI ID": "csi_id"},
+    "csi_november_non_member_2019": {"PRN": "prn", "Payment Status": "noqr_paid",},
+}
 
 
-from tsg_registration.models.csi import CSINovember2019
+from tsg_registration.models.csi import CSINovember2019, CSINovemberNonMember2019
 from tsg_registration.models.codex import CodexApril2019, RSC2019
 from tsg_registration.models.techo import EHJuly2019
 from tsg_registration.models.workshop import (
@@ -88,6 +92,7 @@ EVENT_CLASSES = {
     "c_cpp_workshop_august_2019": CCPPWSAugust2019,
     "do_hacktoberfest_2019": Hacktoberfest2019,
     "csi_november_2019": CSINovember2019,
+    "csi_november_non_member_2019": CSINovemberNonMember2019,
 }
 
 
@@ -233,7 +238,12 @@ def login(user):
         return render_template("login.html", events=EVENTS, user=user)
     elif user == "csi":
         return render_template(
-            "login.html", events={"csi_november_2019": "CSI November 2019"}, user=user
+            "login.html",
+            events={
+                "csi_november_2019": "CSI November 2019",
+                "csi_november_non_member_2019": "CSI November 2019 (Non members)",
+            },
+            user=user,
         )
     return f"Hi {user}, what exactly are you trying to do?"
 
@@ -251,7 +261,12 @@ def events_api():
     if authorization_token == os.getenv("AUTHORIZATION_TOKEN"):
         ret = (jsonify({"response": list(EVENTS.keys())}), 200)
     elif authorization_token == os.getenv("CSI_AUTHORIZATION_TOKEN"):
-        ret = (jsonify({"response": ("csi_november_2019",)}), 200)
+        ret = (
+            jsonify(
+                {"response": ("csi_november_2019", "csi_november_non_member_2019",)}
+            ),
+            200,
+        )
     else:
         ret = (jsonify({"message": "Unauthorized"}), 401)
     return ret
@@ -265,7 +280,9 @@ def users_api():
         table = get_db_by_name(request.args.get("table"))
         ret = (users_to_json(db.session.query(table).order_by(asc(table.id))), 200)
     elif authorization_token == os.getenv("CSI_AUTHORIZATION_TOKEN"):
-        table = CSINovember2019
+        table = get_db_by_name(request.args.get("table"))
+        if table not in (CSINovember2019, CSINovemberNonMember2019):
+            table = CSINovember2019
         ret = (users_to_json(db.session.query(table).order_by(asc(table.id))), 200)
     else:
         ret = (jsonify({"message": "Unauthorized"}), 401)
@@ -274,7 +291,32 @@ def users_api():
 
 @app.route("/csi")
 def csi():
-    return app.send_static_file("html/registrations-full.html")
+    return render_template(
+        "csi.html",
+        event="CSI Technovision 2019",
+        date="9th November '19",
+        db="csi_november_non_member_2019",
+        year=True,
+        chat_id="-390535990",
+        email_content="""Thanks for registering, {name}!<br/>
+Please make the payment for ₹100 on https://p-y.tm/P-ZA93j only. To get options for using non-PayTM UPI options, open the link in a browser window.<br/>
+<br/>
+Alternatively, pay to the QR below in PayTM or any UPI app<br/>
+<br/>
+For cash, please contact Prathamesh on +91-9284720948<br/>
+<br/>
+<br/>
+Send a screenshot of successful transaction as confirmation of your payment to support@thescriptgroup.in.<br/>
+Note that, without your payment confirmation, you might not be allowed to attend the event.<br/>
+<br/>
+<br/>
+The event is scheduled on {date}, from 9:30 AM - 6:00 PM. Please get something to eat.<br/>
+Inauguration ceremony starts at 9:30 sharp, so please don't be late.<br/>
+<br/>
+Your QR code will be scanned at the N-building ground floor entrance (beside Dnyaneshwar Hall), after which you will be directed to the event location.<br/><br/><br/>
+<img src="https://github.com/The-SCRIPT-Group/Media-Kit/raw/master/csi_payment.jpg">""",
+        email_content_fields="name,date",
+    )
 
 
 @app.route("/")
@@ -296,7 +338,7 @@ def generate_qr(user):
     """Function to generate and return a QR code based on the given data."""
     data = ""
     for k, v in user.__dict__.items():
-        if k == "_sa_instance_state":
+        if k == "_sa_instance_state" or k.split("_")[0] == "noqr":
             continue
         data += f"{v}|"
     return qrcode.make(data[:-1])

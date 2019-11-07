@@ -63,17 +63,9 @@
             <br>
             <p><b>Register here!</b></p>
             <br>
-            <p>CSI ID (required)</p>
-            <input type="text" name="csi_id" placeholder="Enter your CSI ID" maxlength="3" required
-                   class="form-control" pattern="A[\d]{2}" onchange="verifyValidID(this.value)"/>
-            <script>
-                function verifyValidID(id) {
-                    if (id == "A00") {
-                        alert("ID " + id + " is invalid!");
-                        document.getElementsByName('csi_id')[0].value = ''
-                    }
-                }
-            </script>
+            <p>PRN (required)</p>
+            <input type="text" name="prn" placeholder="Enter your PRN" maxlength="10" required
+                   class="form-control" pattern="[\d]{10}"/>
             <hr>
             <p>Name (required)</p>
             <input type="text" name="name" placeholder="Enter your name" maxlength="30" required
@@ -95,9 +87,14 @@
                 <option value="cse" selected>Computer Science and Engineering</option>
             </select>
             <hr>
-            <select name="year" class="form-control" id="year">
+            <select name="year" class="form-control" id="year" required>
                 <option value="2nd">SY</option>
                 <option value="3rd">TY</option>
+            </select>
+            <hr>
+            <select name="noqr_paid" class="form-control" id="noqr_paid" required>
+                <option value="paytm">PayTM Gateway</option>
+                <option value="cash">Cash</option>
             </select>
             <hr>
         </div>
@@ -113,8 +110,6 @@
                contenteditable="false">
         <input type="text" id="chat_id" name="chat_id" style="visibility: hidden" value="{{ chat_id }}"
                contenteditable="false">
-        <input type="text" id="extra_field_telegram" name="extra_field_telegram" style="visibility: hidden"
-               value="csi_id" contenteditable="false">
         <input type="text" id="email_content" name="email_content" style="visibility: hidden"
                value="{{ email_content }}" contenteditable="false">
         <input type="text" id="email_content_fields" name="email_content_fields" style="visibility: hidden"
