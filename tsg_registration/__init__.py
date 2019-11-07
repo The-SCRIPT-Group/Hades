@@ -304,6 +304,7 @@ Please make the payment for ₹100 on https://p-y.tm/P-ZA93j only. To get option
 Alternatively, pay to the QR below in PayTM or any UPI app<br/>
 <br/>
 For cash, please contact Prathamesh on +91-9284720948<br/>
+Please make the payment before the event!<br/>
 <br/>
 <br/>
 Send a screenshot of successful transaction as confirmation of your payment to support@thescriptgroup.in.<br/>
