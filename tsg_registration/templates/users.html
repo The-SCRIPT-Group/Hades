@@ -1,10 +1,17 @@
 <head>
-    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for(endpoint='static', filename='css/w3.css') }}" rel="stylesheet">
     <title>All Registrations</title>
+
+    <style>
+        td, th {
+            border-bottom: 1px solid #f44336;
+        }
+    </style>
 </head>
-<body>
-    <table border="1">
-        <tr>
+<body style="background-color: #101010; color: #FFFFFF;">
+<div class="w3-container w3-padding">
+    <table class="w3-table w3-border w3-border-red w3-centered">
+        <tr class="w3-red">
             <th>ID</th>
             <th>Name</th>
             <th>Email</th>
@@ -28,9 +35,12 @@
                     <td>Computer Science and Engineering</td>
                 {% endif %}
                 {% if '|' in user['phone'] %}
-                    <td><a href="https://api.whatsapp.com/send?phone=91{{ user['phone'].split('|')[1] }}" target=_blank>WhatsApp</a></td>
+                    <td><a href="https://api.whatsapp.com/send?phone=91{{ user['phone'].split('|')[1] }}"
+                           target=_blank class="w3-text-blue">WhatsApp</a>
+                    </td>
                 {% else %}
-                    <td><a href="https://api.whatsapp.com/send?phone=91{{ user['phone'] }}" target=_blank>WhatsApp</a></td>
+                    <td><a href="https://api.whatsapp.com/send?phone=91{{ user['phone'] }}" target=_blank class="w3-text-blue">WhatsApp</a>
+                    </td>
                 {% endif %}
                 {% if user['year'] %}
                     <td>{{ user['year'] }}</td>
