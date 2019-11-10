@@ -16,8 +16,6 @@ class CSINovember2019(db.Model):
     year = db.Column(db.String)
     csi_id = db.Column(db.String(3), unique=True)
 
-    params = ['name', 'email', 'phone', 'department', 'year', 'prn', 'csi_id']
-
     def __repr__(self):
         return "%r" % [
             self.id,
