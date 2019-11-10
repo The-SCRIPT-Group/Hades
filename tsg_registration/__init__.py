@@ -67,17 +67,19 @@ EVENTS = {
     "do_hacktoberfest_2019": "DigitalOcean Hacktoberfest 2019",
     "csi_november_2019": "CSI November 2019",
     "csi_november_non_member_2019": "CSI November 2019 (Non members)",
+    "p5_november_2019": "P5.JS November 2019",
 }
 
 EVENT_EXTRA_INFO = {
     "csi_november_2019": {"CSI ID": "csi_id"},
-    "csi_november_non_member_2019": {"PRN": "prn", "Payment Status": "noqr_paid",},
+    "csi_november_non_member_2019": {"PRN": "prn", "Payment Status": "noqr_paid"},
+    "p5_november_2019": {"Level": "level"},
 }
 
 
 from tsg_registration.models.csi import CSINovember2019, CSINovemberNonMember2019
 from tsg_registration.models.codex import CodexApril2019, RSC2019
-from tsg_registration.models.techo import EHJuly2019
+from tsg_registration.models.techo import EHJuly2019, P5November2019
 from tsg_registration.models.workshop import (
     CPPWSMay2019,
     CCPPWSAugust2019,
@@ -93,6 +95,7 @@ EVENT_CLASSES = {
     "do_hacktoberfest_2019": Hacktoberfest2019,
     "csi_november_2019": CSINovember2019,
     "csi_november_non_member_2019": CSINovemberNonMember2019,
+    "p5_november_2019": P5November2019,
 }
 
 
@@ -127,7 +130,8 @@ def submit():
     user = table(**data, id=id)
 
     if request.form["whatsapp_number"]:
-        user.phone += f"|{request.form['whatsapp_number']}"
+        if int(user.phone) != int(request.form["whatsapp_number"]):
+            user.phone += f"|{request.form['whatsapp_number']}"
 
     data = user.validate()
     if data is not True:
@@ -263,7 +267,7 @@ def events_api():
     elif authorization_token == os.getenv("CSI_AUTHORIZATION_TOKEN"):
         ret = (
             jsonify(
-                {"response": ("csi_november_2019", "csi_november_non_member_2019",)}
+                {"response": ("csi_november_2019", "csi_november_non_member_2019")}
             ),
             200,
         )
@@ -289,9 +293,24 @@ def users_api():
     return ret
 
 
-@app.route("/csi")
-def csi():
-    return app.send_static_file("html/registrations-full.html")
+@app.route("/p5")
+def p5():
+    return render_template(
+        "form.html",
+        event="P5 JS Techo",
+        group=False,
+        department=True,
+        date="19th/20th November 2019",
+        db="p5_november_2019",
+        year=True,
+        extra_message="""Please carry your laptops for the event, and please download <a href="https://github.com/processing/p5.js/releases/download/0.10.2/p5.zip">this</a>!""",
+        miscellaneous="""
+        <select name="level" class="form-control" id="level" required>
+        <option value="Basic">Basic</option>
+        <option value="Intermediate">Intermediate</option>
+        </select>
+        """,
+    )
 
 
 @app.route("/")
