@@ -67,7 +67,7 @@ EVENTS = {
     "do_hacktoberfest_2019": "DigitalOcean Hacktoberfest 2019",
     "csi_november_2019": "CSI November 2019",
     "csi_november_non_member_2019": "CSI November 2019 (Non members)",
-    "p5_november_2019": "P5.JS November 2019",
+    "p5_november_2019": "p5.JS November 2019",
 }
 
 EVENT_EXTRA_INFO = {
@@ -296,7 +296,7 @@ def users_api():
 def p5():
     return render_template(
         "form.html",
-        event="P5 JS Techo",
+        event="p5.JS Techo",
         group=False,
         department=True,
         date="19th/20th November 2019",
@@ -304,6 +304,7 @@ def p5():
         year=True,
         extra_message="""Please carry your laptops for the event, and please download <a href="https://github.com/processing/p5.js/releases/download/0.10.2/p5.zip">this</a>!""",
         miscellaneous="""
+        <p>If you've attended the previous p5 workshop on Snake Game, choose Intermediate, else choose Basic.</p>
         <select name="level" class="form-control" id="level" required>
         <option value="Basic">Basic</option>
         <option value="Intermediate">Intermediate</option>
