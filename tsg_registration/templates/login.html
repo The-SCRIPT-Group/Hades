@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <title>Sign In</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/sign-in/">
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">    <!-- Theme CSS -->  
+
+    <!-- Custom styles for this template -->
+    <link href="{{ url_for(endpoint='static', filename='css/signin.css') }}" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  </head>
+
+  <body class="text-center">
+    <form class="form-signin" method="post" action="/login/{{ user }}">
+      <img class="mb-4" src="https://thescriptgroup.files.wordpress.com/2018/10/cropped-logotransp23.png" alt="" height="40%" width="40%">
+      <h1 class="h3 mb-3 font-weight-normal">Please sign in, {{ user }}</h1>
+      <label for="inputPassword" class="sr-only">Password</label>
+      <input type="password" id="inputPassword" class="form-control" placeholder="password" name="password" required>
+      <p>
+        <select name="table" id="table" class="form-control" required>
+            {% for k, v in events.items() %}
+                <option value="{{ k }}">{{ v }}</option>
+            {% endfor %}
+        </select>
+      </p>
+      <button class="btn btn-lg btn-primary btn-block" type="submit" value="Login">Sign in</button>
+      <p class="mt-5 mb-3 text-muted">&copy; 2019-2020</p>
+    </form>
+  </body>
+</html>
