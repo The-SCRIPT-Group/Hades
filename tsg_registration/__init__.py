@@ -76,7 +76,6 @@ EVENT_EXTRA_INFO = {
     "p5_november_2019": {"Level": "level"},
 }
 
-
 from tsg_registration.models.csi import CSINovember2019, CSINovemberNonMember2019
 from tsg_registration.models.codex import CodexApril2019, RSC2019
 from tsg_registration.models.techo import EHJuly2019, P5November2019

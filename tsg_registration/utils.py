@@ -1,6 +1,6 @@
-from tsg_registration import db
-
 import json
+
+from tsg_registration import db
 
 
 def validate(data, table):
