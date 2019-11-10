@@ -316,7 +316,7 @@ def p5():
 @app.route("/")
 def root():
     """Root endpoint. Displays the form to the user."""
-    return "<marquee>Nothing here right now!</marquee>"
+    return redirect(url_for('p5'))
 
 
 def get_current_id(table: db.Model):
