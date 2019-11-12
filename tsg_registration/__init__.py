@@ -311,18 +311,18 @@ def p5():
         </select>
         """,
         extra_info={
-            'title': 'Requirements',
-            'content': """-> A fully charged laptop <br>
+            "title": "Requirements",
+            "content": """-> A fully charged laptop <br>
                        -> Some files to be downloaded beforehand, which will be informed in the E-Mail once you register
-                       """
-        }
+                       """,
+        },
     )
 
 
 @app.route("/")
 def root():
     """Root endpoint. Displays the form to the user."""
-    return redirect(url_for('p5'))
+    return redirect(url_for("p5"))
 
 
 def get_current_id(table: db.Model):
