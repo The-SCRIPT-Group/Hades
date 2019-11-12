@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ url_for(endpoint='static', filename='css/homepage.css') }}" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 </head>
-<body {% if extra_info %} onload="document.getElementById('message-display').style.display = 'block';" {% endif %}>
+<body>
 <div class="w3-container w3-padding-top w3-margin-top">
     <div class="w3-container w3-card-4 w3-black w3-row w3-hide-medium w3-hide-small opacity-prop">
         <div class="w3-col" style="width: 30%;">
@@ -103,26 +103,29 @@
         {% endif %}
         <button type="submit"
                 style="margin:auto;display:block"
-                class="btn btn-dark">Submit
+                class="btn btn-dark"
+                {% if extra_info %}onClick= "document.getElementById('message-display').style.display = 'block';"
+                {% endif %}>
+            Submit
         </button>
     </form>
 </div>
 
 {% if extra_info %}
-<div id="message-display" class="w3-modal">
-    <div class="w3-modal-content w3-animate-top w3-card-4" style="width: 25%">
-        <header class="w3-container w3-red w3-center">
+    <div id="message-display" class="w3-modal">
+        <div class="w3-modal-content w3-animate-top w3-card-4" style="width: 25%">
+            <header class="w3-container w3-red w3-center">
             <span onclick="document.getElementById('message-display').style.display='none'"
                   class="w3-button w3-display-topright">&times;</span>
-            <h2 id="message-title">{{ extra_info.title }}</h2>
-        </header>
-        <div class="w3-container w3-center">
-            <p id="message-content">
-                {{ extra_info.content|safe }}
-            </p>
+                <h2 id="message-title">{{ extra_info.title }}</h2>
+            </header>
+            <div class="w3-container w3-center">
+                <p id="message-content">
+                    {{ extra_info.content|safe }}
+                </p>
+            </div>
         </div>
     </div>
-</div>
 {% endif %}
 </body>
 </html>
