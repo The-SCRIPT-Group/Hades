@@ -310,6 +310,12 @@ def p5():
         <option value="Intermediate">Intermediate</option>
         </select>
         """,
+        extra_info={
+            'title': 'Requirements',
+            'content': """-> A fully charged laptop <br>
+                       -> Some files to be downloaded beforehand, which will be informed in the E-Mail once you register
+                       """
+        }
     )
 
 

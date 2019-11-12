@@ -6,11 +6,8 @@
     <link rel="stylesheet" href="{{ url_for(endpoint='static', filename='css/w3.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for(endpoint='static', filename='css/homepage.css') }}" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    {% if extra_info %}
-        <script>alert("{{ extra_info }}");</script>
-    {% endif %}
 </head>
-<body>
+<body {% if extra_info %} onload="document.getElementById('message-display').style.display = 'block';" {% endif %}>
 <div class="w3-container w3-padding-top w3-margin-top">
     <div class="w3-container w3-card-4 w3-black w3-row w3-hide-medium w3-hide-small opacity-prop">
         <div class="w3-col" style="width: 30%;">
@@ -37,12 +34,6 @@
         <div class="form-group">
             <br>
             <br>
-            <h3><b>Requirements</b><br></h3>
-            <p>
-                -> A fully charged laptop<br>
--> Some files to be downloaded beforehand, which will be informed in the E-Mail once you register
-            </p>
-            <hr>
             <p>Name (required)</p>
             <input type="text" name="name" placeholder="Enter your name" maxlength="30" required class="form-control"
                    pattern="^\w[\w, ]+$"/>
@@ -116,5 +107,22 @@
         </button>
     </form>
 </div>
+
+{% if extra_info %}
+<div id="message-display" class="w3-modal">
+    <div class="w3-modal-content w3-animate-top w3-card-4" style="width: 25%">
+        <header class="w3-container w3-red w3-center">
+            <span onclick="document.getElementById('message-display').style.display='none'"
+                  class="w3-button w3-display-topright">&times;</span>
+            <h2 id="message-title">{{ extra_info.title }}</h2>
+        </header>
+        <div class="w3-container w3-center">
+            <p id="message-content">
+                {{ extra_info.content|safe }}
+            </p>
+        </div>
+    </div>
+</div>
+{% endif %}
 </body>
 </html>
