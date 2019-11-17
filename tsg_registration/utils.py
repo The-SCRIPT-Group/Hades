@@ -1,4 +1,4 @@
-import json
+from json import dumps
 
 from tsg_registration import db
 
@@ -24,12 +24,14 @@ def validate(data, table):
 
 
 def users_to_json(users):
-    json_data = {}
+    data = []
     for user in users:
-        json_data[user.id] = {
+        json_data = {
+            "id": user.id,
             "name": user.name,
             "email": user.email,
             "phone": user.phone,
         }
+        data.append(json_data)
 
-    return json.dumps(json_data)
+    return dumps(data)
