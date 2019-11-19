@@ -76,3 +76,39 @@ class Hacktoberfest2019(db.Model):
 
     def validate(self):
         return validate(self, Hacktoberfest2019)
+
+
+class CNovember2019(db.Model):
+    """
+    Database model class
+    """
+
+    __tablename__ = "c_november_2019"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30))
+    email = db.Column(db.String(50), unique=True)
+    phone = db.Column(db.String(21), unique=True)
+    year = db.Column(db.String)
+    prn = db.Column(db.Integer, unique=True)
+    roll = db.Column(db.String, unique=True)
+
+    def __repr__(self):
+        return "%r" % [
+            self.id,
+            self.name,
+            self.email,
+            self.phone,
+            self.department,
+            self.year,
+            self.prn,
+        ]
+
+    def validate(self):
+        if self.year == "2nd":
+            return validate(self, CNovember2019)
+        for user in db.session.query(CNovember2019).all():
+            if user.prn == self.prn:
+                return f"PRN {self.prn} has already been registered!"
+            if user.roll == self.roll:
+                return f"Roll number {self.roll} has already been registered!"
+        return "This workshop is <b>only</b> for SY students"

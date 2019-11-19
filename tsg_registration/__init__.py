@@ -68,12 +68,14 @@ EVENTS = {
     "csi_november_2019": "CSI November 2019",
     "csi_november_non_member_2019": "CSI November 2019 (Non members)",
     "p5_november_2019": "p5.JS November 2019",
+    "c_november_2019": "C Workshop November 2019",
 }
 
 EVENT_EXTRA_INFO = {
     "csi_november_2019": {"CSI ID": "csi_id"},
     "csi_november_non_member_2019": {"PRN": "prn", "Payment Status": "noqr_paid"},
     "p5_november_2019": {"Level": "level"},
+    "c_november_2019": {"PRN": "prn"},
 }
 
 from tsg_registration.models.csi import CSINovember2019, CSINovemberNonMember2019
@@ -83,6 +85,7 @@ from tsg_registration.models.workshop import (
     CPPWSMay2019,
     CCPPWSAugust2019,
     Hacktoberfest2019,
+    CNovember2019,
 )
 
 EVENT_CLASSES = {
@@ -95,6 +98,7 @@ EVENT_CLASSES = {
     "csi_november_2019": CSINovember2019,
     "csi_november_non_member_2019": CSINovemberNonMember2019,
     "p5_november_2019": P5November2019,
+    "c_november_2019": CNovember2019,
 }
 
 
@@ -313,6 +317,36 @@ def p5():
         extra_info={
             "title": "Requirements",
             "content": """-> A fully charged laptop <br>
+                       -> Some files to be downloaded beforehand, which will be informed in the E-Mail once you register
+                       """,
+        },
+    )
+
+
+@app.route("/c")
+def c():
+    return render_template(
+        "form.html",
+        event="C Workshop",
+        group=False,
+        department=True,
+        date="23rd November 2019",
+        db="c_november_2019",
+        year=True,
+        extra_message="""Please carry your laptops for the event, and please download Eclipse IDE""",
+        miscellaneous="""
+            <p>Roll Number</p>
+            <input type="text" name="roll" placeholder="Please enter roll number"
+                   maxlength="4" class="form-control" pattern="[\w]{2}[\d]{2}"/ required>
+            <hr>
+            <p>PRN</p>
+            <input type="text" name="prn" placeholder="Please enter PRN"
+                   maxlength="10" class="form-control" pattern="[\d]{10}"/ required>
+            <hr>
+        """,
+        extra_info={
+            "title": "Requirements",
+            "content": """-> A fully charged laptop (preferable) <br>
                        -> Some files to be downloaded beforehand, which will be informed in the E-Mail once you register
                        """,
         },
