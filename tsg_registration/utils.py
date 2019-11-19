@@ -24,14 +24,13 @@ def validate(data, table):
 
 
 def users_to_json(users):
-    data = []
+    json_data = []
     for user in users:
-        json_data = {
-            "id": user.id,
-            "name": user.name,
-            "email": user.email,
-            "phone": user.phone,
-        }
-        data.append(json_data)
+        user_data = {}
+        for k, v in user.__dict__.items():
+            if k == "_sa_instance_state":
+                continue
+            user_data[k] = v
+        json_data.append(user_data)
 
-    return dumps(data)
+    return dumps(json_data)
