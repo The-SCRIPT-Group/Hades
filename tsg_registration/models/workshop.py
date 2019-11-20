@@ -98,9 +98,9 @@ class CNovember2019(db.Model):
             self.name,
             self.email,
             self.phone,
-            self.department,
             self.year,
             self.prn,
+            self.roll,
         ]
 
     def validate(self):
