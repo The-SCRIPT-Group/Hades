@@ -303,7 +303,6 @@ def c():
         event="C Workshop",
         date="23rd November 2019",
         db="c_november_2019",
-        year=True,
         extra_message="""Please carry your laptops for the event, and please download Eclipse IDE""",
         miscellaneous="""
             <p>Roll Number</p>
@@ -314,6 +313,12 @@ def c():
             <input type="text" name="prn" placeholder="Please enter PRN"
                    maxlength="10" class="form-control" pattern="[\d]{10}"/ required>
             <hr>
+                <select name="year" class="form-control" id="year">
+                    <option value="1st">FY</option>
+                    <option value="2nd" selected>SY</option>
+                    <option value="3rd">TY</option>
+                </select>
+                <hr>
         """,
         extra_info={
             "title": "Requirements",
