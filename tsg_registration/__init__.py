@@ -296,40 +296,11 @@ def users_api():
     return ret
 
 
-@app.route("/p5")
-def p5():
-    return render_template(
-        "form.html",
-        event="p5.JS Techo",
-        group=False,
-        department=True,
-        date="19th/20th November 2019",
-        db="p5_november_2019",
-        year=True,
-        extra_message="""Please carry your laptops for the event, and please download <a href="https://github.com/processing/p5.js/releases/download/0.10.2/p5.zip">this</a>!""",
-        miscellaneous="""
-        <p>If you've attended the previous p5 workshop on Snake Game, choose Intermediate, else choose Basic.</p>
-        <select name="level" class="form-control" id="level" required>
-        <option value="Basic">Basic</option>
-        <option value="Intermediate">Intermediate</option>
-        </select>
-        """,
-        extra_info={
-            "title": "Requirements",
-            "content": """-> A fully charged laptop <br>
-                       -> Some files to be downloaded beforehand, which will be informed in the E-Mail once you register
-                       """,
-        },
-    )
-
-
 @app.route("/c")
 def c():
     return render_template(
         "form.html",
         event="C Workshop",
-        group=False,
-        department=True,
         date="23rd November 2019",
         db="c_november_2019",
         year=True,
@@ -356,7 +327,7 @@ def c():
 @app.route("/")
 def root():
     """Root endpoint. Displays the form to the user."""
-    return redirect(url_for("p5"))
+    return redirect(url_for("c"))
 
 
 def get_current_id(table: db.Model):
