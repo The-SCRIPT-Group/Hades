@@ -75,7 +75,7 @@ EVENT_EXTRA_INFO = {
     "csi_november_2019": {"CSI ID": "csi_id"},
     "csi_november_non_member_2019": {"PRN": "prn", "Payment Status": "noqr_paid"},
     "p5_november_2019": {"Level": "level"},
-    "c_november_2019": {"PRN": "prn"},
+    "c_november_2019": {"PRN": "prn", "Roll Number": "roll"},
 }
 
 from tsg_registration.models.csi import CSINovember2019, CSINovemberNonMember2019
