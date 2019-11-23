@@ -296,6 +296,28 @@ def users_api():
     return ret
 
 
+@app.route("/api/delete", methods=["DELETE"])
+def delete_user():
+    try:
+        table = request.form["table"]
+        id = request.form["id"]
+        authorization_token = request.headers.get("Authorization")
+    except KeyError:
+        return "Please provide all the needed info!"
+    if authorization_token == os.getenv("AUTHORIZATION_TOKEN"):
+        table = get_db_by_name(table)
+    elif authorization_token == os.getenv("CSI_AUTHORIZATION_TOKEN"):
+        table = get_db_by_name(table)
+        if table not in (CSINovember2019, CSINovemberNonMember2019):
+            table = CSINovember2019
+    else:
+        return jsonify({"message": "Unauthorized"}), 401
+    user = db.session.query(table).get(id)
+    db.session.delete(user)
+    db.session.commit()
+    return f"Deleted user {user.name}"
+
+
 @app.route("/c")
 def c():
     return render_template(
