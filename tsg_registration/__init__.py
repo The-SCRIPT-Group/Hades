@@ -90,6 +90,8 @@ from tsg_registration.models.workshop import (
     BitgritDecember2019,
 )
 
+from tsg_registration.models.test import TestTable
+
 EVENT_CLASSES = {
     "codex_april_2019": CodexApril2019,
     "eh_july_2019": EHJuly2019,
@@ -102,6 +104,7 @@ EVENT_CLASSES = {
     "p5_november_2019": P5November2019,
     "c_november_2019": CNovember2019,
     "bitgrit_december_2019": BitgritDecember2019,
+    "test_users": TestTable,
 }
 
 
@@ -344,6 +347,33 @@ def update_user():
         setattr(current_user, k, v)
     db.session.commit()
     return f"Updated user {current_user}"
+
+
+@app.route("/api/sendmail", methods=["POST"])
+def send_mail():
+    try:
+        content = request.form["content"]
+        subject = request.form["subject"]
+        table = request.form["table"]
+        authorization_token = request.headers.get("Authorization")
+    except KeyError:
+        return "Please provide all the needed info!"
+    if authorization_token == os.getenv("AUTHORIZATION_TOKEN"):
+        table = get_db_by_name(table)
+    else:
+        return jsonify({"message": "Unauthorized"}), 401
+    users = db.session.query(table).all()
+
+    mail_content = Content("text/html", content)
+    mail = Mail(FROM_EMAIL, FROM_EMAIL, subject, mail_content)
+    for user in users:
+        mail.add_bcc((user.email, user.name))
+    try:
+        SendGridAPIClient(SENDGRID_API_KEY).send(mail)
+    except Exception as e:
+        print(e)
+        return jsonify({"response": "Failed to send mail"})
+    return jsonify({"response": "Sent mail"}, 200)
 
 
 @app.route("/bitgrit")
