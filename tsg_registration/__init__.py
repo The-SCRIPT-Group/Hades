@@ -33,6 +33,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 
 DEPARTMENTS = {
     "cse": "Computer Science and Engineering",
+    "mtech": "M.Tech",
     "ece": "Electronics and Communication Engineering",
     "ee": "Electrical Engineering",
     "mech": "Mechanical Engineering",
