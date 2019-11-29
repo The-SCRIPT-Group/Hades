@@ -69,6 +69,7 @@ EVENTS = {
     "csi_november_non_member_2019": "CSI November 2019 (Non members)",
     "p5_november_2019": "p5.JS November 2019",
     "c_november_2019": "C Workshop November 2019",
+    "bitgrit_december_2019": "Introduction to Blockchain and Democratising AI by Bitgrit",
 }
 
 EVENT_EXTRA_INFO = {
@@ -86,6 +87,7 @@ from tsg_registration.models.workshop import (
     CCPPWSAugust2019,
     Hacktoberfest2019,
     CNovember2019,
+    BitgritDecember2019,
 )
 
 EVENT_CLASSES = {
@@ -99,6 +101,7 @@ EVENT_CLASSES = {
     "csi_november_non_member_2019": CSINovemberNonMember2019,
     "p5_november_2019": P5November2019,
     "c_november_2019": CNovember2019,
+    "bitgrit_december_2019": BitgritDecember2019,
 }
 
 
@@ -343,43 +346,23 @@ def update_user():
     return f"Updated user {current_user}"
 
 
-@app.route("/c")
-def c():
+@app.route("/bitgrit")
+def bitgrit():
     return render_template(
         "form.html",
-        event="C Workshop",
-        date="23rd November 2019",
-        db="c_november_2019",
-        extra_message="""Please carry your laptops for the event, and please download Eclipse IDE""",
-        miscellaneous="""
-            <p>Roll Number</p>
-            <input type="text" name="roll" placeholder="Please enter roll number"
-                   maxlength="4" class="form-control" pattern="[\w]{2}[\d]{2}"/ required>
-            <hr>
-            <p>PRN</p>
-            <input type="text" name="prn" placeholder="Please enter PRN"
-                   maxlength="10" class="form-control" pattern="[\d]{10}"/ required>
-            <hr>
-                <select name="year" class="form-control" id="year">
-                    <option value="1st">FY</option>
-                    <option value="2nd" selected>SY</option>
-                    <option value="3rd">TY</option>
-                </select>
-                <hr>
-        """,
-        extra_info={
-            "title": "Requirements",
-            "content": """-> A fully charged laptop (preferable) <br>
-                       -> Some files to be downloaded beforehand, which will be informed in the E-Mail once you register
-                       """,
-        },
+        date="4th December 2019",
+        db="bitgrit_december_2019",
+        department=True,
+        extra_message="Timing is 1:30 - 5:30 pm on 4th December, 2019",
+        event="Introduction to Blockchain and Democratising AI by Bitgrit",
+        year=True,
     )
 
 
 @app.route("/")
 def root():
     """Root endpoint. Displays the form to the user."""
-    return redirect(url_for("c"))
+    return redirect(url_for("bitgrit"))
 
 
 def get_current_id(table: db.Model):

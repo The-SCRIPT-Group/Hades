@@ -112,3 +112,31 @@ class CNovember2019(db.Model):
             if user.roll == self.roll:
                 return f"Roll number {self.roll} has already been registered!"
         return "This workshop is <b>only</b> for SY students"
+        4
+
+
+class BitgritDecember2019(db.Model):
+    """
+    Database model class
+    """
+
+    __tablename__ = "bitgrit_december_2019"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30))
+    email = db.Column(db.String(50), unique=True)
+    phone = db.Column(db.String(21), unique=True)
+    department = db.Column(db.String(50))
+    year = db.Column(db.String)
+
+    def __repr__(self):
+        return "%r" % [
+            self.id,
+            self.name,
+            self.email,
+            self.phone,
+            self.department,
+            self.year,
+        ]
+
+    def validate(self):
+        return validate(self, BitgritDecember2019)
