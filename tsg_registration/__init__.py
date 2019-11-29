@@ -354,7 +354,7 @@ def bitgrit():
         db="bitgrit_december_2019",
         department=True,
         extra_message="Timing is 1:30 - 5:30 pm on 4th December, 2019",
-        event="Introduction to Blockchain and Democratising AI by Bitgrit",
+        event="Bitgrit Workshop",
         year=True,
     )
 
