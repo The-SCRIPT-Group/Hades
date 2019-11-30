@@ -15,11 +15,11 @@ from flask_sqlalchemy import SQLAlchemy
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Attachment, Content, Mail
 from sqlalchemy import asc, desc, exc
-from telegram import ChatAction
-from telegram.ext import Updater
+
+import tsg_registration.telegram
 
 bot_api_key = os.getenv("BOT_API_KEY")
-updater = Updater(bot_api_key) if bot_api_key is not None else None
+tg = telegram.TG(bot_api_key)
 
 FROM_EMAIL = os.getenv("FROM_EMAIL")
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
@@ -213,12 +213,10 @@ You're <b>required</b> to present this on the day of the event.""".format(
     caption = f"Name: {user.name} | ID: {user.id}"
     if "extra_field_telegram" in request.form:
         caption += f" | {request.form['extra_field_telegram']} - {request.form[request.form['extra_field_telegram']]}"
-    if updater is not None:
-        updater.bot.sendChatAction(chat_id, action=ChatAction.TYPING)
-        updater.bot.sendMessage(chat_id, f"New registration for {event_name}!")
-        updater.bot.sendDocument(
-            chat_id, document=open("qr.png", "rb"), caption=caption
-        )
+    if bot_api_key is not None:
+        tg.send_chat_action(chat_id, "typing")
+        tg.send_message(chat_id, f"New registration for {event_name}!")
+        tg.send_document(chat_id, caption, "qr.png")
 
     return 'Please save this QR Code. It has also been emailed to you.<br><img src=\
             "data:image/png;base64, {}"/>'.format(
