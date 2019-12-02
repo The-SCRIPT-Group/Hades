@@ -138,6 +138,14 @@ def load_user_from_request(request):
     return None
 
 
+def check_access(table_name: str):
+    return (
+        db.session.query(Access)
+        .filter(Access.user == current_user.username)
+        .filter(Access.event == table_name)
+    )
+
+
 def get_table_by_name(name: str) -> db.Model:
     """Returns the database model class corresponding to the given name."""
     try:
@@ -367,11 +375,7 @@ def users_api():
     except KeyError:
         return jsonify({"response": "Please provide all required data"}), 400
 
-    access = (
-        db.session.query(Access)
-        .filter(Access.user == current_user.username)
-        .filter(Access.event == table_name)
-    )
+    access = check_access(table_name)
     if access is None:
         ret = (jsonify({"response": "Unauthorized"}), 401)
     else:
@@ -393,11 +397,7 @@ def create():
     if table is None:
         return jsonify({"response": "Table does not exist!"}), 400
 
-    access = (
-        db.session.query(Access)
-        .filter(Access.user == current_user.username)
-        .filter(Access.event == table_name)
-    )
+    access = check_access(table_name)
     if access is None:
         return jsonify({"response": "Unauthorized"}), 401
 
@@ -431,11 +431,7 @@ def delete_user():
         id = request.form["id"]
     except KeyError:
         return jsonify({"response": "Please provide all required data"}), 400
-    access = (
-        db.session.query(Access)
-        .filter(Access.user == current_user.username)
-        .filter(Access.event == table_name)
-    )
+    access = check_access(table_name)
     if access is None:
         return jsonify({"response": "Unauthorized"}), 401
     table = get_table_by_name(table_name)
@@ -454,11 +450,7 @@ def update_user():
         data = request.form[key]
     except KeyError:
         return jsonify({"response": "Please provide all required data"}), 400
-    access = (
-        db.session.query(Access)
-        .filter(Access.user == current_user.username)
-        .filter(Access.event == table_name)
-    )
+    access = check_access(table_name)
     if access is None:
         return jsonify({"response": "Unauthorized"}), 401
     table = get_table_by_name(table_name)
@@ -490,11 +482,7 @@ def send_mail():
         table_name = request.form["table"]
     except KeyError:
         return jsonify({"response": "Please provide all required data"}), 400
-    access = (
-        db.session.query(Access)
-        .filter(Access.user == current_user.username)
-        .filter(Access.event == table_name)
-    )
+    access = check_access(table_name)
     if access is None:
         return jsonify({"response": "Unauthorized"}), 401
     table = get_table_by_name(table_name)
