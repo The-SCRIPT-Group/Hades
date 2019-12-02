@@ -1,0 +1,24 @@
+{% extends "base-login.html" %}
+
+{% block title %}
+    <title>Register</title>
+{% endblock %}
+
+{% block content %}
+    <h1 class="h3 mb-3 font-weight-normal">Please enter your details to register!</h1>
+    <label for="inputName" class="sr-only">Username</label>
+    <input type="text" id="inputName" class="form-control" placeholder="name" name="name" pattern="^\w[\w, ]+$"
+           required>
+    <br>
+    <label for="inputUsername" class="sr-only">Username</label>
+    <input type="text" id="inputEmail" class="form-control" placeholder="email" name="email" required>
+    <br>
+    <label for="inputEmail" class="sr-only">Email</label>
+    <input type="text" id="inputUsername" class="form-control" placeholder="username" name="username"
+           pattern="^.+@[^\.].*\.[a-z]{2,}$" required>
+    <br>
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" id="inputPassword" class="form-control" placeholder="password" name="password" required>
+    <br>
+    <button class="btn btn-lg btn-primary btn-block" type="submit" value="">Register</button>
+{% endblock %}
