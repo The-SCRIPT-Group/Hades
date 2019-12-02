@@ -12,43 +12,15 @@
 <div class="w3-container w3-padding">
     <table class="w3-table w3-border w3-border-red w3-centered">
         <tr class="w3-red">
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Phone Number</th>
-            <th>Department</th>
-            <th>WhatsApp Link</th>
-            <th>Year</th>
-            {% for column in extra_columns.keys() %}
-                <th>{{ column }}</th>
+            {% for c in columns %}
+                <th>{{ c.title() }}</th>
             {% endfor %}
         </tr>
         {% for user in users %}
             <tr>
-                <td>{{ user['id'] }}</td>
-                <td>{{ user['name'] }}</td>
-                <td>{{ user['email'] }}</td>
-                <td>{{ user['phone'] }}</td>
-                {% if user['department'] %}
-                    <td>{{ user['department'] }}</td>
-                {% else %}
-                    <td>Computer Science and Engineering</td>
-                {% endif %}
-                {% if '|' in user['phone'] %}
-                    <td><a href="https://api.whatsapp.com/send?phone=91{{ user['phone'].split('|')[1] }}"
-                           target=_blank class="w3-text-blue">WhatsApp</a>
-                    </td>
-                {% else %}
-                    <td><a href="https://api.whatsapp.com/send?phone=91{{ user['phone'] }}" target=_blank class="w3-text-blue">WhatsApp</a>
-                    </td>
-                {% endif %}
-                {% if user['year'] %}
-                    <td>{{ user['year'] }}</td>
-                {% endif %}
-                {% for column in extra_columns.values() %}
-                    <td>{{ user[column] }}</td>
+                {% for c in columns %}
+                    <th>{{ user[c] }}</th>
                 {% endfor %}
-
             </tr>
         {% endfor %}
     </table>

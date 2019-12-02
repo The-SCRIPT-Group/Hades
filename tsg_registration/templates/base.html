@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    {% block title %}
+    <title>Base</title>
+    {% endblock %}
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/sign-in/">
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- Theme CSS -->
+
+    <!-- Custom styles for this template -->
+    <link href="{{ url_for(endpoint='static', filename='css/signin.css') }}" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+</head>
+
+<body class="text-center">
+<form class="form-signin" method="post">
+    <img class="mb-4" src="https://thescriptgroup.files.wordpress.com/2018/10/cropped-logotransp23.png" alt=""
+         height="40%" width="40%">
+    {% block content %} {% endblock %}
+    {% block copyright %}<p class="mt-5 mb-3 text-muted">&copy; 2019-2020</p> {% endblock %}
+</form>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{% extends "base-login.html" %}
+
+{% block title %}
+    <title>Choose event</title>
+{% endblock %}
+
+{% block content %}
+    <p>
+        <select name="table" id="table" class="form-control" required>
+            {% for event in events %}
+                <option value="{{ event.name }}">{{ event.full_name }}</option>
+            {% endfor %}
+        </select>
+    </p>
+    <button class="btn btn-lg btn-primary btn-block" type="submit" value="">View registrations</button>
+{% endblock %}
