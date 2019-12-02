@@ -58,27 +58,6 @@ BLACKLISTED_FIELDS = (
     "whatsapp_number",
 )
 
-EVENTS = {
-    "codex_april_2019": "CodeX April 2019",
-    "eh_july_2019": "Ethical Hacking July 2019",
-    "cpp_workshop_may_2019": "CPP Workshop May 2019",
-    "rsc_2019": "RSC 2019",
-    "c_cpp_workshop_august_2019": "C/C++ August 2019",
-    "do_hacktoberfest_2019": "DigitalOcean Hacktoberfest 2019",
-    "csi_november_2019": "CSI November 2019",
-    "csi_november_non_member_2019": "CSI November 2019 (Non members)",
-    "p5_november_2019": "p5.JS November 2019",
-    "c_november_2019": "C Workshop November 2019",
-    "bitgrit_december_2019": "Introduction to Blockchain and Democratising AI by Bitgrit",
-}
-
-EVENT_EXTRA_INFO = {
-    "csi_november_2019": {"CSI ID": "csi_id"},
-    "csi_november_non_member_2019": {"PRN": "prn", "Payment Status": "noqr_paid"},
-    "p5_november_2019": {"Level": "level"},
-    "c_november_2019": {"PRN": "prn", "Roll Number": "roll"},
-}
-
 from tsg_registration.models.csi import CSINovember2019, CSINovemberNonMember2019
 from tsg_registration.models.codex import CodexApril2019, RSC2019
 from tsg_registration.models.techo import EHJuly2019, P5November2019
