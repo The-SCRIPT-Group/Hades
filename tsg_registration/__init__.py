@@ -329,8 +329,9 @@ def events():
     if request.method == "POST":
         table = get_table_by_name(request.form["table"])
         user_data = db.session.query(table).all()
-        columns = [c for c in table.__table__.columns._data.keys()]
-        return render_template("users.html", users=user_data, columns=columns)
+        return render_template(
+            "users.html", users=user_data, columns=table.__table__.columns._data.keys()
+        )
     accessible_tables = (
         db.session.query(Events)
         .filter(Users.username == current_user.username)
