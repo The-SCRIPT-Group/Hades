@@ -11,11 +11,11 @@
            required>
     <br>
     <label for="inputUsername" class="sr-only">Username</label>
-    <input type="text" id="inputEmail" class="form-control" placeholder="email" name="email" required>
+    <input type="text" id="inputEmail" class="form-control" placeholder="email" name="email"
+           pattern="^.+@[^\.].*\.[a-z]{2,}$" required>
     <br>
     <label for="inputEmail" class="sr-only">Email</label>
-    <input type="text" id="inputUsername" class="form-control" placeholder="username" name="username"
-           pattern="^.+@[^\.].*\.[a-z]{2,}$" required>
+    <input type="text" id="inputUsername" class="form-control" placeholder="username" name="username" required>
     <br>
     <label for="inputPassword" class="sr-only">Password</label>
     <input type="password" id="inputPassword" class="form-control" placeholder="password" name="password" required>
