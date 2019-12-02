@@ -350,14 +350,13 @@ def logout():
     return f"Logged out of {name}'s account!"
 
 
-@app.route("/api/login", methods=["POST"])
-def login_api():
-    user = db.session.query(Users).filter_by(username=request.form["username"]).first()
-    if user is not None:
-        if bcrypt.check_password_hash(user.password, request.form["password"]):
-            return "Login verified"
-        return f"Wrong password for {user}!"
-    return "No such User"
+@app.route("/api/authenticate", methods=["POST"])
+@login_required
+def authenticate_api():
+    return (
+        jsonify({"message": f"Successfully authenticated as {current_user.username}"}),
+        200,
+    )
 
 
 @app.route("/api/events")
