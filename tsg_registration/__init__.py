@@ -377,22 +377,21 @@ def events_api():
     return jsonify(ret), 200
 
 
-@app.route("/api/users", methods=["POST"])
+@app.route("/api/users")
 @login_required
 def users_api():
     """Returns a JSON consisting of the users in the given table"""
-    try:
-        table_name = request.form["table"]
-    except KeyError:
+    table_name = request.args.get("table")
+    if not table_name:
         return jsonify({"response": "Please provide all required data"}), 400
 
     access = check_access(table_name)
     if access is None:
-        ret = (jsonify({"response": "Unauthorized"}), 401)
-    else:
-        table = get_table_by_name(request.form["table"])
-        ret = (users_to_json(db.session.query(table).all()), 200)
-    return ret
+        return jsonify({"response": "Unauthorized"}), 401
+    table = get_table_by_name(table_name)
+    if table is None:
+        return jsonify({"response": f"Table {table_name} does not exist!"}), 400
+    return users_to_json(db.session.query(table).all()), 200
 
 
 @app.route("/api/create", methods=["POST"])
