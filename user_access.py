@@ -38,7 +38,7 @@ try:
         current_event = db.session.query(Events).get(table)
         stdout.write(f"{table} -> ")
         stdout.flush()
-        ch = stdin.read(1)
+        ch = input()[0]
         if ch == "h":
             send_help()
         elif ch == "g":
@@ -54,7 +54,7 @@ try:
             except IntegrityError:
                 print("IntegrityError, what did you do!")
                 break
-            print(f"Grant access on {table} to {username}")
+            print(f"Granted access on {table} to {username}")
 except EOFError:
     print("Exiting!")
 except KeyboardInterrupt:
