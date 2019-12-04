@@ -9,7 +9,7 @@ import base64
 import os
 from datetime import datetime
 from random import choice
-from string import ascii_letters, digits
+from string import ascii_letters, digits, punctuation
 from urllib.parse import urlparse, urljoin
 
 import qrcode
@@ -297,7 +297,7 @@ def register():
             email = request.form["email"]
         except KeyError:
             return jsonify({"response": "Please provide all required data"}), 400
-        api_key = "".join(choice(ascii_letters + digits) for _ in range(32))
+        api_key = "".join(choice(ascii_letters + digits + punctuation) for _ in range(32))
         u = Users(
             name=name,
             username=username,
