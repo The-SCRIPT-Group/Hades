@@ -297,7 +297,9 @@ def register():
             email = request.form["email"]
         except KeyError:
             return jsonify({"response": "Please provide all required data"}), 400
-        api_key = "".join(choice(ascii_letters + digits + punctuation) for _ in range(32))
+        api_key = "".join(
+            choice(ascii_letters + digits + punctuation) for _ in range(32)
+        )
         u = Users(
             name=name,
             username=username,
@@ -510,23 +512,10 @@ def send_mail():
     return jsonify({"response": "Sent mail"}), 200
 
 
-@app.route("/bitgrit")
-def bitgrit():
-    return render_template(
-        "form.html",
-        date="4th December 2019",
-        db="bitgrit_december_2019",
-        department=True,
-        extra_message="Timing is 1:30 - 5:30 pm on 4th December, 2019",
-        event="Bitgrit Workshop",
-        year=True,
-    )
-
-
 @app.route("/")
 def root():
     """Root endpoint. Displays the form to the user."""
-    return redirect(url_for("bitgrit"))
+    return "<marquee>Nothing here!</marquee>"
 
 
 def get_current_id(table: db.Model):
