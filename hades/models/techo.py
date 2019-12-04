@@ -1,5 +1,5 @@
-from tsg_registration import db
-from tsg_registration.utils import validate
+from hades import db
+from hades.utils import validate
 
 
 class EHJuly2019(db.Model):

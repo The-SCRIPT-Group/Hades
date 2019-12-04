@@ -1,4 +1,4 @@
-# QRStuff
+# Hades - TSG Event Management Application
 
 This application requires atleast python3.6 to run.
 
@@ -22,10 +22,6 @@ A few environment variables should be set for proper functionality
 
 `DATABASE_URL` - URL to database including credentials - set by default in heroku
 
-`USERNAME` - Username to access the /users endpoint
-
-`PASSWORD` - Password to access the /users endpoint
-
 To test locally if everything is deployed on heroku
 
 ```bash
@@ -45,11 +41,11 @@ There are various ways to run the application
 - With gunicorn
 
 ```bash
-gunicorn tsg_registration:app
+gunicorn hades:app
 ```
 
 - Directly running the module
 
 ```bash
-python3 -m tsg_registration
+python3 -m hades
 ```

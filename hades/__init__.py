@@ -27,7 +27,7 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Attachment, Content, Mail
 from sqlalchemy import desc, exc
 
-import tsg_registration.telegram
+import hades.telegram
 
 bot_api_key = os.getenv("BOT_API_KEY")
 tg = telegram.TG(bot_api_key)
@@ -43,7 +43,7 @@ login_manager.init_app(app)
 login_manager.login_view = "login"
 bcrypt = Bcrypt(app)
 
-from tsg_registration.utils import users_to_json
+from hades.utils import users_to_json
 
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 
@@ -76,10 +76,10 @@ BLACKLISTED_FIELDS = (
 )
 
 # Import event related classes
-from tsg_registration.models.csi import CSINovember2019, CSINovemberNonMember2019
-from tsg_registration.models.codex import CodexApril2019, RSC2019
-from tsg_registration.models.techo import EHJuly2019, P5November2019
-from tsg_registration.models.workshop import (
+from hades.models.csi import CSINovember2019, CSINovemberNonMember2019
+from hades.models.codex import CodexApril2019, RSC2019
+from hades.models.techo import EHJuly2019, P5November2019
+from hades.models.workshop import (
     CPPWSMay2019,
     CCPPWSAugust2019,
     Hacktoberfest2019,
@@ -88,10 +88,10 @@ from tsg_registration.models.workshop import (
 )
 
 # Import miscellaneous classes
-from tsg_registration.models.test import TestTable
-from tsg_registration.models.user import Users
-from tsg_registration.models.event import Events
-from tsg_registration.models.user_access import Access
+from hades.models.test import TestTable
+from hades.models.user import Users
+from hades.models.event import Events
+from hades.models.user_access import Access
 
 EVENT_CLASSES = {
     "codex_april_2019": CodexApril2019,

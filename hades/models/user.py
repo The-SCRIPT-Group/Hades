@@ -1,4 +1,4 @@
-from tsg_registration import db
+from hades import db
 
 from flask_login import UserMixin
 

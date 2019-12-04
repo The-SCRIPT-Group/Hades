@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-from tsg_registration import db
-from tsg_registration.models.event import Events
+from hades import db
+from hades.models.event import Events
 
 db.create_all()
 

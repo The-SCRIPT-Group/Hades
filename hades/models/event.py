@@ -1,4 +1,4 @@
-from tsg_registration import db
+from hades import db
 
 
 class Events(db.Model):

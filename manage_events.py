@@ -2,8 +2,8 @@
 
 from sys import stdin, stdout, exit
 
-from tsg_registration import db
-from tsg_registration.models.event import Events
+from hades import db
+from hades.models.event import Events
 
 
 def send_help():

@@ -1,1 +1,1 @@
-web: gunicorn tsg_registration:app
+web: gunicorn hades:app

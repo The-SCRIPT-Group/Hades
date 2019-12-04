@@ -4,10 +4,10 @@ from sys import stdin, stdout, exit
 
 from sqlalchemy.exc import IntegrityError
 
-from tsg_registration import db
-from tsg_registration.models.event import Events
-from tsg_registration.models.user import Users
-from tsg_registration.models.user_access import Access
+from hades import db
+from hades.models.event import Events
+from hades.models.user import Users
+from hades.models.user_access import Access
 
 
 tables = db.engine.table_names()

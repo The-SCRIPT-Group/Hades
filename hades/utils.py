@@ -1,6 +1,6 @@
 from json import dumps
 
-from tsg_registration import db
+from hades import db
 
 
 def validate(data, table):
