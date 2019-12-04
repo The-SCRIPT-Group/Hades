@@ -11,4 +11,4 @@ jobs:
     - run: |
           sudo apt install libpq-dev python3-psycopg2 -y
           pip install -r requirements.txt
-          black --check tsg_registration
+          black --check hades
