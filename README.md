@@ -24,13 +24,6 @@ A few environment variables should be set for proper functionality
 
 To test locally if everything is deployed on heroku
 
-```bash
-heroku config -a thescriptgroup --shell > .env
-heroku local
-```
-
-`heroku local` loads a `.env` file by default. If you do not have access to the project (as external contributors wouldn't), you can simply manually fill in the values in a simple key=value format.
-
 To export everything in .env to your environment, you can simply run
 ```bash
 for f in $(awk -F'=' '{print $1}' .env); do export $f; done
