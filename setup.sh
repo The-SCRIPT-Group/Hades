@@ -28,7 +28,7 @@ server {
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     location ^~ / {
-        proxy_pass        http://127.0.0.1:5000;
+        proxy_pass        http://127.0.0.1:5500;
     }
 }
 EOF
