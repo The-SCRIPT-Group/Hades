@@ -9,8 +9,8 @@ class Access(db.Model):
     __tablename__ = "access"
 
     event = db.Column(
-        db.String(), db.ForeignKey("events.name"), nullable=False, primary_key=True
+        db.String(50), db.ForeignKey("events.name"), nullable=False, primary_key=True
     )
     user = db.Column(
-        db.String(), db.ForeignKey("users.username"), nullable=False, primary_key=True
+        db.String(20), db.ForeignKey("users.username"), nullable=False, primary_key=True
     )

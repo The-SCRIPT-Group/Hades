@@ -13,7 +13,7 @@ class CSINovember2019(db.Model):
     email = db.Column(db.String(50), unique=True)
     phone = db.Column(db.String(21), unique=True)
     department = db.Column(db.String(50))
-    year = db.Column(db.String)
+    year = db.Column(db.String(3))
     csi_id = db.Column(db.String(3), unique=True)
 
     def __repr__(self):
@@ -45,9 +45,9 @@ class CSINovemberNonMember2019(db.Model):
     email = db.Column(db.String(50), unique=True)
     phone = db.Column(db.String(21), unique=True)
     department = db.Column(db.String(50))
-    year = db.Column(db.String)
+    year = db.Column(db.String(3))
     prn = db.Column(db.String(10), unique=True)
-    noqr_paid = db.Column(db.String)
+    noqr_paid = db.Column(db.String(20))
 
     def __repr__(self):
         return "%r" % [

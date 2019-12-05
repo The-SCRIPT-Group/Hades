@@ -8,5 +8,5 @@ class Events(db.Model):
 
     __tablename__ = "events"
 
-    name = db.Column(db.String(), primary_key=True)
-    full_name = db.Column(db.String(), unique=True)
+    name = db.Column(db.String(50), primary_key=True)
+    full_name = db.Column(db.String(60), unique=True)

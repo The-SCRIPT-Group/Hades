@@ -32,7 +32,7 @@ class RSC2019(db.Model):
     email = db.Column(db.String(50), unique=True)
     phone = db.Column(db.String(21), unique=True)
     department = db.Column(db.String(50))
-    year = db.Column(db.String)
+    year = db.Column(db.String(3))
 
     def __repr__(self):
         return "%r" % [

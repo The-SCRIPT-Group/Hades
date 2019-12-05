@@ -31,7 +31,7 @@ class CCPPWSAugust2019(db.Model):
     email = db.Column(db.String(50), unique=True)
     phone = db.Column(db.String(21), unique=True)
     department = db.Column(db.String(50))
-    year = db.Column(db.String)
+    year = db.Column(db.String(3))
 
     def __repr__(self):
         return "%r" % [
@@ -60,8 +60,8 @@ class Hacktoberfest2019(db.Model):
     email = db.Column(db.String(50), unique=True)
     phone = db.Column(db.String(21), unique=True)
     department = db.Column(db.String(50))
-    year = db.Column(db.String)
-    miscellaneous = db.Column(db.String)
+    year = db.Column(db.String(3))
+    miscellaneous = db.Column(db.String(2))
 
     def __repr__(self):
         return "%r" % [
@@ -88,9 +88,9 @@ class CNovember2019(db.Model):
     name = db.Column(db.String(30))
     email = db.Column(db.String(50), unique=True)
     phone = db.Column(db.String(21), unique=True)
-    year = db.Column(db.String)
+    year = db.Column(db.String(3))
     prn = db.Column(db.Integer, unique=True)
-    roll = db.Column(db.String, unique=True)
+    roll = db.Column(db.String(4), unique=True)
 
     def __repr__(self):
         return "%r" % [
@@ -126,7 +126,7 @@ class BitgritDecember2019(db.Model):
     email = db.Column(db.String(50), unique=True)
     phone = db.Column(db.String(21), unique=True)
     department = db.Column(db.String(50))
-    year = db.Column(db.String)
+    year = db.Column(db.String(3))
 
     def __repr__(self):
         return "%r" % [
