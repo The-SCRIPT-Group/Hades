@@ -14,6 +14,7 @@ server {
     location ^~ /.well-known/acme-challenge/ {
         root /var/www/html;
     }
+
     location / {
         return 301 https://hades.thescriptgroup.in$request_uri;
     }
@@ -29,8 +30,15 @@ server {
 
     location ^~ / {
         proxy_pass        http://127.0.0.1:5500;
+        proxy_redirect    off;
+
+        proxy_set_header   Host                 \$host;
+        proxy_set_header   X-Real-IP            \$remote_addr;
+        proxy_set_header   X-Forwarded-For      \$proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto    \$scheme;
     }
 }
+
 EOF
 sudo ln -s /etc/nginx/sites-available/hades.thescriptgroup.in /etc/nginx/sites-enabled/hades.thescriptgroup.in
 sudo rm -fv /etc/nginx/sites-{available,enabled}/default
