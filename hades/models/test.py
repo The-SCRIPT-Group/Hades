@@ -7,5 +7,7 @@ class TestTable(db.Model):
     """
 
     __tablename__ = "test_users"
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
-    email = db.Column(db.String(50), primary_key=True)
+    email = db.Column(db.String(50), unique=True)
+    phone = db.Column(db.String(21), unique=True)
