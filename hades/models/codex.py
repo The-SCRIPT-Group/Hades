@@ -46,3 +46,30 @@ class RSC2019(db.Model):
 
     def validate(self):
         return validate(self, RSC2019)
+
+
+class CodexDecember2019(db.Model):
+    """
+    Database model class
+    """
+
+    __tablename__ = "codex_december_2019"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30))
+    email = db.Column(db.String(50), unique=True)
+    phone = db.Column(db.String(21), unique=True)
+    department = db.Column(db.String(50))
+    year = db.Column(db.String(3))
+
+    def __repr__(self):
+        return "%r" % [
+            self.id,
+            self.name,
+            self.email,
+            self.phone,
+            self.department,
+            self.year,
+        ]
+
+    def validate(self):
+        return validate(self, CodexDecember2019)

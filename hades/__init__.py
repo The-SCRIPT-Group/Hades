@@ -77,7 +77,7 @@ BLACKLISTED_FIELDS = (
 
 # Import event related classes
 from hades.models.csi import CSINovember2019, CSINovemberNonMember2019
-from hades.models.codex import CodexApril2019, RSC2019
+from hades.models.codex import CodexApril2019, RSC2019, CodexDecember2019
 from hades.models.techo import EHJuly2019, P5November2019
 from hades.models.workshop import (
     CPPWSMay2019,
@@ -109,6 +109,7 @@ EVENT_CLASSES = {
     "access": Access,
     "users": Users,
     "events": Events,
+    "codex_december_2019": CodexDecember2019,
 }
 
 
@@ -320,7 +321,11 @@ def register():
                 400,
             )
         return (
-            jsonify({"response": f"Hello {username}, your API Key is {api_key}!"}),
+            jsonify(
+                {
+                    "response": f"Hello {username}, your account has been successfully created.<br>If you wish to use an API Key for sending requests, your key is <code>{api_key}</code>"
+                }
+            ),
             200,
         )
     return render_template("register.html")
