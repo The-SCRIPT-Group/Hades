@@ -20,22 +20,14 @@ class TG:
             "text": message,
             "parse_mode": parse_mode,
         }
-        return manager.request(
-            "POST",
-            f"https://api.telegram.org/bot{self.api_key}/sendMessage",
-            fields=data,
-        )
+        return self.send("sendMessage", data)
 
     def send_chat_action(self, chat_id, action):
         data = {
             "chat_id": chat_id,
             "action": action,
         }
-        return manager.request(
-            "POST",
-            f"https://api.telegram.org/bot{self.api_key}/sendChatAction",
-            fields=data,
-        )
+        return self.send("sendChatAction", data)
 
     def send_document(self, chat_id, caption, file_name, disable_notifications=False):
         data = {
@@ -44,8 +36,4 @@ class TG:
             "document": (file_name, open(file_name, "rb").read()),
             "disable_notification": disable_notifications,
         }
-        return manager.request(
-            "POST",
-            f"https://api.telegram.org/bot{self.api_key}/sendDocument",
-            fields=data,
-        )
+        return self.send("sendDocument", data)
