@@ -115,6 +115,10 @@ EVENT_CLASSES = {
 }
 
 
+def log(message):
+    log(log_channel, f"<bold>Hades</bold>: {message}")
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.query(Users).get(user_id)
@@ -129,8 +133,7 @@ def load_user_from_request(request):
         user = db.session.query(Users).get(username)
         if user is not None:
             if bcrypt.check_password_hash(user.password, password.strip()):
-                tg.send_message(
-                    log_channel,
+                log(
                     f"User <code>{user.name}</code> just authenticated a {request.method} API call with credentials!",
                 )
                 return user
@@ -141,8 +144,7 @@ def load_user_from_request(request):
         users = db.session.query(Users).all()
         for user in users:
             if bcrypt.check_password_hash(user.api_key, api_key):
-                tg.send_message(
-                    log_channel,
+                log(
                     f"User <code>{user.name}</code> just authenticated a {request.method} API call with an API key!",
                 )
                 return user
@@ -151,8 +153,7 @@ def load_user_from_request(request):
 
 
 def check_access(table_name: str):
-    tg.send_message(
-        log_channel,
+    log(
         f"User <code>{current_user.name}</code> trying to access <code>{table_name}</code>!",
     )
     return (
@@ -293,9 +294,7 @@ def login():
         if user is not None:
             password = request.form["password"]
             if bcrypt.check_password_hash(user.password, password):
-                tg.send_message(
-                    log_channel, f"User <code>{user.name}</code> logged in via webpage!"
-                )
+                log(f"User <code>{user.name}</code> logged in via webpage!")
                 login_user(user)
                 next = request.args.get("next")
                 if not is_safe_url(next):
@@ -337,9 +336,7 @@ def register():
                 ),
                 400,
             )
-        tg.send_message(
-            log_channel, f"User <code>{u.name}</code> account has been registered!"
-        )
+        log(f"User <code>{u.name}</code> account has been registered!")
         return f"Hello {username}, your account has been successfully created.<br>If you wish to use an API Key for sending requests, your key is <code>{api_key}</code>"
     return render_template("register.html")
 
@@ -351,8 +348,7 @@ def events():
         table = get_table_by_name(request.form["table"])
         if table is None:
             return "How exactly did you reach here?"
-        tg.send_message(
-            log_channel,
+        log(
             f"User <code>{current_user.name}</code> is accessing <code>{request.form['table']}</code>!",
         )
         user_data = db.session.query(table).all()
@@ -456,8 +452,7 @@ def create():
             ),
             400,
         )
-    tg.send_message(
-        log_channel,
+    log(
         f"User <code>{user}</code> has been created in table <code>{table_name}</code>!",
     )
     return jsonify({"response": f"Created user {user} successfully!"}), 200
@@ -478,8 +473,7 @@ def delete_user():
     user = db.session.query(table).get(id)
     db.session.delete(user)
     db.session.commit()
-    tg.send_message(
-        log_channel,
+    log(
         f"User <code>{current_user.name}</code> has deleted <code>{user}</code> from <code>{table_name}</code>!",
     )
     return f"Deleted user {user.name}"
@@ -514,8 +508,7 @@ def update_user():
             ),
             400,
         )
-    tg.send_message(
-        log_channel,
+    log(
         f"User <code>{current_user.name}</code> has updated <code>{user}</code> in <code>{table_name}</code>!",
     )
     return jsonify({"response": f"Updated user {user}"}), 200
@@ -545,8 +538,7 @@ def send_mail():
     except Exception as e:
         print(e)
         return jsonify({"response": "Failed to send mail"}), 500
-    tg.send_message(
-        log_channel,
+    log(
         f"User <code>{current_user.name}</code> has sent mail <code>{content}</code> with subject <code>{subject}</code> to <code>{table_name}</code>!",
     )
     return jsonify({"response": "Sent mail"}), 200
