@@ -32,6 +32,8 @@ import hades.telegram
 bot_api_key = os.getenv("BOT_API_KEY")
 tg = telegram.TG(bot_api_key)
 
+log_channel = os.getenv("LOG_ID")
+
 FROM_EMAIL = os.getenv("FROM_EMAIL")
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 
@@ -127,6 +129,10 @@ def load_user_from_request(request):
         user = db.session.query(Users).get(username)
         if user is not None:
             if bcrypt.check_password_hash(user.password, password.strip()):
+                tg.send_message(
+                    log_channel,
+                    f"User {user.name} logged in via API call with credentials!",
+                )
                 return user
         return None
     api_key = request.headers.get("Authorization")
@@ -135,12 +141,18 @@ def load_user_from_request(request):
         users = db.session.query(Users).all()
         for user in users:
             if bcrypt.check_password_hash(user.api_key, api_key):
+                tg.send_message(
+                    log_channel, f"User {user.name} logged in via API call with key!"
+                )
                 return user
 
     return None
 
 
 def check_access(table_name: str):
+    tg.send_message(
+        log_channel, f"User {current_user.name} trying to access {table_name}!"
+    )
     return (
         db.session.query(Access)
         .filter(Access.user == current_user.username)
@@ -279,6 +291,7 @@ def login():
         if user is not None:
             password = request.form["password"]
             if bcrypt.check_password_hash(user.password, password):
+                tg.send_message(log_channel, f"User {user.name} logged in via webpage!")
                 login_user(user)
                 next = request.args.get("next")
                 if not is_safe_url(next):
@@ -320,14 +333,8 @@ def register():
                 ),
                 400,
             )
-        return (
-            jsonify(
-                {
-                    "response": f"Hello {username}, your account has been successfully created.<br>If you wish to use an API Key for sending requests, your key is <code>{api_key}</code>"
-                }
-            ),
-            200,
-        )
+        tg.send_message(log_channel, f"User {u.name} account has been registered!")
+        return f"Hello {username}, your account has been successfully created.<br>If you wish to use an API Key for sending requests, your key is <code>{api_key}</code>"
     return render_template("register.html")
 
 
@@ -336,6 +343,12 @@ def register():
 def events():
     if request.method == "POST":
         table = get_table_by_name(request.form["table"])
+        if table is None:
+            return "How exactly did you reach here?"
+        tg.send_message(
+            log_channel,
+            f"User {current_user.name} is accessing {request.form['table']}!",
+        )
         user_data = db.session.query(table).all()
         return render_template(
             "users.html", users=user_data, columns=table.__table__.columns._data.keys()
@@ -437,6 +450,7 @@ def create():
             ),
             400,
         )
+    tg.send_message(log_channel, f"User {user} has been created in table {table_name}!")
     return jsonify({"response": f"Created user {user} successfully!"}), 200
 
 
@@ -455,6 +469,9 @@ def delete_user():
     user = db.session.query(table).get(id)
     db.session.delete(user)
     db.session.commit()
+    tg.send_message(
+        log_channel, f"User {current_user.name} has deleted {user} from {table_name}!"
+    )
     return f"Deleted user {user.name}"
 
 
@@ -487,6 +504,9 @@ def update_user():
             ),
             400,
         )
+    tg.send_message(
+        log_channel, f"User {current_user.name} has updated {user} in {table_name}!"
+    )
     return jsonify({"response": f"Updated user {user}"}), 200
 
 
@@ -514,6 +534,10 @@ def send_mail():
     except Exception as e:
         print(e)
         return jsonify({"response": "Failed to send mail"}), 500
+    tg.send_message(
+        log_channel,
+        f"User {current_user.name} has sent mail {content} with subject {subject} to {table_name}!",
+    )
     return jsonify({"response": "Sent mail"}), 200
 
 
