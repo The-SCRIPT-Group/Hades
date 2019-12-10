@@ -14,7 +14,7 @@ class TG:
             fields=data,
         )
 
-    def send_message(self, chat_id, message, parse_mode="Markdown"):
+    def send_message(self, chat_id, message, parse_mode="HTML"):
         data = {
             "chat_id": chat_id,
             "text": message,
