@@ -116,7 +116,7 @@ EVENT_CLASSES = {
 
 
 def log(message):
-    log(log_channel, f"<bold>Hades</bold>: {message}")
+    tg.send_message(log_channel, f"<bold>Hades</bold>: {message}")
 
 
 @login_manager.user_loader
