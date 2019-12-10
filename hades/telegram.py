@@ -7,7 +7,7 @@ class TG:
     def __init__(self, api_key):
         self.api_key = api_key
 
-    def send(self, data, function):
+    def send(self, function, data):
         return manager.request(
             "POST",
             f"https://api.telegram.org/bot{self.api_key}/{function}",
