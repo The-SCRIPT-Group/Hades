@@ -131,7 +131,7 @@ def load_user_from_request(request):
             if bcrypt.check_password_hash(user.password, password.strip()):
                 tg.send_message(
                     log_channel,
-                    f"User <code>{user.name}</code> logged in via API call with credentials!",
+                    f"User <code>{user.name}</code> just authenticated a {request.method} API call with credentials!",
                 )
                 return user
         return None
@@ -143,7 +143,7 @@ def load_user_from_request(request):
             if bcrypt.check_password_hash(user.api_key, api_key):
                 tg.send_message(
                     log_channel,
-                    f"User <code>{user.name}</code> logged in via API call with key!",
+                    f"User <code>{user.name}</code> just authenticated a {request.method} API call with an API key!",
                 )
                 return user
 
