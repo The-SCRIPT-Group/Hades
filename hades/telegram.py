@@ -29,11 +29,19 @@ class TG:
         }
         return self.send("sendChatAction", data)
 
-    def send_document(self, chat_id, caption, file_name, disable_notifications=False):
+    def send_document(
+        self,
+        chat_id,
+        caption,
+        file_name,
+        disable_notifications=False,
+        parse_mode="HTML",
+    ):
         data = {
             "caption": caption,
             "chat_id": chat_id,
             "document": (file_name, open(file_name, "rb").read()),
             "disable_notification": disable_notifications,
+            "parse_mode": parse_mode,
         }
         return self.send("sendDocument", data)
