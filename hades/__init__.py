@@ -547,6 +547,19 @@ def send_mail():
     return jsonify({"response": "Sent mail"}), 200
 
 
+@app.route("/codex")
+def codex():
+    return render_template(
+        "form.html",
+        date="19th December, 2019",
+        db="codex_december_2019",
+        department=True,
+        event="CodeX December 2019",
+        group=True,
+        year=True,
+    )
+
+
 @app.route("/")
 def root():
     """Root endpoint. Displays the form to the user."""
