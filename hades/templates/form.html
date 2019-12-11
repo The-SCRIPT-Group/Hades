@@ -45,11 +45,11 @@
             {% if group %}
                 <p>2nd person's Name</p>
                 <input type="text" name="name_second_person" placeholder="Enter the second person's name" maxlength="30"
-                       pattern="^.+@[^\.].*\.[a-z]{2,}$" class="form-control"/>
+                        class="form-control" pattern="^\w[\w, ]+$"/>
                 <hr>
                 <p>2nd person's email</p>
                 <input type="email" name="email_second_person" placeholder="Enter the second person's email address"
-                       maxlength="50" class="form-control"/>
+                       maxlength="50" pattern="^.+@[^\.].*\.[a-z]{2,}$" class="form-control"/>
                 <hr>
             {% endif %}
             <p>Phone Number (required)</p>
