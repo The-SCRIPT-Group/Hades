@@ -55,11 +55,13 @@ class CodexDecember2019(db.Model):
 
     __tablename__ = "codex_december_2019"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30))
+    name = db.Column(db.String(62))
     email = db.Column(db.String(50), unique=True)
     phone = db.Column(db.String(21), unique=True)
     department = db.Column(db.String(50))
     year = db.Column(db.String(3))
+    hackerrank_username = db.Column(db.String(50), unique=True)
+    noqr_paid = db.Column(db.String(20))
 
     def __repr__(self):
         return "%r" % [
@@ -69,6 +71,7 @@ class CodexDecember2019(db.Model):
             self.phone,
             self.department,
             self.year,
+            self.hackerrank_username,
         ]
 
     def validate(self):
