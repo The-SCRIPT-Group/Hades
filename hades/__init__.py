@@ -556,7 +556,7 @@ def codex():
         department=True,
         event="CodeX December 2019",
         group=True,
-        miscellaneous="""<input type="text" name="hackerrank_id" placeholder="Enter your HackerRank username" maxlength="50" required class="form-control" pattern="^\w*$"/>""",
+        miscellaneous="""<input type="text" name="hackerrank_username" placeholder="Enter your HackerRank username" maxlength="50" required class="form-control" pattern="^\w*$"/>""",
         year=True,
     )
 
