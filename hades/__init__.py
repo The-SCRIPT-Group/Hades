@@ -227,7 +227,7 @@ def submit():
     to_emails = []
     email_1 = (user.email, name)
     to_emails.append(email_1)
-    if "email_second_person" in request.form and "name_second_person" in request.form:
+    if request.form["email_second_person"] and request.form["name_second_person"]:
         email_2 = (
             request.form["email_second_person"],
             request.form["name_second_person"],
