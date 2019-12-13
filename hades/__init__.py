@@ -223,17 +223,19 @@ def submit():
         print(e)
         return """It appears there was an error while trying to enter your data into our database.<br/>Kindly contact someone from the team and we will have this resolved ASAP"""
 
-    name = user.name
     from_email = FROM_EMAIL
     to_emails = []
-    email_1 = (user.email, name)
+    email_1 = (request.form["email"], request.form["name"])
     to_emails.append(email_1)
-    if request.form["email_second_person"] and request.form["name_second_person"]:
+    if (
+        request.form["email_second_person"]
+        and request.form["name_second_person"]
+        and request.form["email"] != request.form["email_second_person"]
+    ):
         email_2 = (
             request.form["email_second_person"],
             request.form["name_second_person"],
         )
-        name += ", {}".format(request.form["name_second_person"])
         to_emails.append(email_2)
 
     try:
@@ -248,7 +250,7 @@ def submit():
 A QR code has been attached below!
 <br/>
 You're <b>required</b> to present this on the day of the event.""".format(
-        name
+        user.name
     )
     if "email_content" in request.form and "email_content_fields" in request.form:
         d = {}
