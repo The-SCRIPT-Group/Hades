@@ -77,5 +77,5 @@ class CodexDecember2019(db.Model):
     def validate(self):
         for user in db.session.query(CodexDecember2019).all():
             if self.hackerrank_username == user.hackerrank_username:
-                return f"Someone has already registered with hackerrank username <code>{self.hackerrank_username}</code><br/>. Kindly contact the team if that is your username and it wasn't your registration"
+                return f"Someone has already registered with hackerrank username <code>{self.hackerrank_username}</code>.<br/>Kindly contact the team if that is your username and it wasn't your registration"
         return validate(self, CodexDecember2019)
