@@ -56,7 +56,7 @@ class CodexDecember2019(db.Model):
     __tablename__ = "codex_december_2019"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(62))
-    email = db.Column(db.String(50), unique=True)
+    email = db.Column(db.String(102), unique=True)
     phone = db.Column(db.String(21), unique=True)
     department = db.Column(db.String(50))
     year = db.Column(db.String(3))
