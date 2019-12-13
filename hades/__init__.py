@@ -203,8 +203,9 @@ def submit():
         if int(user.phone) != int(request.form["whatsapp_number"]):
             user.phone += f"|{request.form['whatsapp_number']}"
 
-    if request.form["name_second_person"]:
+    if request.form["name_second_person"] and request.form["email_second_person"]:
         user.name += f", {request.form['name_second_person']}"
+        user.email += f", {request.form['email_second_person']}"
 
     data = user.validate()
     if data is not True:
@@ -535,7 +536,11 @@ def send_mail():
     mail_content = Content("text/html", content)
     mail = Mail(FROM_EMAIL, FROM_EMAIL, subject, mail_content)
     for user in users:
-        mail.add_bcc((user.email, user.name))
+        if "," in user.name:
+            mail.add_bcc((user.email.split(",")[0], user.name.split(",")[0]))
+            mail.add_bcc(
+                (user.email.split(",")[1].rstrip(), user.name.split(",")[1].rstrip())
+            )
     try:
         SendGridAPIClient(SENDGRID_API_KEY).send(mail)
     except Exception as e:
@@ -556,7 +561,15 @@ def codex():
         department=True,
         event="CodeX December 2019",
         group=True,
-        miscellaneous="""<input type="text" name="hackerrank_username" placeholder="Enter your HackerRank username" maxlength="50" required class="form-control" pattern="^\w*$"/>""",
+        miscellaneous="""<input type="text" name="hackerrank_username" placeholder="Enter your HackerRank username" maxlength="50" required class="form-control" pattern="^\w*$"/>
+                <hr>
+                <p>Payment Method</p>
+                <select name="noqr_paid" class="form-control" id="noqr_paid" required>
+                    <option value="paytm">PayTM Gateway</option>
+                    <option value="cash">Cash</option>
+                </select>
+                <hr>
+        """,
         year=True,
     )
 
