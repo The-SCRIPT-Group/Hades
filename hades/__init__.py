@@ -273,6 +273,7 @@ You're <b>required</b> to present this on the day of the event.""".format(
         print(response.headers)
     except Exception as e:
         print(e)
+        print(e.body)
 
     chat_id = (
         request.form["chat_id"] if "chat_id" in request.form else os.getenv("GROUP_ID")
