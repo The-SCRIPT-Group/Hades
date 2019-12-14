@@ -8,10 +8,10 @@ Flask application to accept some details, generate, display, and email a QR code
 import base64
 import os
 from datetime import datetime
+from json import loads
 from random import choice
 from string import ascii_letters, digits, punctuation
 from urllib.parse import urlparse, urljoin
-from requests import put
 
 import qrcode
 from flask import Flask, redirect, render_template, request, url_for, jsonify, abort
@@ -24,6 +24,7 @@ from flask_login import (
     current_user,
 )
 from flask_sqlalchemy import SQLAlchemy
+from requests import put
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Attachment, Content, Mail
 from sqlalchemy import desc, exc
@@ -373,30 +374,25 @@ def events():
     return render_template("events.html", events=accessible_tables)
 
 
-@app.route('/update', methods=['GET', 'POST'])
+@app.route("/update", methods=["GET", "POST"])
 @login_required
 def update():
-    if request.method == 'POST':
-        payload = dict(request.form)
-        payload['Noqr_Paid'] = payload['status']
-        del payload['status']
-        res = put(
-            url='/api/update',
-            data=payload,
-            headers=dict(request.headers)
-        )
-        if res.status_code == 200:
-            return "Updated!"
-        else:
-            return res.text
+    if request.method == "POST":
+        return loads(
+            put(
+                url="https://hades.thescriptgroup.in/api/update",
+                data=request.form,
+                headers=request.headers,
+            ).text
+        )["response"]
     accessible_tables = (
         db.session.query(Events)
-            .filter(Users.username == current_user.username)
-            .filter(Users.username == Access.user)
-            .filter(Access.event == Events.name)
-            .all()
+        .filter(Users.username == current_user.username)
+        .filter(Users.username == Access.user)
+        .filter(Access.event == Events.name)
+        .all()
     )
-    return render_template('update.html', events=accessible_tables)
+    return render_template("update.html", events=accessible_tables)
 
 
 @app.route("/logout")
@@ -528,7 +524,7 @@ def update_user():
     table = get_table_by_name(table_name)
     user = db.session.query(table).get(data)
     for k, v in request.form.items():
-        if k in ("table", key):
+        if k in ("key", "table", key):
             continue
         setattr(user, k, v)
     try:

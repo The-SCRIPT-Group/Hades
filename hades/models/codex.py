@@ -74,6 +74,7 @@ class CodexDecember2019(db.Model):
             self.department_2,
             self.year,
             self.hackerrank_username,
+            self.noqr_paid,
         ]
 
     def validate(self):
