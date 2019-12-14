@@ -344,7 +344,7 @@ def register():
                 400,
             )
         log(f"User <code>{u.name}</code> account has been registered!")
-        return f"Hello {username}, your account has been successfully created.<br>If you wish to use an API Key for sending requests, your key is <code>{api_key}</code>"
+        return f"Hello {username}, your account has been successfully created.<br>If you wish to use an API Key for sending requests, your key is <code>{api_key}</code><br/>Don't share it with anyone, if you're unsure of what it is, you don't need it"
     return render_template("register.html")
 
 
