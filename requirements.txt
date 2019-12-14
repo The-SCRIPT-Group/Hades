@@ -1,3 +1,4 @@
+requests
 appdirs==1.4.3
 attrs==19.3.0
 bcrypt==3.1.7

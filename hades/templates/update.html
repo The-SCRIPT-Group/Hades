@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>Update Payment Status</title>
+{% endblock %}
+
+{% block content %}
+    <h1 class="h3 mb-3 font-weight-normal">Enter details to update!</h1>
+    <p>
+        <label for="table" class="sr-only">Event</label>
+        <select name="table" id="table" class="form-control" required>
+            {% for event in events %}
+                <option value="{{ event.name }}">{{ event.full_name }}</option>
+            {% endfor %}
+        </select>
+    </p>
+    <label for="inputID" class="sr-only">ID</label>
+    <input type="text" id="inputID" class="form-control" placeholder="ID" name="id" required>
+    <br>
+    <label for="inputStatus" class="sr-only">Status</label>
+    <input type="text" id="inputStatus" class="form-control" placeholder="Payment Status" name="status" required>
+    <br>
+    <button class="btn btn-lg btn-primary btn-block" type="submit" value="">Update</button>
+{% endblock %}

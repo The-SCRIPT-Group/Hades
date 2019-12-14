@@ -11,6 +11,7 @@ from datetime import datetime
 from random import choice
 from string import ascii_letters, digits, punctuation
 from urllib.parse import urlparse, urljoin
+from requests import put
 
 import qrcode
 from flask import Flask, redirect, render_template, request, url_for, jsonify, abort
@@ -370,6 +371,32 @@ def events():
         .all()
     )
     return render_template("events.html", events=accessible_tables)
+
+
+@app.route('/update', methods=['GET', 'POST'])
+@login_required
+def update():
+    if request.method == 'POST':
+        payload = dict(request.form)
+        payload['Noqr_Paid'] = payload['status']
+        del payload['status']
+        res = put(
+            url='/api/update',
+            data=payload,
+            headers=dict(request.headers)
+        )
+        if res.status_code == 200:
+            return "Updated!"
+        else:
+            return res.text
+    accessible_tables = (
+        db.session.query(Events)
+            .filter(Users.username == current_user.username)
+            .filter(Users.username == Access.user)
+            .filter(Access.event == Events.name)
+            .all()
+    )
+    return render_template('update.html', events=accessible_tables)
 
 
 @app.route("/logout")
