@@ -1,4 +1,4 @@
-{% extends "base-login.html" %}
+{% extends "base.html" %}
 
 {% block title %}
     <title>Login in</title>
@@ -12,5 +12,5 @@
     <label for="inputPassword" class="sr-only">Password</label>
     <input type="password" id="inputPassword" class="form-control" placeholder="password" name="password" required>
     <br>
-    {{ super() }}
+    <button class="btn btn-lg btn-primary btn-block" type="submit" value="">Sign in</button>
 {% endblock %}
