@@ -160,8 +160,8 @@ def check_access(table_name: str):
     )
     return (
         db.session.query(Access)
-            .filter(Access.user == current_user.username)
-            .filter(Access.event == table_name)
+        .filter(Access.user == current_user.username)
+        .filter(Access.event == table_name)
     )
 
 
@@ -230,9 +230,9 @@ def submit():
     email_1 = (request.form["email"], request.form["name"])
     to_emails.append(email_1)
     if (
-            request.form["email_second_person"]
-            and request.form["name_second_person"]
-            and request.form["email"] != request.form["email_second_person"]
+        request.form["email_second_person"]
+        and request.form["name_second_person"]
+        and request.form["email"] != request.form["email_second_person"]
     ):
         email_2 = (
             request.form["email_second_person"],
@@ -366,29 +366,28 @@ def events():
         )
     accessible_tables = (
         db.session.query(Events)
-            .filter(Users.username == current_user.username)
-            .filter(Users.username == Access.user)
-            .filter(Access.event == Events.name)
-            .all()
+        .filter(Users.username == current_user.username)
+        .filter(Users.username == Access.user)
+        .filter(Access.event == Events.name)
+        .all()
     )
     return render_template("events.html", events=accessible_tables)
 
 
-@app.route('/update', methods=['GET', 'POST'])
+@app.route("/update", methods=["GET", "POST"])
 @login_required
 def update():
     if request.method == "POST":
-        if 'field' not in request.form:
-            table = get_table_by_name(request.form['table'])
+        if "field" not in request.form:
+            table = get_table_by_name(request.form["table"])
             return render_template(
-                'update.html',
-                fields=map(lambda x: x.replace(request.form['table'] + ".", ""), table.__table__.columns)
+                "update.html", fields=table.__table__.columns._data.keys(),
             )
         payload = {
-            'table': request.form['table'],
-            'key': 'id',
-            'id': request.form['id'],
-            request.form['field']: request.form['value']
+            "table": request.form["table"],
+            "key": "id",
+            "id": request.form["id"],
+            request.form["field"]: request.form["value"],
         }
         return loads(
             put(
@@ -404,7 +403,7 @@ def update():
         .filter(Access.event == Events.name)
         .all()
     )
-    return render_template('events.html', events=accessible_tables)
+    return render_template("events.html", events=accessible_tables)
 
 
 @app.route("/logout")
@@ -430,10 +429,10 @@ def events_api():
     """Returns a JSON consisting of the tables the user has the permission to view"""
     accessible_tables = (
         db.session.query(Events)
-            .filter(Users.username == current_user.username)
-            .filter(Users.username == Access.user)
-            .filter(Access.event == Events.name)
-            .all()
+        .filter(Users.username == current_user.username)
+        .filter(Users.username == Access.user)
+        .filter(Access.event == Events.name)
+        .all()
     )
     ret = {}
     for table in accessible_tables:
