@@ -7,10 +7,10 @@
 {% block content %}
     <h1 class="h3 mb-3 font-weight-normal">Enter details to update!</h1>
     <p>
-        <label for="table" class="sr-only">Event</label>
-        <select name="table" id="table" class="form-control" required>
-            {% for event in events %}
-                <option value="{{ event.name }}">{{ event.full_name }}</option>
+        <label for="field" class="sr-only">Event</label>
+        <select name="field" id="field" class="form-control" required>
+            {% for field in fields %}
+                <option value="{{ field }}">{{ field }}</option>
             {% endfor %}
         </select>
     </p>
@@ -18,8 +18,8 @@
     <input type="text" id="inputID" class="form-control" placeholder="ID" name="id" required>
     <br>
     <label for="inputStatus" class="sr-only">Status</label>
-    <input type="text" id="inputStatus" class="form-control" placeholder="Payment Status" name="noqr_paid" maxlength="20" required>
+    <input type="text" id="inputStatus" class="form-control" placeholder="Payment Status" name="value" maxlength="20" required>
     <br>
-    <input type="text" id="inputKey" name="key" style="visibility: hidden" value="id" contenteditable="false">
+    <input type="text" id="inputTable" name="table" style="visibility: hidden" value="{{table}}" contenteditable="false">
     <button class="btn btn-lg btn-primary btn-block" type="submit" value="">Update</button>
 {% endblock %}
