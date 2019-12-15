@@ -25,11 +25,13 @@
 </head>
 
 <body class="text-center">
-<form class="form-signin" method="post">
+<div class="container">
     <img class="mb-4" src="https://raw.githubusercontent.com/The-SCRIPT-Group/Media-Kit/master/LogoTransp2.png" alt=""
          height="40%" width="40%">
-    {% block content %} {% endblock %}
+    <form class="form-signin" method="post">
+        {% block content %} {% endblock %}
+    </form>
     {% block copyright %}<p class="mt-5 mb-3 text-muted">&copy; 2019-2020</p> {% endblock %}
-</form>
+</div>
 </body>
 </html>
