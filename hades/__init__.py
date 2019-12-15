@@ -578,6 +578,8 @@ def send_mail():
             mail.add_bcc(
                 (user.email.split(",")[1].rstrip(), user.name.split(",")[1].rstrip())
             )
+        else:
+            mail.add_bcc((user.email, user.name))
     try:
         SendGridAPIClient(SENDGRID_API_KEY).send(mail)
     except Exception as e:
