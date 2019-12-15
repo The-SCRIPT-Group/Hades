@@ -564,11 +564,17 @@ def send_mail():
         table_name = request.form["table"]
     except KeyError:
         return jsonify({"response": "Please provide all required data"}), 400
+
     access = check_access(table_name)
     if access is None:
         return jsonify({"response": "Unauthorized"}), 401
+
     table = get_table_by_name(table_name)
-    users = db.session.query(table).all()
+    if "ids" in request.form and request.form["ids"] != "all":
+        ids = list(map(lambda x: int(x), request.form["ids"].split(" ")))
+        users = db.session.query(table).filter(table.id.in_(ids)).all()
+    else:
+        users = db.session.query(table).all()
 
     mail_content = Content("text/html", content)
     mail = Mail(FROM_EMAIL, FROM_EMAIL, subject, mail_content)
@@ -580,11 +586,13 @@ def send_mail():
             )
         else:
             mail.add_bcc((user.email, user.name))
+
     try:
         SendGridAPIClient(SENDGRID_API_KEY).send(mail)
     except Exception as e:
         print(e)
         return jsonify({"response": "Failed to send mail"}), 500
+
     log(
         f"User <code>{current_user.name}</code> has sent mail <code>{content}</code> with subject <code>{subject}</code> to <code>{table_name}</code>!",
     )
