@@ -16,6 +16,8 @@ A few environment variables should be set for proper functionality
 
 `GROUP_ID` - Telegram Group ID
 
+`LOG_ID` - Telegram Channel ID (for logging purposes)
+
 `SENDGRID_API_KEY` - SendGrid API Key
 
 `FROM_EMAIL` - Email address SendGrid should use as sender
