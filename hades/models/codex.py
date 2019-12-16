@@ -1,6 +1,8 @@
 from hades import db
 from hades.utils import validate
 
+from requests import get
+
 
 class CodexApril2019(db.Model):
     """
@@ -78,6 +80,14 @@ class CodexDecember2019(db.Model):
         ]
 
     def validate(self):
+        if (
+            get(f"https://hackerrank.com/{self.hackerrank_username}")
+            .content.decode()
+            .count(self.hackerrank_username)
+            < 3
+        ):
+            return f"Your hackerrank profile doesn't seem to exist <a href=https://hackerrank.com/{self.hackerrank_username}>here</a>!"
+
         for user in db.session.query(CodexDecember2019).all():
             if self.hackerrank_username == user.hackerrank_username:
                 return f"Someone has already registered with hackerrank username <code>{self.hackerrank_username}</code>.<br/>Kindly contact the team if that is your username and it wasn't your registration"
