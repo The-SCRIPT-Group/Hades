@@ -19,12 +19,27 @@
         <tr class="w3-red">
             {% for c in columns %}
                 <th>{{ c.title() }}</th>
+                {% if c == "phone" %}
+                    <th>WhatsApp</th>
+                {% endif %}
             {% endfor %}
         </tr>
         {% for user in users %}
             <tr>
                 {% for c in columns %}
-                    <th>{{ user[c] }}</th>
+                    {% if c == "hackerrank_username" %}
+                        <td><a href="https://hackerrank.com/{{ user[c] }}">{{ user[c] }}</a></td>
+                    {% elif c == "phone" %}
+                        {% if '|' in user['phone'] %}
+                            <td>{{ user['phone'].split('|')[0] }}</td>
+                            <td><a href="https://api.whatsapp.com/send?phone=91{{ user['phone'].split('|')[1] }}" target=_blank class="w3-text-blue">WhatsApp</a></td>
+                        {% else %}
+                            <td>{{ user['phone'] }}</td>
+                            <td><a href="https://api.whatsapp.com/send?phone=91{{ user['phone'] }}" target=_blank class="w3-text-blue">WhatsApp</a></td>
+                        {% endif %}
+                    {% else %}
+                        <td>{{ user[c] }}</td>
+                    {% endif %}
                 {% endfor %}
             </tr>
         {% endfor %}
