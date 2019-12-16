@@ -533,6 +533,8 @@ def update_user():
     if access is None:
         return jsonify({"response": "Unauthorized"}), 401
     table = get_table_by_name(table_name)
+    if table is None:
+        return jsonify({"response": "Please provide a valid table name"}), 400
     user = db.session.query(table).get(data)
     for k, v in request.form.items():
         if k in ("key", "table", key):
