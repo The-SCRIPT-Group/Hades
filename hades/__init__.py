@@ -68,6 +68,7 @@ DEPARTMENTS = {
 BLACKLISTED_FIELDS = (
     "chat_id",
     "date",
+    "department_second_person",
     "db",
     "email_content",
     "email_content_fields",
@@ -205,9 +206,14 @@ def submit():
         if int(user.phone) != int(request.form["whatsapp_number"]):
             user.phone += f"|{request.form['whatsapp_number']}"
 
-    if request.form["name_second_person"] and request.form["email_second_person"]:
+    if (
+        request.form["name_second_person"]
+        and request.form["email_second_person"]
+        and request.form["department_second_person"]
+    ):
         user.name += f", {request.form['name_second_person']}"
         user.email += f", {request.form['email_second_person']}"
+        user.department += f", {request.form['department_second_person']}"
 
     data = user.validate()
     if data is not True:

@@ -60,8 +60,7 @@ class CodexDecember2019(db.Model):
     name = db.Column(db.String(62))
     email = db.Column(db.String(102), unique=True)
     phone = db.Column(db.String(21), unique=True)
-    department = db.Column(db.String(50))
-    department_2 = db.Column(db.String(50))
+    department = db.Column(db.String(20))
     year = db.Column(db.String(3))
     hackerrank_username = db.Column(db.String(50), unique=True)
     noqr_paid = db.Column(db.String(20))
@@ -73,7 +72,6 @@ class CodexDecember2019(db.Model):
             self.email,
             self.phone,
             self.department,
-            self.department_2,
             self.year,
             self.hackerrank_username,
             self.noqr_paid,
