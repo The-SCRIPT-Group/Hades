@@ -379,9 +379,12 @@ def events():
 def update():
     if request.method == "POST":
         if "field" not in request.form:
-            table = get_table_by_name(request.form["table"])
+            table_name = request.form["table"]
+            table = get_table_by_name(table_name)
             return render_template(
-                "update.html", fields=table.__table__.columns._data.keys(),
+                "update.html",
+                fields=table.__table__.columns._data.keys(),
+                table_name=table_name,
             )
         payload = {
             "table": request.form["table"],
