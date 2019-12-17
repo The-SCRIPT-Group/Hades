@@ -392,19 +392,17 @@ def update():
                 fields=table.__table__.columns._data.keys(),
                 table_name=table_name,
             )
-        payload = {
-            "table": request.form["table"],
-            "key": "id",
-            "id": request.form["id"],
-            request.form["field"]: request.form["value"],
-        }
-        return loads(
-            put(
-                url="https://hades.thescriptgroup.in/api/update",
-                data=payload,
-                headers=request.headers,
-            ).text
-        )["response"]
+        table = get_table_by_name(request.form["table"])
+        if table is None:
+            return "Table not chosen?"
+
+        user = db.session.query(table).get(request.form[request.form["key"]])
+        setattr(user, request.form["field"], request.form["value"])
+        try:
+            db.session.commit()
+        except exc.IntegrityError:
+            return "Integrity constraint violated, please re-check your data!"
+        return "User has been updated!"
     accessible_tables = (
         db.session.query(Events)
         .filter(Users.username == current_user.username)
@@ -548,7 +546,9 @@ def update_user():
     for k, v in request.form.items():
         if k in ("key", "table", key):
             continue
-        setattr(user, k, v)
+        if getattr(user, k) != v:
+            setattr(user, k, v)
+            print(f"Updated {k} of {user} to {v}")
     try:
         db.session.commit()
     except exc.IntegrityError:
