@@ -25,7 +25,7 @@ from flask_login import (
 from flask_sqlalchemy import SQLAlchemy
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Attachment, Content, Mail
-from sqlalchemy import desc, exc
+from sqlalchemy import desc, exc, inspect
 
 import hades.telegram
 
@@ -385,11 +385,13 @@ def update():
         if "field" not in request.form:
             table_name = request.form["table"]
             table = get_table_by_name(table_name)
-            return render_template(
-                "update.html",
-                fields=table.__table__.columns._data.keys(),
-                table_name=table_name,
-            )
+            i = inspect(table)
+            fields = i.columns.keys()
+            for f in fields:
+                if i.columns[f].primary_key or i.columns[f].unique:
+                    fields.remove(f)
+
+            return render_template("update.html", fields=fields, table_name=table_name,)
 
         table = get_table_by_name(request.form["table"])
         if table is None:
