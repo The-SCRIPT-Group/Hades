@@ -392,16 +392,22 @@ def update():
                 fields=table.__table__.columns._data.keys(),
                 table_name=table_name,
             )
+
         table = get_table_by_name(request.form["table"])
         if table is None:
             return "Table not chosen?"
 
         user = db.session.query(table).get(request.form[request.form["key"]])
         setattr(user, request.form["field"], request.form["value"])
+
         try:
             db.session.commit()
         except exc.IntegrityError:
             return "Integrity constraint violated, please re-check your data!"
+
+        log(
+            f"<code>{current_user.name}</code> has updated <code>{request.form['field']}</code> of <code>{user}</code> to <code>{request.form['value']}</code>"
+        )
         return "User has been updated!"
     accessible_tables = (
         db.session.query(Events)
