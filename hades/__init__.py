@@ -574,7 +574,7 @@ def update_user():
 @login_required
 def send_mail():
     try:
-        content = "<img src='https://drive.google.com/uc?id=12VCUzNvU53f_mR7Hbumrc6N66rCQO5r-&export=download' style='width:30%;height:50%'><hr><br>" + str(
+        content = "<img src='https://drive.google.com/uc?id=12VCUzNvU53f_mR7Hbumrc6N66rCQO5r-&export=download' style='width:30%;height:50%'><hr><br> <b>Hey there!</b><br><br>" + str(
             request.form["content"]
         ).replace(
             "\n", "<br/>"
