@@ -17,3 +17,6 @@ class Users(db.Model, UserMixin):
 
     def get_id(self):
         return self.username if self is not None else None
+
+    def __repr__(self):
+        return "%r" % [self.username, self.name, self.email]
