@@ -8,7 +8,6 @@ Flask application to accept some details, generate, display, and email a QR code
 import base64
 import os
 from datetime import datetime
-from json import loads
 from random import choice
 from string import ascii_letters, digits, punctuation
 from urllib.parse import urlparse, urljoin
@@ -24,7 +23,6 @@ from flask_login import (
     current_user,
 )
 from flask_sqlalchemy import SQLAlchemy
-from requests import put
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Attachment, Content, Mail
 from sqlalchemy import desc, exc
@@ -576,7 +574,11 @@ def update_user():
 @login_required
 def send_mail():
     try:
-        content = request.form["content"]
+        content = "<img src='https://drive.google.com/uc?id=12VCUzNvU53f_mR7Hbumrc6N66rCQO5r-&export=download' style='width:30%;height:50%'><hr>" + str(
+            request.form["content"]
+        ).replace(
+            "\n", "<br/>"
+        )
         subject = request.form["subject"]
         table_name = request.form["table"]
     except KeyError:
