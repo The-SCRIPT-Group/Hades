@@ -1,4 +1,5 @@
 from urllib3 import PoolManager
+from urllib3.exceptions import ProtocolError
 
 manager = PoolManager()
 
@@ -8,11 +9,16 @@ class TG:
         self.api_key = api_key
 
     def send(self, function, data):
-        return manager.request(
-            "POST",
-            f"https://api.telegram.org/bot{self.api_key}/{function}",
-            fields=data,
-        )
+        try:
+            return manager.request(
+                "POST",
+                f"https://api.telegram.org/bot{self.api_key}/{function}",
+                fields=data,
+            )
+        except ProtocolError as e:
+            print(e, e.__class__)
+            with open("extra-logs.txt", "a") as f:
+                f.write(str(data) + "\n\n\n")
 
     def send_message(self, chat_id, message, parse_mode="HTML"):
         data = {
