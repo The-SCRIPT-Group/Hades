@@ -584,6 +584,8 @@ def send_mail():
     except KeyError:
         return jsonify({"response": "Please provide all required data"}), 400
 
+    if table_name in ("access", "events", "users"):
+        return jsonify({"response": "Seriously?"}), 400
     access = check_access(table_name)
     if access is None:
         return jsonify({"response": "Unauthorized"}), 401
