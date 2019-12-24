@@ -47,7 +47,7 @@ class CSINovemberNonMember2019(db.Model):
     department = db.Column(db.String(50))
     year = db.Column(db.String(3))
     prn = db.Column(db.String(10), unique=True)
-    noqr_paid = db.Column(db.String(20))
+    paid = db.Column(db.String(20))
 
     def __repr__(self):
         return "%r" % [

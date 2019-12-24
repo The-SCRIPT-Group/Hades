@@ -63,7 +63,7 @@ class CodexDecember2019(db.Model):
     department = db.Column(db.String(20))
     year = db.Column(db.String(3))
     hackerrank_username = db.Column(db.String(50), unique=True)
-    noqr_paid = db.Column(db.String(20))
+    paid = db.Column(db.String(20))
 
     def __repr__(self):
         return "%r" % [
@@ -74,7 +74,7 @@ class CodexDecember2019(db.Model):
             self.department,
             self.year,
             self.hackerrank_username,
-            self.noqr_paid,
+            self.paid,
         ]
 
     def validate(self):

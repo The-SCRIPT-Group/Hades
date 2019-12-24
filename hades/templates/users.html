@@ -18,7 +18,7 @@
     <table class="w3-table w3-border w3-border-red w3-centered">
         <tr class="w3-red">
             {% for c in columns %}
-                <th>{{ c.replace("noqr_", "").replace("_", " ").title() }}</th>
+                <th>{{ c.replace("_", " ").title() }}</th>
                 {% if c == "phone" %}
                     <th>WhatsApp</th>
                 {% endif %}

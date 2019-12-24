@@ -78,6 +78,11 @@ BLACKLISTED_FIELDS = (
     "whatsapp_number",
 )
 
+QR_BLACKLIST = (
+    "paid",
+    "_sa_instance_state",
+)
+
 # Import event related classes
 from hades.models.csi import CSINovember2019, CSINovemberNonMember2019
 from hades.models.codex import CodexApril2019, RSC2019, CodexDecember2019
@@ -378,6 +383,38 @@ def events():
     return render_template("events.html", events=accessible_tables)
 
 
+def update_user(**kwargs):
+    id = kwargs["id"]
+    table = kwargs["table"]
+    del kwargs["id"]
+    del kwargs["table"]
+
+    user = db.session.query(table).get(id)
+    if user is None:
+        return None
+
+    for k, v in kwargs.items():
+        setattr(user, k, v)
+
+    try:
+        db.session.commit()
+    except exc.IntegrityError as e:
+        print(e.body)
+
+
+def delete_user(**kwargs):
+    id = kwargs["id"]
+    table = kwargs["table"]
+    user = db.session.query(table).get(id)
+    if user is None:
+        return None
+    db.session.delete(user)
+    try:
+        db.session.commit()
+    except Exception as e:
+        print(e.body)
+
+
 @app.route("/update", methods=["GET", "POST"])
 @login_required
 def update():
@@ -634,7 +671,7 @@ def codex():
         miscellaneous="""<input type="text" name="hackerrank_username" placeholder="Enter your HackerRank username" maxlength="50" required class="form-control" pattern="^\w*$"/>
                 <hr>
                 <p>Payment Method</p>
-                <select name="noqr_paid" class="form-control" id="noqr_paid" required>
+                <select name="paid" class="form-control" id="paid" required>
                     <option value="paytm">PayTM Gateway</option>
                     <option value="cash">Cash</option>
                 </select>
@@ -663,7 +700,7 @@ def generate_qr(user):
     """Function to generate and return a QR code based on the given data."""
     data = ""
     for k, v in user.__dict__.items():
-        if k == "_sa_instance_state" or k.split("_")[0] == "noqr":
+        if k in QR_BLACKLIST:
             continue
         data += f"{v}|"
     return qrcode.make(data[:-1])
