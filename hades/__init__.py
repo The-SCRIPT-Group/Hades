@@ -8,6 +8,7 @@ Flask application to accept some details, generate, display, and email a QR code
 import base64
 import os
 from datetime import datetime
+from json import dumps
 from random import choice
 from string import ascii_letters, digits, punctuation
 from urllib.parse import urlparse, urljoin
@@ -698,9 +699,6 @@ def get_current_id(table: db.Model):
 
 def generate_qr(user):
     """Function to generate and return a QR code based on the given data."""
-    data = ""
-    for k, v in user.__dict__.items():
-        if k in QR_BLACKLIST:
-            continue
-        data += f"{v}|"
-    return qrcode.make(data[:-1])
+    data = {k: v for k, v in user.__dict__.items() if k not in QR_BLACKLIST}
+    data["table"] = user.__tablename__
+    return qrcode.make(base64.b64encode(dumps(data).encode()))
