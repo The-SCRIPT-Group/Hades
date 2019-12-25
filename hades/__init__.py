@@ -200,7 +200,7 @@ def submit():
     data = {}
 
     for k, v in request.form.items():
-        if k in BLACKLISTED_FIELDS:
+        if k not in table.__table__.columns._data.keys():
             continue
         data[k] = v
 
