@@ -61,7 +61,7 @@ class Hacktoberfest2019(db.Model):
     phone = db.Column(db.String(21), unique=True)
     department = db.Column(db.String(50))
     year = db.Column(db.String(3))
-    miscellaneous = db.Column(db.String(2))
+    date = db.Column(db.String(2))
 
     def __repr__(self):
         return "%r" % [
@@ -71,7 +71,7 @@ class Hacktoberfest2019(db.Model):
             self.phone,
             self.department,
             self.year,
-            self.miscellaneous,
+            self.date,
         ]
 
     def validate(self):
