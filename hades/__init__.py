@@ -184,6 +184,16 @@ def is_safe_url(target):
     return test_url.scheme in ("http", "https") and ref_url.netloc == test_url.netloc
 
 
+def get_accessible_tables():
+    return (
+        db.session.query(Events)
+        .filter(Users.username == current_user.username)
+        .filter(Users.username == Access.user)
+        .filter(Access.event == Events.name)
+        .all()
+    )
+
+
 @app.route("/submit", methods=["POST"])
 def submit():
     """Take data from the form, generate, display, and email QR code to user."""
@@ -374,14 +384,7 @@ def events():
         return render_template(
             "users.html", users=user_data, columns=table.__table__.columns._data.keys()
         )
-    accessible_tables = (
-        db.session.query(Events)
-        .filter(Users.username == current_user.username)
-        .filter(Users.username == Access.user)
-        .filter(Access.event == Events.name)
-        .all()
-    )
-    return render_template("events.html", events=accessible_tables)
+    return render_template("events.html", events=get_accessible_tables())
 
 
 def update_user(**kwargs):
@@ -447,14 +450,7 @@ def update():
             f"<code>{current_user.name}</code> has updated <code>{request.form['field']}</code> of <code>{user}</code> to <code>{request.form['value']}</code>"
         )
         return "User has been updated!"
-    accessible_tables = (
-        db.session.query(Events)
-        .filter(Users.username == current_user.username)
-        .filter(Users.username == Access.user)
-        .filter(Access.event == Events.name)
-        .all()
-    )
-    return render_template("events.html", events=accessible_tables)
+    return render_template("events.html", events=get_accessible_tables())
 
 
 @app.route("/logout")
@@ -478,15 +474,8 @@ def authenticate_api():
 @login_required
 def events_api():
     """Returns a JSON consisting of the tables the user has the permission to view"""
-    accessible_tables = (
-        db.session.query(Events)
-        .filter(Users.username == current_user.username)
-        .filter(Users.username == Access.user)
-        .filter(Access.event == Events.name)
-        .all()
-    )
     ret = {}
-    for table in accessible_tables:
+    for table in get_accessible_tables():
         ret[table.name] = table.full_name
     return jsonify(ret), 200
 
