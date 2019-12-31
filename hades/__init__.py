@@ -8,7 +8,7 @@ Flask application to accept some details, generate, display, and email a QR code
 import base64
 import os
 from datetime import datetime
-from json import dumps
+from json import dumps, loads
 from random import choice
 from string import ascii_letters, digits, punctuation
 from urllib.parse import urlparse, urljoin
@@ -487,6 +487,28 @@ def users_api():
     table_name = request.args.get("table")
     if not table_name:
         return jsonify({"response": "Please provide all required data"}), 400
+
+    if table_name == "all":
+        tables = get_accessible_tables()
+    users = set()
+    for table in tables:
+        if table.name in ("access", "events", "users"):
+            continue
+        table_users = db.session.query(get_table_by_name(table.name)).all()
+        for user in table_users:
+            phone = (
+                user.phone.split("|")[1]
+                if len(user.phone.split("|")) == 2
+                else user.phone
+            )
+            if "," in user.name:
+                continue
+            name = user.name.split(" ")[0].title()
+            users.add(dumps({"name": name, "phone": phone}))
+    final_users = []
+    for user in users:
+        final_users.append(loads(user))
+    return dumps(final_users)
 
     access = check_access(table_name)
     if access is None:
