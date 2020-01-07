@@ -102,6 +102,14 @@ from hades.models.user import Users
 from hades.models.event import Events
 from hades.models.user_access import Access
 
+
+BLACKLISTED_TABLES = (
+    Access,
+    Events,
+    Users,
+    TestTable,
+)
+
 EVENT_CLASSES = {
     "codex_april_2019": CodexApril2019,
     "eh_july_2019": EHJuly2019,
@@ -198,11 +206,20 @@ def get_accessible_tables():
 def submit():
     """Take data from the form, generate, display, and email QR code to user."""
     table = get_table_by_name(request.form["db"])
-
-    if table is None:
+    if table is None or table in BLACKLISTED_TABLES:
+        print(request.form)
         print(request.form["db"])
-        return "Error occurred. Kindly contact someone from the team and we will have this resolved ASAP"
+        log(
+            f"Someone just tried to register to table <code>{request.form['db']}</code>"
+        )
+        form_data = ""
+        for k, v in request.form.items():
+            form_data += f"<code>{k}</code> - <code>{v}</code>\n"
+        log(f"Full form:\n{form_data[:-1]}")
+        return "That wasn't a valid db..."
 
+    if "event" not in request.form:
+        return "Hades does require the event name, you know?"
     event_name = request.form["event"]
 
     id = get_current_id(table)
@@ -217,8 +234,16 @@ def submit():
     user = table(**data, id=id)
 
     if request.form["whatsapp_number"]:
-        if int(user.phone) != int(request.form["whatsapp_number"]):
-            user.phone += f"|{request.form['whatsapp_number']}"
+        try:
+            if int(user.phone) != int(request.form["whatsapp_number"]):
+                user.phone += f"|{request.form['whatsapp_number']}"
+        except (TypeError, ValueError) as e:
+            form_data = ""
+            for k, v in request.form.items():
+                form_data += f"<code>{k}</code> - <code>{v}</code>\n"
+            log(f"Exception on WhatsApp Number:\n{form_data[:-1]}")
+            log(e)
+            return "That wasn't a WhatsApp number..."
 
     if (
         request.form["name_second_person"]
