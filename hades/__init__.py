@@ -130,17 +130,29 @@ EVENT_CLASSES = {
 }
 
 
-def log(message):
+def log(message: str):
+    """Logs the given `message` to our Telegram logging channel"""
     tg.send_message(log_channel, f"<b>Hades</b>: {message}")
 
 
 @login_manager.user_loader
 def load_user(user_id):
+    """Return `User` object for the corresponding `user_id`"""
     return db.session.query(Users).get(user_id)
 
 
 @login_manager.request_loader
 def load_user_from_request(request):
+    """Checks for authorization in a request
+
+    The request can contain one of 2 headers
+    -> Credentials: base64(username|password)
+    or
+    -> Authorization: api_token
+
+    It first checks for the `Credentials` header, and then for `Authorization`
+    If they match any user in the database, that user is logged into that session
+    """
     credentials = request.headers.get("Credentials")
     if credentials:
         credentials = base64.b64decode(credentials).decode("utf-8")
@@ -155,6 +167,7 @@ def load_user_from_request(request):
         return None
     api_key = request.headers.get("Authorization")
     if api_key:
+        # Cases where the header may be of the form `Authorization: Basic api_key`
         api_key = api_key.replace("Basic ", "", 1)
         users = db.session.query(Users).all()
         for user in users:
@@ -167,7 +180,8 @@ def load_user_from_request(request):
     return None
 
 
-def check_access(table_name: str):
+def check_access(table_name: str) -> bool:
+    """Returns whether or not the currently logged in user has access to `table_name`"""
     log(
         f"User <code>{current_user.name}</code> trying to access <code>{table_name}</code>!",
     )
@@ -186,13 +200,15 @@ def get_table_by_name(name: str) -> db.Model:
         return None
 
 
-def is_safe_url(target):
+def is_safe_url(target: str) -> bool:
+    """Returns whether or not the target URL is safe or a malicious redirect"""
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))
     return test_url.scheme in ("http", "https") and ref_url.netloc == test_url.netloc
 
 
 def get_accessible_tables():
+    """Returns the list of tables the currently logged in user can access"""
     return (
         db.session.query(Events)
         .filter(Users.username == current_user.username)
@@ -204,10 +220,43 @@ def get_accessible_tables():
 
 @app.route("/submit", methods=["POST"])
 def submit():
-    """Take data from the form, generate, display, and email QR code to user."""
+    """Accepts form data for an event registration
+
+    Some required fields are
+    db -> The name of the database corresponding to the event. This will be hardcoded as an invisible uneditable field
+    event -> The name of the event
+
+    The rest of the parameters vary per event, we check the keys in the form items against the attributes of the
+    corresponding event class to ensure that no extraneous data is accepted
+
+    Some required ones are
+    -> name - Person's name
+    -> email - Person's email address
+    -> department - Person's department
+
+    Some optional fields which are *NOT* members of any class
+    -> whatsapp_number - To store WhatsApp number separately
+    -> chat_id - Alternative Telegram Chat ID where registrations should be logged
+    -> email_content - Alternative email content to be sent to user
+    -> email_content_fields - list of additional form fields which need to be replaced with variable's value in the email_content
+    -> extra_message - Extra information to be appended to end of email
+    -> extra_field_telegram - If anything besides ID and name are to be logged to Telegram, it is specified here
+
+    The next three are specifically for events with group registrations
+    -> name_second_person
+    -> email_second_person
+    -> department_second_person
+
+    These are self explanatory
+
+    Based on the data, a QR code is generated, displayed, and also emailed to the user(s).
+    """
     table = get_table_by_name(request.form["db"])
+
+    # Ensure that table was provided, its required for any further functionality
     if table is None or table in BLACKLISTED_TABLES:
         print(request.form)
+
         print(request.form["db"])
         log(
             f"Someone just tried to register to table <code>{request.form['db']}</code>"
@@ -222,17 +271,21 @@ def submit():
         return "Hades does require the event name, you know?"
     event_name = request.form["event"]
 
+    # ID is from a helper function that increments the latest ID by 1 and returns it
     id = get_current_id(table)
 
     data = {}
 
+    # Ensure that we only take in valid fields to create our user object
     for k, v in request.form.items():
         if k not in table.__table__.columns._data.keys():
             continue
         data[k] = v
 
+    # Instantiate our user object based on the received form data and retrived ID
     user = table(**data, id=id)
 
+    # If a separate WhatsApp number has been provided, store that in the database as well
     if request.form["whatsapp_number"]:
         try:
             if int(user.phone) != int(request.form["whatsapp_number"]):
@@ -245,6 +298,7 @@ def submit():
             log(e)
             return "That wasn't a WhatsApp number..."
 
+    # Store 2nd person's details ONLY if all 3 required parameters have been provided
     if (
         request.form["name_second_person"]
         and request.form["email_second_person"]
@@ -254,15 +308,18 @@ def submit():
         user.email += f", {request.form['email_second_person']}"
         user.department += f", {request.form['department_second_person']}"
 
+    # Ensure that no data is duplicated. If anything is wrong, display the corresponding error to the user
     data = user.validate()
     if data is not True:
         return data
 
+    # Generate the QRCode based on the given data and store base64 encoded version of it to email
     img = generate_qr(user)
     img.save("qr.png")
     img_data = open("qr.png", "rb").read()
     encoded = base64.b64encode(img_data).decode()
 
+    # Add the user to the database and commit the transaction, ensuring no integrity errors.
     try:
         db.session.add(user)
         db.session.commit()
@@ -270,6 +327,7 @@ def submit():
         print(e)
         return """It appears there was an error while trying to enter your data into our database.<br/>Kindly contact someone from the team and we will have this resolved ASAP"""
 
+    # Prepare the email sending
     from_email = FROM_EMAIL
     to_emails = []
     email_1 = (request.form["email"], request.form["name"])
@@ -285,6 +343,7 @@ def submit():
         )
         to_emails.append(email_2)
 
+    # Check if the form specified the date, otherwise use the current month and year
     try:
         date = request.form["date"]
     except KeyError:
@@ -309,10 +368,15 @@ You're <b>required</b> to present this on the day of the event.""".format(
         message += "<br/>" + request.form["extra_message"]
     except KeyError:
         pass
+
+    # Set the email content, recepients, sender, and the subject
     content = Content("text/html", message)
     mail = Mail(from_email, to_emails, subject, html_content=content)
+
+    # Add the base64 encoded QRCode as an attachment with mimetype image/png
     mail.add_attachment(Attachment(encoded, "qr.png", "image/png"))
 
+    # Actually send the mail. Print the errors if any.
     try:
         response = SendGridAPIClient(SENDGRID_API_KEY).send(mail)
         print(response.status_code)
@@ -322,12 +386,15 @@ You're <b>required</b> to present this on the day of the event.""".format(
         print(e)
         print(e.body)
 
+    # Log the new entry to desired telegram channel
     chat_id = (
         request.form["chat_id"] if "chat_id" in request.form else os.getenv("GROUP_ID")
     )
     caption = f"Name: {user.name} | ID: {user.id}"
     if "extra_field_telegram" in request.form:
         caption += f" | {request.form['extra_field_telegram']} - {request.form[request.form['extra_field_telegram']]}"
+
+    # Obviously, no telegram operations can be performed if a Bot API key has not been provided
     if bot_api_key is not None:
         tg.send_chat_action(chat_id, "typing")
         tg.send_message(chat_id, f"New registration for {event_name}!")
@@ -341,13 +408,22 @@ You're <b>required</b> to present this on the day of the event.""".format(
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    """Display the list of users in the desired database, after authentication."""
+    """
+    Displays a login page on a GET request
+    For POST, it checks the `username` and `password` provided and accordingly redirects to desired page
+    (events page if none specified)
+
+    It *will* abort with a 400 error if the `next` parameter is trying to redirect to an unsafe URL
+    """
     if request.method == "POST":
         user = request.form["username"]
         user = db.session.query(Users).filter_by(username=user).first()
+        # Ensure user exists in the database
         if user is not None:
             password = request.form["password"]
+            # Check the password against the hash stored in the database
             if bcrypt.check_password_hash(user.password, password):
+                # Log the login and redirect
                 log(f"User <code>{user.name}</code> logged in via webpage!")
                 login_user(user)
                 next = request.args.get("next")
@@ -360,6 +436,14 @@ def login():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    """
+    Displays a registration page on a GET request
+    For POST, it checks the `name`, `email`, `username` and `password` provided and accordingly registers account
+
+    A random 32 character API key is generated and displayed
+
+    Password and API key are hashed before being stored in the database
+    """
     if request.method == "POST":
         try:
             name = request.form["name"]
@@ -368,9 +452,12 @@ def register():
             email = request.form["email"]
         except KeyError:
             return jsonify({"response": "Please provide all required data"}), 400
+
+        # Generate API key
         api_key = "".join(
             choice(ascii_letters + digits + punctuation) for _ in range(32)
         )
+        # Create user object
         u = Users(
             name=name,
             username=username,
@@ -378,6 +465,7 @@ def register():
             email=email,
             api_key=bcrypt.generate_password_hash(api_key).decode("utf-8"),
         )
+        # Add the user object to the database and commit the transaction
         try:
             db.session.add(u)
             db.session.commit()
@@ -398,6 +486,10 @@ def register():
 @app.route("/events", methods=["GET", "POST"])
 @login_required
 def events():
+    """
+    Displays a page with a dropdown to choose events on a GET request
+    For POST, it checks the `table` provided and accordingly returns a table listing the users in that table
+    """
     if request.method == "POST":
         table = get_table_by_name(request.form["table"])
         if table is None:
@@ -413,6 +505,11 @@ def events():
 
 
 def update_user(**kwargs):
+    """
+    Takes a dictionary as an argument
+    id and table keys to get id of user and table it belongs to
+    Rest of the keys are attributes that need to be updated
+    """
     id = kwargs["id"]
     table = kwargs["table"]
     del kwargs["id"]
@@ -432,6 +529,11 @@ def update_user(**kwargs):
 
 
 def delete_user(**kwargs):
+    """
+    Takes a dictionary as an argument
+    id and table keys to get id of user and table it belongs to
+    Deletes the user
+    """
     id = kwargs["id"]
     table = kwargs["table"]
     user = db.session.query(table).get(id)
@@ -447,6 +549,13 @@ def delete_user(**kwargs):
 @app.route("/update", methods=["GET", "POST"])
 @login_required
 def update():
+    """
+    Displays a page with a dropdown to choose events on a GET request
+    For POST, there for 2 cases
+    If a `field` is not provided, it gets table table from the form and returns a page where user can choose a field
+    If a field is provided, that field of the corresponding user is updated (table and a key attribute are taken from
+    the form as well)
+    """
     if request.method == "POST":
         if "field" not in request.form:
             table_name = request.form["table"]
@@ -481,6 +590,7 @@ def update():
 @app.route("/logout")
 @login_required
 def logout():
+    """Logs the current user out"""
     name = current_user.name
     logout_user()
     return f"Logged out of {name}'s account!"
@@ -489,6 +599,7 @@ def logout():
 @app.route("/api/authenticate", methods=["POST"])
 @login_required
 def authenticate_api():
+    """Used to authenticate a login from an external application"""
     return (
         jsonify({"message": f"Successfully authenticated as {current_user.username}"}),
         200,
@@ -547,6 +658,7 @@ def users_api():
 @app.route("/api/create", methods=["POST"])
 @login_required
 def create():
+    """Creates a user as specified in the request data"""
     try:
         table_name = request.form["table"]
     except KeyError:
@@ -589,6 +701,7 @@ def create():
 @app.route("/api/delete", methods=["DELETE"])
 @login_required
 def delete_user():
+    """Deletes the user as specified in the request data"""
     try:
         table_name = request.form["table"]
         id = request.form["id"]
@@ -610,6 +723,7 @@ def delete_user():
 @app.route("/api/update", methods=["PUT"])
 @login_required
 def update_user():
+    """Updates a user as specified in the request data"""
     try:
         table_name = request.form["table"]
         key = request.form["key"]
@@ -649,6 +763,7 @@ def update_user():
 @app.route("/api/sendmail", methods=["POST"])
 @login_required
 def send_mail():
+    """Sends a mail to users as specified in the request data"""
     try:
         content = "<img src='https://drive.google.com/uc?id=12VCUzNvU53f_mR7Hbumrc6N66rCQO5r-&export=download' style='width:30%;height:50%'><hr><br> <b>Hey there!</b><br><br>" + str(
             request.form["content"]
