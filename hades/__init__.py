@@ -430,7 +430,8 @@ def login():
                 if not is_safe_url(next):
                     return abort(400)
                 return redirect(next or url_for("events"))
-            return f"Wrong password for {user}!"
+            return f"Wrong password for {user.username}!"
+        return f"{request.form['username']} doesn't exist!"
     return render_template("login.html")
 
 
@@ -817,7 +818,7 @@ def root():
     return "<marquee>Nothing here!</marquee>"
 
 
-def get_current_id(table: db.Model):
+def get_current_id(table):
     """Function to return the latest ID based on the database entries. 1 if DB is empty."""
     try:
         id = db.session.query(table).order_by(desc(table.id)).first().id
