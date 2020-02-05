@@ -600,6 +600,8 @@ def change_password():
 
         if bcrypt.check_password_hash(current_user.password, current_password):
             current_user.password = bcrypt.generate_password_hash(new_password)
+        else:
+            return "Current password you entered is wrong! Please try again!"
 
         db.session.commit()
 
