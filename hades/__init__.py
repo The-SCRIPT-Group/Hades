@@ -102,7 +102,6 @@ from hades.models.user import Users
 from hades.models.event import Events
 from hades.models.user_access import Access
 
-
 BLACKLISTED_TABLES = (
     Access,
     Events,
@@ -586,6 +585,28 @@ def update():
         )
         return "User has been updated!"
     return render_template("events.html", events=get_accessible_tables())
+
+
+@app.route("/changepassword", methods=["GET", "POST"])
+@login_required
+def change_password():
+    """
+       Displays a page to enter current and a new password on a GET request
+       For POST, changes the password if current one matches and logs you out
+    """
+    if request.method == "POST":
+        current_password = request.form["current_password"]
+        new_password = request.form["new_password"]
+
+        if bcrypt.check_password_hash(current_user.password, current_password):
+            current_user.password = bcrypt.generate_password_hash(new_password)
+
+        db.session.commit()
+
+        log(f"<code>{current_user.name}</code> has updated their password!</code>")
+        logout_user()
+        return redirect(url_for("login"))
+    return render_template("reset_password.html")
 
 
 @app.route("/logout")
