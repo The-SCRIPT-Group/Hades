@@ -594,21 +594,26 @@ def change_password():
        Displays a page to enter current and a new password on a GET request
        For POST, changes the password if current one matches and logs you out
     """
+
     if request.method == "POST":
         current_password = request.form["current_password"]
         new_password = request.form["new_password"]
 
+        # If current password is correct, update and store the new hash
         if bcrypt.check_password_hash(current_user.password, current_password):
             current_user.password = bcrypt.generate_password_hash(new_password)
         else:
             return "Current password you entered is wrong! Please try again!"
 
+        # Complete the transaction. No exceptions should occur here
         db.session.commit()
 
         log(f"<code>{current_user.name}</code> has updated their password!</code>")
+
+        # Log the user out, and redirect to login page
         logout_user()
         return redirect(url_for("login"))
-    return render_template("reset_password.html")
+    return render_template("change_password.html")
 
 
 @app.route("/logout")
