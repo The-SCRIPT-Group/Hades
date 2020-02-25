@@ -1,10 +1,26 @@
 from urllib3 import PoolManager
 from urllib3.exceptions import ProtocolError
 
+# Initialize PoolManager
 manager = PoolManager()
 
 
 class TG:
+    """
+    Class to handle our telegram sending
+
+    Has one attribute
+
+    -> api_key: A Telegram bot API key
+
+    Has various functions
+
+    -> send: sends a message to the given `function` on the telegram API
+    -> send_message: send(sendMessage)
+    -> send_chat_action: send(sendChatAction)
+    -> send_document: send(sendDocument)
+    """
+
     def __init__(self, api_key):
         self.api_key = api_key
 

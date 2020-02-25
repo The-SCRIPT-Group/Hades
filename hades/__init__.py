@@ -28,11 +28,15 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Attachment, Content, Mail
 from sqlalchemy import desc, exc, inspect
 
-import hades.telegram
+from hades.telegram import TG
 
+# Retrieve telegram bot API key
 bot_api_key = os.getenv("BOT_API_KEY")
-tg = telegram.TG(bot_api_key)
 
+# Initialize object for sending messages to telegram
+tg = TG(bot_api_key)
+
+# Retrieve ID of Telegram log channel
 log_channel = os.getenv("LOG_ID")
 
 FROM_EMAIL = os.getenv("FROM_EMAIL")
