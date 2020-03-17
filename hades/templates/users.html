@@ -1,10 +1,12 @@
 <html>
 <head>
-    <link rel="stylesheet" href="{{ url_for(endpoint='static', filename='css/w3.css') }}" rel="stylesheet">
-    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png">
-    <link rel="manifest" href="/static/site.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180"
+          href="{{ url_for(endpoint='static', filename='apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32"
+          href="{{ url_for(endpoint='static', filename='favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16"
+          href="{{ url_for(endpoint='static', filename='favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ url_for(endpoint='static', filename='site.webmanifest') }}">
     <title>All Registrations</title>
 
     <style>
@@ -32,10 +34,12 @@
                     {% elif c == "phone" %}
                         {% if '|' in user['phone'] %}
                             <td>{{ user['phone'].split('|')[0] }}</td>
-                            <td><a href="https://api.whatsapp.com/send?phone=91{{ user['phone'].split('|')[1] }}" target=_blank class="w3-text-blue">WhatsApp</a></td>
+                            <td><a href="https://api.whatsapp.com/send?phone=91{{ user['phone'].split('|')[1] }}"
+                                   target=_blank class="w3-text-blue">WhatsApp</a></td>
                         {% else %}
                             <td>{{ user['phone'] }}</td>
-                            <td><a href="https://api.whatsapp.com/send?phone=91{{ user['phone'] }}" target=_blank class="w3-text-blue">WhatsApp</a></td>
+                            <td><a href="https://api.whatsapp.com/send?phone=91{{ user['phone'] }}" target=_blank
+                                   class="w3-text-blue">WhatsApp</a></td>
                         {% endif %}
                     {% else %}
                         <td>{{ user[c] }}</td>
