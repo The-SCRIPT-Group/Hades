@@ -29,7 +29,7 @@ server {
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     location /static {
-        root /home/akhil/Hades/hades/static;
+        root /home/akhil/Hades/hades;
         try_files $uri $uri/ =404;
     }
 
