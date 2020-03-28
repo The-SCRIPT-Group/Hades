@@ -644,9 +644,24 @@ def authenticate_api():
 def events_api():
     """Returns a JSON consisting of the tables the user has the permission to view"""
     ret = {}
+    log(f"<code>{current_user.name}</code> is accessing the list of events!</code>")
     for table in get_accessible_tables():
         if table.name not in ("access", "events", "test_users", "users",):
             ret[table.name] = table.full_name
+    return jsonify(ret), 200
+
+
+@app.route("/api/stats")
+@login_required
+def stats_api():
+    """Returns a JSON consisting of the tables the user has the permission to view and the users registered per table"""
+    ret = {}
+    log(f"<code>{current_user.name}</code> is accessing the stats of events!</code>")
+    for table in get_accessible_tables():
+        if table.name not in ("access", "events", "test_users", "users",):
+            ret[table.full_name] = len(
+                db.session.query(DATABASE_CLASSES[table.name]).all()
+            )
     return jsonify(ret), 200
 
 
