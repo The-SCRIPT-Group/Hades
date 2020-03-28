@@ -113,7 +113,7 @@ BLACKLISTED_TABLES = (
     TestTable,
 )
 
-EVENT_CLASSES = {
+DATABASE_CLASSES = {
     "codex_april_2019": CodexApril2019,
     "eh_july_2019": EHJuly2019,
     "cpp_workshop_may_2019": CPPWSMay2019,
@@ -198,7 +198,7 @@ def check_access(table_name: str) -> bool:
 def get_table_by_name(name: str) -> db.Model:
     """Returns the database model class corresponding to the given name."""
     try:
-        return EVENT_CLASSES[name]
+        return DATABASE_CLASSES[name]
     except KeyError:
         return None
 
@@ -645,7 +645,8 @@ def events_api():
     """Returns a JSON consisting of the tables the user has the permission to view"""
     ret = {}
     for table in get_accessible_tables():
-        ret[table.name] = table.full_name
+        if table.name not in ("access", "events", "test_users", "users",):
+            ret[table.name] = table.full_name
     return jsonify(ret), 200
 
 
