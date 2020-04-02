@@ -255,7 +255,8 @@ def submit():
 
     Based on the data, a QR code is generated, displayed, and also emailed to the user(s).
     """
-    table = get_table_by_name(request.form["db"])
+    if "db" in request.form:
+        table = get_table_by_name(request.form["db"])
 
     # Ensure that table was provided, its required for any further functionality
     if table is None or table in BLACKLISTED_TABLES:
@@ -289,7 +290,7 @@ def submit():
     user = table(**data, id=id)
 
     # If a separate WhatsApp number has been provided, store that in the database as well
-    if "whatsapp_number" in request.form.keys():
+    if "whatsapp_number" in request.form:
         try:
             if int(user.phone) != int(request.form["whatsapp_number"]):
                 user.phone += f"|{request.form['whatsapp_number']}"
@@ -303,9 +304,9 @@ def submit():
 
     # Store 2nd person's details ONLY if all 3 required parameters have been provided
     if (
-        request.form["name_second_person"]
-        and request.form["email_second_person"]
-        and request.form["department_second_person"]
+        "name_second_person" in request.form
+        and "email_second_person" in request.form
+        and "department_second_person" in request.form
     ):
         user.name += f", {request.form['name_second_person']}"
         user.email += f", {request.form['email_second_person']}"
@@ -317,7 +318,7 @@ def submit():
         return data
 
     # Generate the QRCode based on the given data and store base64 encoded version of it to email
-    if "no_qr" not in request.form.keys():
+    if "no_qr" not in request.form:
         img = generate_qr(user)
         img.save("qr.png")
         img_data = open("qr.png", "rb").read()
