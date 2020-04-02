@@ -358,11 +358,13 @@ def submit():
 <hr>
 {}, your registration is done!
 <br/>
-A QR code has been attached below!
-<br/>
-You're <b>required</b> to present this on the day of the event.""".format(
+""".format(
         user.name
     )
+    if "no_qr" not in request.form:
+        message += """A QR code has been attached below!
+<br/>
+You're <b>required</b> to present this on the day of the event."""
     if "email_content" in request.form and "email_content_fields" in request.form:
         d = {}
         for f in request.form["email_content_fields"].split(","):
