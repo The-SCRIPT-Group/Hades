@@ -281,9 +281,8 @@ def submit():
 
     # Ensure that we only take in valid fields to create our user object
     for k, v in request.form.items():
-        if k not in table.__table__.columns._data.keys():
-            continue
-        data[k] = v
+        if k in table.__table__.columns._data.keys():
+            data[k] = v
 
     # Instantiate our user object based on the received form data and retrived ID
     user = table(**data, id=id)
