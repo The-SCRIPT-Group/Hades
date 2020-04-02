@@ -408,6 +408,8 @@ You're <b>required</b> to present this on the day of the event."""
         tg.send_message(chat_id, f"New registration for {event_name}!")
         if "no_qr" not in request.form:
             tg.send_document(chat_id, caption, "qr.png")
+        else:
+            tg.send_message(chat_id, caption)
 
     ret = f"Thank you for registering, {user.name}!"
     if "no_qr" not in request.form:
