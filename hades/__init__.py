@@ -90,7 +90,7 @@ QR_BLACKLIST = (
 
 # Import event related classes
 from hades.models.csi import CSINovember2019, CSINovemberNonMember2019
-from hades.models.codex import CodexApril2019, RSC2019, CodexDecember2019
+from hades.models.codex import CodexApril2019, RSC2019, CodexDecember2019, BOV2020
 from hades.models.techo import EHJuly2019, P5November2019
 from hades.models.workshop import (
     CPPWSMay2019,
@@ -130,6 +130,7 @@ DATABASE_CLASSES = {
     "users": Users,
     "events": Events,
     "codex_december_2019": CodexDecember2019,
+    "bov_2020": BOV2020,
 }
 
 
@@ -316,10 +317,11 @@ def submit():
         return data
 
     # Generate the QRCode based on the given data and store base64 encoded version of it to email
-    img = generate_qr(user)
-    img.save("qr.png")
-    img_data = open("qr.png", "rb").read()
-    encoded = base64.b64encode(img_data).decode()
+    if "no_qr" not in request.form.keys():
+        img = generate_qr(user)
+        img.save("qr.png")
+        img_data = open("qr.png", "rb").read()
+        encoded = base64.b64encode(img_data).decode()
 
     # Add the user to the database and commit the transaction, ensuring no integrity errors.
     try:
@@ -375,8 +377,9 @@ You're <b>required</b> to present this on the day of the event.""".format(
     content = Content("text/html", message)
     mail = Mail(from_email, to_emails, subject, html_content=content)
 
-    # Add the base64 encoded QRCode as an attachment with mimetype image/png
-    mail.add_attachment(Attachment(encoded, "qr.png", "image/png"))
+    if "no_qr" not in request.form.keys():
+        # Add the base64 encoded QRCode as an attachment with mimetype image/png
+        mail.add_attachment(Attachment(encoded, "qr.png", "image/png"))
 
     # Actually send the mail. Print the errors if any.
     try:

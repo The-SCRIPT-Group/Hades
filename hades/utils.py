@@ -14,7 +14,7 @@ def validate(data, table):
         input_phone = data.phone.split("|")[0]
         user_phone = user.phone.split("|")[0]
 
-        if input_phone == user_phone:
+        if input_phone == user_phone and input_phone != "":
             return "Phone number {} already found in database!\
                 Please re-enter the form correctly!".format(
                 input_phone
