@@ -338,8 +338,8 @@ def submit():
     email_1 = (request.form["email"], request.form["name"])
     to_emails.append(email_1)
     if (
-        request.form["email_second_person"]
-        and request.form["name_second_person"]
+        "email_second_person" in request.form
+        and "name_second_person" in request.form
         and request.form["email"] != request.form["email_second_person"]
     ):
         email_2 = (
@@ -349,9 +349,9 @@ def submit():
         to_emails.append(email_2)
 
     # Check if the form specified the date, otherwise use the current month and year
-    try:
+    if "date" in request.form:
         date = request.form["date"]
-    except KeyError:
+    else:
         date = datetime.now().strftime("%B,%Y")
     subject = "Registration for {} - {} - ID {}".format(event_name, date, id)
     message = """<img src='https://drive.google.com/uc?id=12VCUzNvU53f_mR7Hbumrc6N66rCQO5r-&export=download' style="width:30%;height:50%">
@@ -378,7 +378,7 @@ You're <b>required</b> to present this on the day of the event.""".format(
     content = Content("text/html", message)
     mail = Mail(from_email, to_emails, subject, html_content=content)
 
-    if "no_qr" not in request.form.keys():
+    if "no_qr" not in request.form:
         # Add the base64 encoded QRCode as an attachment with mimetype image/png
         mail.add_attachment(Attachment(encoded, "qr.png", "image/png"))
 
@@ -404,12 +404,16 @@ You're <b>required</b> to present this on the day of the event.""".format(
     if bot_api_key is not None:
         tg.send_chat_action(chat_id, "typing")
         tg.send_message(chat_id, f"New registration for {event_name}!")
-        tg.send_document(chat_id, caption, "qr.png")
+        if "no_qr" not in request.form:
+            tg.send_document(chat_id, caption, "qr.png")
 
-    return 'Please save this QR Code. It has also been emailed to you.<br><img src=\
-            "data:image/png;base64, {}"/>'.format(
-        encoded
-    )
+    ret = f"Thank you for registering, {user.name}!"
+    if "no_qr" not in request.form:
+        ret += '<br>Please save this QR Code. It has also been emailed to you.<br><img src=\
+                "data:image/png;base64, {}"/>'.format(
+            encoded
+        )
+    return ret
 
 
 @app.route("/login", methods=["GET", "POST"])
