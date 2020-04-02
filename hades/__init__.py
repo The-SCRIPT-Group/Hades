@@ -289,7 +289,7 @@ def submit():
     user = table(**data, id=id)
 
     # If a separate WhatsApp number has been provided, store that in the database as well
-    if request.form["whatsapp_number"]:
+    if "whatsapp_number" in request.form.keys():
         try:
             if int(user.phone) != int(request.form["whatsapp_number"]):
                 user.phone += f"|{request.form['whatsapp_number']}"
