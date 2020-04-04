@@ -84,7 +84,7 @@ class CodexDecember2019(db.Model):
             .count(self.hackerrank_username)
             < 3
         ):
-            return f"Your hackerrank profile doesn't seem to exist <a href=https://hackerrank.com/{self.hackerrank_username}>here</a>!"
+            return f"Your hackerrank profile doesn't seem to exist!"
 
         for user in db.session.query(CodexDecember2019).all():
             if self.hackerrank_username == user.hackerrank_username:
@@ -122,7 +122,7 @@ class BOV2020(db.Model):
             .count(self.hackerrank_username)
             < 3
         ):
-            return f"Your hackerrank profile doesn't seem to exist <a href=https://hackerrank.com/{self.hackerrank_username}>here</a>!"
+            return f"Your hackerrank profile doesn't seem to exist!"
 
         for user in db.session.query(BOV2020).all():
             if self.hackerrank_username == user.hackerrank_username:
