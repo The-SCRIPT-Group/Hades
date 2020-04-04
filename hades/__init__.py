@@ -365,12 +365,17 @@ def submit():
         message += """A QR code has been attached below!
 <br/>
 You're <b>required</b> to present this on the day of the event."""
-    if "email_content" in request.form and "email_content_fields" in request.form:
+    if (
+        "email_formattable_content" in request.form
+        and "email_content_fields" in request.form
+    ):
         d = {}
         for f in request.form["email_content_fields"].split(","):
             d[f] = request.form[f]
-
-        message = request.form["email_content"].format(**d)
+        message = ""
+        if "email_content" in request.form:
+            message += request.form["email_content"]
+        message += request.form["email_formattable_content"].format(**d)
     try:
         message += "<br/>" + request.form["extra_message"]
     except KeyError:
