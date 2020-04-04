@@ -101,7 +101,7 @@ class BOV2020(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(31))
     email = db.Column(db.String(51), unique=True)
-    phone = db.Column(db.String(15))
+    phone = db.Column(db.String(19))
     hackerrank_username = db.Column(db.String(50), unique=True)
     country = db.Column(db.String(24))
 
