@@ -548,22 +548,28 @@ def update_user(**kwargs):
         print(e.body)
 
 
-def delete_user(**kwargs):
+def delete_user(id, table_name: str) -> bool:
     """
     Takes a dictionary as an argument
     id and table keys to get id of user and table it belongs to
     Deletes the user
     """
-    id = kwargs["id"]
-    table = kwargs["table"]
+    table = get_table_by_name(table_name)
     user = db.session.query(table).get(id)
     if user is None:
-        return None
+        return False
     db.session.delete(user)
+    log(
+        f"User <code>{current_user.name}</code> has deleted <code>{user}</code> from <code>{table_name}</code>!"
+    )
     try:
         db.session.commit()
     except Exception as e:
         print(e.body)
+        log(f"Exception occurred in above deletion!")
+        log(e.body)
+        return False
+    return True
 
 
 @app.route("/update", methods=["GET", "POST"])
@@ -765,7 +771,7 @@ def create():
 
 @app.route("/api/delete", methods=["DELETE"])
 @login_required
-def delete_user():
+def delete():
     """Deletes the user as specified in the request data"""
     try:
         table_name = request.form["table"]
@@ -776,13 +782,20 @@ def delete_user():
     if access is None:
         return jsonify({"response": "Unauthorized"}), 401
     table = get_table_by_name(table_name)
-    user = db.session.query(table).get(id)
-    db.session.delete(user)
-    db.session.commit()
-    log(
-        f"User <code>{current_user.name}</code> has deleted <code>{user}</code> from <code>{table_name}</code>!",
-    )
-    return f"Deleted user {user.name}"
+    ret = []
+    if id == "all":
+        for user in db.session.query(table).all():
+            if delete_user(user.id, table_name):
+                ret.append(f"Deleted user with {user.id} from {table_name}")
+            else:
+                ret.append(f"Failed to delete user with {user.id} from {table_name}")
+        return jsonify({"response": ret})
+    else:
+        if delete_user(id, table_name):
+            return jsonify({"response": f"Deleted user with {id} from {table_name}"})
+        return jsonify(
+            {"response": f"Failed to delete user with {id} from {table_name}"}
+        )
 
 
 @app.route("/api/update", methods=["PUT"])
