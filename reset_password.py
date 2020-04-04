@@ -17,8 +17,9 @@ if user is None:
     print(f"User {username} does not exist!")
     exit(1)
 
-print("Enter new password: ", end="")
-user.password = bcrypt.generate_password_hash(getpass()).decode("utf-8")
+user.password = bcrypt.generate_password_hash(
+    getpass(prompt="Enter new password: ")
+).decode("utf-8")
 try:
     db.session.commit()
 except Exception as e:
