@@ -422,6 +422,8 @@ You're <b>required</b> to present this on the day of the event."""
                 "data:image/png;base64, {}"/>'.format(
             encoded
         )
+    else:
+        ret += '<br>Please check your email for confirmation.'
     return ret
 
 
