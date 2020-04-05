@@ -27,29 +27,29 @@ class TG:
     def send(self, function, data):
         try:
             return manager.request(
-                "POST",
-                f"https://api.telegram.org/bot{self.api_key}/{function}",
+                'POST',
+                f'https://api.telegram.org/bot{self.api_key}/{function}',
                 fields=data,
             )
         except ProtocolError as e:
             print(e, e.__class__)
-            with open("extra-logs.txt", "a") as f:
-                f.write(str(data) + "\n\n\n")
+            with open('extra-logs.txt', 'a') as f:
+                f.write(str(data) + '\n\n\n')
 
-    def send_message(self, chat_id, message, parse_mode="HTML"):
+    def send_message(self, chat_id, message, parse_mode='HTML'):
         data = {
-            "chat_id": chat_id,
-            "text": message,
-            "parse_mode": parse_mode,
+            'chat_id': chat_id,
+            'text': message,
+            'parse_mode': parse_mode,
         }
-        return self.send("sendMessage", data)
+        return self.send('sendMessage', data)
 
     def send_chat_action(self, chat_id, action):
         data = {
-            "chat_id": chat_id,
-            "action": action,
+            'chat_id': chat_id,
+            'action': action,
         }
-        return self.send("sendChatAction", data)
+        return self.send('sendChatAction', data)
 
     def send_document(
         self,
@@ -57,13 +57,13 @@ class TG:
         caption,
         file_name,
         disable_notifications=False,
-        parse_mode="HTML",
+        parse_mode='HTML',
     ):
         data = {
-            "caption": caption,
-            "chat_id": chat_id,
-            "document": (file_name, open(file_name, "rb").read()),
-            "disable_notification": disable_notifications,
-            "parse_mode": parse_mode,
+            'caption': caption,
+            'chat_id': chat_id,
+            'document': (file_name, open(file_name, 'rb').read()),
+            'disable_notification': disable_notifications,
+            'parse_mode': parse_mode,
         }
-        return self.send("sendDocument", data)
+        return self.send('sendDocument', data)

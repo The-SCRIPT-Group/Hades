@@ -3,11 +3,11 @@ from hades.utils import validate
 
 
 class EHJuly2019(db.Model):
-    """
+    '''
     Database model class
-    """
+    '''
 
-    __tablename__ = "eh_july_2019"
+    __tablename__ = 'eh_july_2019'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
     email = db.Column(db.String(50), unique=True)
@@ -15,18 +15,18 @@ class EHJuly2019(db.Model):
     department = db.Column(db.String(50))
 
     def __repr__(self):
-        return "%r" % [self.id, self.name, self.email, self.phone, self.department]
+        return '%r' % [self.id, self.name, self.email, self.phone, self.department]
 
     def validate(self):
         return validate(self, EHJuly2019)
 
 
 class P5November2019(db.Model):
-    """
+    '''
     Database model class
-    """
+    '''
 
-    __tablename__ = "p5_november_2019"
+    __tablename__ = 'p5_november_2019'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
     email = db.Column(db.String(50), unique=True)
@@ -36,7 +36,7 @@ class P5November2019(db.Model):
     level = db.Column(db.String(12))
 
     def __repr__(self):
-        return "%r" % [
+        return '%r' % [
             self.id,
             self.name,
             self.email,

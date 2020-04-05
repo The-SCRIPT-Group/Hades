@@ -10,19 +10,19 @@ from hades.models.user_access import Access
 
 tables = db.engine.table_names()
 print(tables)
-table = input(f"Enter table name: ")
+table = input(f'Enter table name: ')
 if table not in tables:
-    print(f"Table {table} does not exist!")
+    print(f'Table {table} does not exist!')
     exit(1)
 
-print("Keep entering usernames, ctrl c/d to exit!")
+print('Keep entering usernames, ctrl c/d to exit!')
 users = []
 try:
     while True:
-        username = input("Enter username: ")
+        username = input('Enter username: ')
         user = db.session.query(Users).get(username)
         if user is None:
-            print(f"User {username} does not seem to exist!")
+            print(f'User {username} does not seem to exist!')
             exit(1)
         users.append(user)
 except EOFError:
@@ -37,7 +37,7 @@ for user in users:
     try:
         db.session.commit()
     except IntegrityError:
-        print(f"User {username} already seems to have access to {table}!")
+        print(f'User {username} already seems to have access to {table}!')
         db.session.rollback()
         continue
-    print(f"Granted access on {table} to {username}")
+    print(f'Granted access on {table} to {username}')

@@ -3,29 +3,29 @@ from hades.utils import validate
 
 
 class CPPWSMay2019(db.Model):
-    """
+    '''
     Database model class
-    """
+    '''
 
-    __tablename__ = "cpp_workshop_may_2019"
+    __tablename__ = 'cpp_workshop_may_2019'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
     email = db.Column(db.String(50), unique=True)
     phone = db.Column(db.String(21), unique=True)
 
     def __repr__(self):
-        return "%r" % [self.id, self.name, self.email, self.phone]
+        return '%r' % [self.id, self.name, self.email, self.phone]
 
     def validate(self):
         return validate(self, CPPWSMay2019)
 
 
 class CCPPWSAugust2019(db.Model):
-    """
+    '''
     Database model class
-    """
+    '''
 
-    __tablename__ = "c_cpp_workshop_august_2019"
+    __tablename__ = 'c_cpp_workshop_august_2019'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
     email = db.Column(db.String(50), unique=True)
@@ -34,7 +34,7 @@ class CCPPWSAugust2019(db.Model):
     year = db.Column(db.String(3))
 
     def __repr__(self):
-        return "%r" % [
+        return '%r' % [
             self.id,
             self.name,
             self.email,
@@ -44,17 +44,17 @@ class CCPPWSAugust2019(db.Model):
         ]
 
     def validate(self):
-        if self.year == "1st":
+        if self.year == '1st':
             return validate(self, CCPPWSAugust2019)
-        return "This workshop is <b>only</b> for FY students"
+        return 'This workshop is <b>only</b> for FY students'
 
 
 class Hacktoberfest2019(db.Model):
-    """
+    '''
     Database model class
-    """
+    '''
 
-    __tablename__ = "do_hacktoberfest_2019"
+    __tablename__ = 'do_hacktoberfest_2019'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
     email = db.Column(db.String(50), unique=True)
@@ -64,7 +64,7 @@ class Hacktoberfest2019(db.Model):
     date = db.Column(db.String(2))
 
     def __repr__(self):
-        return "%r" % [
+        return '%r' % [
             self.id,
             self.name,
             self.email,
@@ -79,11 +79,11 @@ class Hacktoberfest2019(db.Model):
 
 
 class CNovember2019(db.Model):
-    """
+    '''
     Database model class
-    """
+    '''
 
-    __tablename__ = "c_november_2019"
+    __tablename__ = 'c_november_2019'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
     email = db.Column(db.String(50), unique=True)
@@ -93,7 +93,7 @@ class CNovember2019(db.Model):
     roll = db.Column(db.String(4), unique=True)
 
     def __repr__(self):
-        return "%r" % [
+        return '%r' % [
             self.id,
             self.name,
             self.email,
@@ -104,23 +104,23 @@ class CNovember2019(db.Model):
         ]
 
     def validate(self):
-        if self.year == "2nd":
+        if self.year == '2nd':
             return validate(self, CNovember2019)
         for user in db.session.query(CNovember2019).all():
             if user.prn == self.prn:
-                return f"PRN {self.prn} has already been registered!"
+                return f'PRN {self.prn} has already been registered!'
             if user.roll == self.roll:
-                return f"Roll number {self.roll} has already been registered!"
-        return "This workshop is <b>only</b> for SY students"
+                return f'Roll number {self.roll} has already been registered!'
+        return 'This workshop is <b>only</b> for SY students'
         4
 
 
 class BitgritDecember2019(db.Model):
-    """
+    '''
     Database model class
-    """
+    '''
 
-    __tablename__ = "bitgrit_december_2019"
+    __tablename__ = 'bitgrit_december_2019'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
     email = db.Column(db.String(50), unique=True)
@@ -129,7 +129,7 @@ class BitgritDecember2019(db.Model):
     year = db.Column(db.String(3))
 
     def __repr__(self):
-        return "%r" % [
+        return '%r' % [
             self.id,
             self.name,
             self.email,

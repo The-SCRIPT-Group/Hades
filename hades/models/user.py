@@ -4,11 +4,11 @@ from flask_login import UserMixin
 
 
 class Users(db.Model, UserMixin):
-    """
+    '''
     Database model class
-    """
+    '''
 
-    __tablename__ = "users"
+    __tablename__ = 'users'
     name = db.Column(db.String(30))
     username = db.Column(db.String(20), primary_key=True)
     password = db.Column(db.String(100))
@@ -19,4 +19,4 @@ class Users(db.Model, UserMixin):
         return self.username if self is not None else None
 
     def __repr__(self):
-        return "%r" % [self.username, self.name, self.email]
+        return '%r' % [self.username, self.name, self.email]

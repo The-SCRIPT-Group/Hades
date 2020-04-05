@@ -25,37 +25,37 @@ from flask import Flask
 from hades import app, db, EVENT_CLASSES
 
 # Source is taken from app
-src = input("Enter source DB URI: ")
-dest = input("Enter destination DB URI: ")
+src = input('Enter source DB URI: ')
+dest = input('Enter destination DB URI: ')
 
 dest_app = Flask(__name__)
 dest_db = SQLAlchemy(dest_app)
-dest_app.config["SQLALCHEMY_DATABASE_URI"] = dest
+dest_app.config['SQLALCHEMY_DATABASE_URI'] = dest
 
 
-app.config["SQLALCHEMY_DATABASE_URI"] = src
-print("Source tables: ")
+app.config['SQLALCHEMY_DATABASE_URI'] = src
+print('Source tables: ')
 print(db.engine.table_names())
-print("Running create_all() on destination URI")
-app.config["SQLALCHEMY_DATABASE_URI"] = dest
+print('Running create_all() on destination URI')
+app.config['SQLALCHEMY_DATABASE_URI'] = dest
 db.create_all()
 print(db.engine.table_names())
-app.config["SQLALCHEMY_DATABASE_URI"] = src
+app.config['SQLALCHEMY_DATABASE_URI'] = src
 
 
 tables = db.engine.table_names()
 tables.reverse()
 for table in tables:
-    print(f"Checking entries in {table}")
+    print(f'Checking entries in {table}')
     table = EVENT_CLASSES[table]
     if table is None:
-        print("Table is None")
+        print('Table is None')
         continue
     data = db.session.query(table).all()
     for i in data:
         user_data = table()
         for k, v in i.__dict__.items():
-            if k == "_sa_instance_state":
+            if k == '_sa_instance_state':
                 continue
             setattr(user_data, k, v)
         dest_db.session.add(user_data)
