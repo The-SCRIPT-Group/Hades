@@ -5,9 +5,9 @@ from requests import get
 
 
 class CodexApril2019(db.Model):
-    '''
+    """
     Database model class
-    '''
+    """
 
     __tablename__ = 'codex_april_2019'
     id = db.Column(db.Integer, primary_key=True)
@@ -24,9 +24,9 @@ class CodexApril2019(db.Model):
 
 
 class RSC2019(db.Model):
-    '''
+    """
     Database model class
-    '''
+    """
 
     __tablename__ = 'rsc_2019'
     id = db.Column(db.Integer, primary_key=True)
@@ -51,9 +51,9 @@ class RSC2019(db.Model):
 
 
 class CodexDecember2019(db.Model):
-    '''
+    """
     Database model class
-    '''
+    """
 
     __tablename__ = 'codex_december_2019'
     id = db.Column(db.Integer, primary_key=True)
@@ -93,9 +93,9 @@ class CodexDecember2019(db.Model):
 
 
 class BOV2020(db.Model):
-    '''
+    """
     Database model class
-    '''
+    """
 
     __tablename__ = 'bov_2020'
     id = db.Column(db.Integer, primary_key=True)

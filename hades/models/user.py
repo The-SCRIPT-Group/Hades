@@ -4,9 +4,9 @@ from flask_login import UserMixin
 
 
 class Users(db.Model, UserMixin):
-    '''
+    """
     Database model class
-    '''
+    """
 
     __tablename__ = 'users'
     name = db.Column(db.String(30))

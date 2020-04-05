@@ -3,9 +3,9 @@ from hades.utils import validate
 
 
 class CPPWSMay2019(db.Model):
-    '''
+    """
     Database model class
-    '''
+    """
 
     __tablename__ = 'cpp_workshop_may_2019'
     id = db.Column(db.Integer, primary_key=True)
@@ -21,9 +21,9 @@ class CPPWSMay2019(db.Model):
 
 
 class CCPPWSAugust2019(db.Model):
-    '''
+    """
     Database model class
-    '''
+    """
 
     __tablename__ = 'c_cpp_workshop_august_2019'
     id = db.Column(db.Integer, primary_key=True)
@@ -50,9 +50,9 @@ class CCPPWSAugust2019(db.Model):
 
 
 class Hacktoberfest2019(db.Model):
-    '''
+    """
     Database model class
-    '''
+    """
 
     __tablename__ = 'do_hacktoberfest_2019'
     id = db.Column(db.Integer, primary_key=True)
@@ -79,9 +79,9 @@ class Hacktoberfest2019(db.Model):
 
 
 class CNovember2019(db.Model):
-    '''
+    """
     Database model class
-    '''
+    """
 
     __tablename__ = 'c_november_2019'
     id = db.Column(db.Integer, primary_key=True)
@@ -116,9 +116,9 @@ class CNovember2019(db.Model):
 
 
 class BitgritDecember2019(db.Model):
-    '''
+    """
     Database model class
-    '''
+    """
 
     __tablename__ = 'bitgrit_december_2019'
     id = db.Column(db.Integer, primary_key=True)

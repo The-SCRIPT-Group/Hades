@@ -789,9 +789,9 @@ def delete():
     if id == 'all':
         for user in db.session.query(table).all():
             if delete_user(user.id, table_name):
-                ret.append(f'Deleted user with {user.id} from {table_name}')
+                ret.append(f'Deleted user {user} from {table_name}')
             else:
-                ret.append(f'Failed to delete user with {user.id} from {table_name}')
+                ret.append(f'Failed to delete user with {user} from {table_name}')
         return jsonify({'response': ret})
     else:
         if delete_user(id, table_name):

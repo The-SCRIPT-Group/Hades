@@ -3,9 +3,9 @@ from hades.utils import validate
 
 
 class EHJuly2019(db.Model):
-    '''
+    """
     Database model class
-    '''
+    """
 
     __tablename__ = 'eh_july_2019'
     id = db.Column(db.Integer, primary_key=True)
@@ -22,9 +22,9 @@ class EHJuly2019(db.Model):
 
 
 class P5November2019(db.Model):
-    '''
+    """
     Database model class
-    '''
+    """
 
     __tablename__ = 'p5_november_2019'
     id = db.Column(db.Integer, primary_key=True)

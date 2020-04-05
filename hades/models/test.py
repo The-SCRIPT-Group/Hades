@@ -2,9 +2,9 @@ from hades import db
 
 
 class TestTable(db.Model):
-    '''
+    """
     Database model class
-    '''
+    """
 
     __tablename__ = 'test_users'
     id = db.Column(db.Integer, primary_key=True)

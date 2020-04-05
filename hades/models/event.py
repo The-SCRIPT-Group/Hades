@@ -2,9 +2,9 @@ from hades import db
 
 
 class Events(db.Model):
-    '''
+    """
     Database model class
-    '''
+    """
 
     __tablename__ = 'events'
 

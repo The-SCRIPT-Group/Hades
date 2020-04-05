@@ -2,9 +2,9 @@ from hades import db
 
 
 class Access(db.Model):
-    '''
+    """
     Database model class
-    '''
+    """
 
     __tablename__ = 'access'
 
