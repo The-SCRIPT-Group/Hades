@@ -845,16 +845,12 @@ def update_user():
 @login_required
 def send_mail():
     """Sends a mail to users as specified in the request data"""
-    try:
-        content = "<img src='https://drive.google.com/uc?id=12VCUzNvU53f_mR7Hbumrc6N66rCQO5r-&export=download' style='width:30%;height:50%'><hr><br> <b>Hey there!</b><br><br>" + str(
-            request.form['content']
-        ).replace(
-            '\n', '<br/>'
-        )
-        subject = request.form['subject']
-        table_name = request.form['table']
-    except KeyError:
-        return jsonify({'response': 'Please provide all required data'}), 400
+    for field in ('content', 'subject', 'table', 'ids'):
+        if field not in request.form:
+            return jsonify({'response': 'Please provide all required data'}), 400
+
+    subject = request.form['subject']
+    table_name = request.form['table']
 
     if table_name in ('access', 'events', 'users'):
         return jsonify({'response': 'Seriously?'}), 400
@@ -869,25 +865,43 @@ def send_mail():
     else:
         users = db.session.query(table).all()
 
-    mail_content = Content('text/html', content)
-    mail = Mail(FROM_EMAIL, FROM_EMAIL, subject, mail_content)
+    if 'email_address' in request.form:
+        email_address = request.form['email_address']
+    else:
+        email_address = FROM_EMAIL
+
     for user in users:
+        if 'formattable_content' in request.form and 'content_fields' in request.form:
+            d = {}
+            for f in request.form['content_fields'].split(','):
+                d[f] = getattr(user, f)
+            content = request.form['content']
+            content += request.form['formattable_content'].format(**d)
+
+        else:
+            content = "<img src='https://drive.google.com/uc?id=12VCUzNvU53f_mR7Hbumrc6N66rCQO5r-&export=download' style='width:30%;height:50%'><hr><br> <b>Hey there!</b><br><br>" + str(
+                request.form['content']
+            ).replace(
+                '\n', '<br/>'
+            )
+
+        mail_content = Content('text/html', content)
         if ',' in user.name:
-            mail.add_bcc((user.email.split(',')[0], user.name.split(',')[0]))
-            mail.add_bcc(
+            mail = Mail(FROM_EMAIL, email_address, subject, mail_content)
+            mail.add_cc((user.email.split(',')[0], user.name.split(',')[0]))
+            mail.add_cc(
                 (user.email.split(',')[1].rstrip(), user.name.split(',')[1].rstrip())
             )
         else:
-            mail.add_bcc((user.email, user.name))
-
-    try:
-        SendGridAPIClient(SENDGRID_API_KEY).send(mail)
-    except Exception as e:
-        print(e)
-        return jsonify({'response': 'Failed to send mail'}), 500
+            mail = Mail(FROM_EMAIL, (user.email, user.name), subject, mail_content)
+        try:
+            SendGridAPIClient(SENDGRID_API_KEY).send(mail)
+        except Exception as e:
+            print(e)
+            return jsonify({'response': f'Failed to send mail to {user}'}), 500
 
     log(
-        f'User <code>{current_user.name}</code> has sent mail <code>{content}</code> with subject <code>{subject}</code> to <code>{table_name}</code>!',
+        f'User <code>{current_user.name}</code> has sent mails with subject <code>{subject}</code> to <code>{table_name}</code>!',
     )
     return jsonify({'response': 'Sent mail'}), 200
 
