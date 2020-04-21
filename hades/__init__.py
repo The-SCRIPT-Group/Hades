@@ -92,6 +92,7 @@ QR_BLACKLIST = (
 # Import event related classes
 from hades.models.csi import CSINovember2019, CSINovemberNonMember2019
 from hades.models.codex import CodexApril2019, RSC2019, CodexDecember2019, BOV2020
+from hades.models.giveaway import Coursera2020
 from hades.models.techo import EHJuly2019, P5November2019
 from hades.models.workshop import (
     CPPWSMay2019,
@@ -132,6 +133,7 @@ DATABASE_CLASSES = {
     'events': Events,
     'codex_december_2019': CodexDecember2019,
     'bov_2020': BOV2020,
+    'coursera_2020': Coursera2020,
 }
 
 
