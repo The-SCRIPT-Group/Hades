@@ -136,6 +136,9 @@ DATABASE_CLASSES = {
     'coursera_2020': Coursera2020,
 }
 
+ACTIVE_TABLES = [Coursera2020]
+ACTIVE_EVENTS = ['Coursera 2020']
+
 
 def log(message: str):
     """Logs the given `message` to our Telegram logging channel"""
@@ -233,6 +236,10 @@ def submit():
     db -> The name of the database corresponding to the event. This will be hardcoded as an invisible uneditable field
     event -> The name of the event
 
+    These fields can be skipped if ACTIVE_TABLES and ACTIVE_EVENTS lists have only one element
+    This is done as we usually don't have more than 1 event at one time, we can reduce the risk of data being changed
+    at the frontend by directly setting it here in the backend
+
     The rest of the parameters vary per event, we check the keys in the form items against the attributes of the
     corresponding event class to ensure that no extraneous data is accepted
 
@@ -258,11 +265,16 @@ def submit():
 
     Based on the data, a QR code is generated, displayed, and also emailed to the user(s).
     """
-    if 'db' in request.form:
+
+    # If there's just one active table, no need of checking
+    table = None
+    if len(ACTIVE_TABLES) == 1:
+        table = ACTIVE_TABLES[0]
+    elif 'db' in request.form:
         table = get_table_by_name(request.form['db'])
 
-    # Ensure that table was provided, its required for any further functionality
-    if table is None or table in BLACKLISTED_TABLES:
+    # Ensure that table was provided, active, and not blacklisted. its required for any further functionality.
+    if table is None or table in BLACKLISTED_TABLES or table not in ACTIVE_TABLES:
         print(request.form)
 
         print(request.form['db'])
@@ -275,9 +287,13 @@ def submit():
         log(f'Full form:\n{form_data[:-1]}')
         return "That wasn't a valid db..."
 
-    if 'event' not in request.form:
+    # If we have only one active event - we know the event name already
+    if len(ACTIVE_EVENTS) == 1:
+        event_name = ACTIVE_EVENTS[0]
+    elif 'event' in request.form:
+        event_name = request.form['event']
+    else:
         return 'Hades does require the event name, you know?'
-    event_name = request.form['event']
 
     # ID is from a helper function that increments the latest ID by 1 and returns it
     id = get_current_id(table)
