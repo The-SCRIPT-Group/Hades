@@ -28,9 +28,12 @@ class CSINovember2019(db.Model):
         ]
 
     def validate(self):
-        for user in db.session.query(CSINovember2019).all():
-            if user.csi_id == self.csi_id:
-                return f'CSI ID {self.csi_id} is already registered in the database'
+        if (
+            db.session.query(CSINovember2019)
+            .filter(CSINovember2019.csi_id == self.csi_id)
+            .first()
+        ):
+            return f'CSI ID {self.csi_id} is already registered in the database'
         return validate(self, CSINovember2019)
 
 
@@ -61,7 +64,10 @@ class CSINovemberNonMember2019(db.Model):
         ]
 
     def validate(self):
-        for user in db.session.query(CSINovemberNonMember2019).all():
-            if user.prn == self.prn:
-                return f'PRN {self.prn} is already registered in the database'
-        return validate(self, CSINovember2019)
+        if (
+            db.session.query(CSINovemberNonMember2019)
+            .filter(CSINovemberNonMember2019.prn == self.prn)
+            .first()
+        ):
+            return f'PRN {self.prn} is already registered in the database'
+        return validate(self, CSINovemberNonMember2019)

@@ -106,13 +106,19 @@ class CNovember2019(db.Model):
     def validate(self):
         if self.year == '2nd':
             return validate(self, CNovember2019)
-        for user in db.session.query(CNovember2019).all():
-            if user.prn == self.prn:
-                return f'PRN {self.prn} has already been registered!'
-            if user.roll == self.roll:
-                return f'Roll number {self.roll} has already been registered!'
+        if (
+            db.session.query(CNovember2019)
+            .filter(CNovember2019.prn == self.prn)
+            .first()
+        ):
+            return f'PRN {self.prn} has already been registered!'
+        if (
+            db.session.query(CNovember2019)
+            .filter(CNovember2019.roll == self.roll)
+            .first()
+        ):
+            return f'Roll number {self.roll} has already been registered!'
         return 'This workshop is <b>only</b> for SY students'
-        4
 
 
 class BitgritDecember2019(db.Model):

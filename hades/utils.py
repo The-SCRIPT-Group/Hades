@@ -4,21 +4,14 @@ from hades import db
 
 
 def validate(data, table):
-    for user in db.session.query(table).all():
-        if data.email == user.email:
-            return 'Email address {} already found in database!\
-            Please re-enter the form correctly!'.format(
-                data.email
-            )
+    # Ensure nobody else in the table has the same email address
+    if db.session.query(table).filter(table.email == data.email).first():
+        return f'Email address {data.email} already found in database! Please re-enter the form correctly!'
 
-        input_phone = data.phone.split('|')[0]
-        user_phone = user.phone.split('|')[0]
-
-        if input_phone == user_phone and input_phone != '':
-            return 'Phone number {} already found in database!\
-                Please re-enter the form correctly!'.format(
-                input_phone
-            )
+    # Ensure nobody else int he table has the same phone number
+    for num in data.phone.split('|'):
+        if db.session.query(table).filter(table.phone.like(f'%{num}%')).first():
+            return f'Phone number {num} already found in database! Please re-enter the form correctly!'
 
     return True
 

@@ -86,9 +86,12 @@ class CodexDecember2019(db.Model):
         ):
             return f"Your hackerrank profile doesn't seem to exist!"
 
-        for user in db.session.query(CodexDecember2019).all():
-            if self.hackerrank_username == user.hackerrank_username:
-                return f"Someone has already registered with hackerrank username <code>{self.hackerrank_username}</code>.<br/>Kindly contact the team if that is your username and it wasn't your registration"
+        if (
+            db.session.query(CodexDecember2019)
+            .filter(CodexDecember2019.hackerrank_username == self.hackerrank_username)
+            .first()
+        ):
+            return f"Someone has already registered with hackerrank username <code>{self.hackerrank_username}</code>.<br/>Kindly contact the team if that is your username and it wasn't your registration"
         return validate(self, CodexDecember2019)
 
 
@@ -124,7 +127,10 @@ class BOV2020(db.Model):
         ):
             return f"Your hackerrank profile doesn't seem to exist!"
 
-        for user in db.session.query(BOV2020).all():
-            if self.hackerrank_username == user.hackerrank_username:
-                return f"Someone has already registered with hackerrank username <code>{self.hackerrank_username}</code>.<br/>Kindly contact the team if that is your username and it wasn't your registration"
+        if (
+            db.session.query(BOV2020)
+            .filter(BOV2020.hackerrank_username == self.hackerrank_username)
+            .first()
+        ):
+            return f"Someone has already registered with hackerrank username <code>{self.hackerrank_username}</code>.<br/>Kindly contact the team if that is your username and it wasn't your registration"
         return validate(self, BOV2020)
