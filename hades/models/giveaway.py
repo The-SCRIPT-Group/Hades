@@ -1,4 +1,5 @@
 from hades import db
+from hades.utils import validate
 
 
 class Coursera2020(db.Model):
@@ -29,3 +30,9 @@ class Coursera2020(db.Model):
             self.program,
             self.year,
         ]
+
+    def validate(self):
+        for user in db.session.query(Coursera2020).all():
+            if user.prn == self.prn:
+                return f'PRN {self.prn} is already registered in the database'
+        return validate(self, Coursera2020)
