@@ -267,14 +267,15 @@ def submit():
     """
 
     # If there's just one active table, no need of checking
-    table = None
     if len(ACTIVE_TABLES) == 1:
         table = ACTIVE_TABLES[0]
     elif 'db' in request.form:
         table = get_table_by_name(request.form['db'])
+    else:
+        return "You need to specify a database!"
 
     # Ensure that table was provided, active, and not blacklisted. its required for any further functionality.
-    if table is None or table in BLACKLISTED_TABLES or table not in ACTIVE_TABLES:
+    if table not in ACTIVE_TABLES:
         print(request.form)
 
         print(request.form['db'])
