@@ -271,22 +271,21 @@ def submit():
         table = ACTIVE_TABLES[0]
     elif 'db' in request.form:
         table = get_table_by_name(request.form['db'])
+        # Ensure that the provided table is active
+        if table not in ACTIVE_TABLES:
+            print(request.form)
+
+            print(request.form['db'])
+            log(
+                f"Someone just tried to register to table <code>{request.form['db']}</code>"
+            )
+            form_data = ''
+            for k, v in request.form.items():
+                form_data += f'<code>{k}</code> - <code>{v}</code>\n'
+            log(f'Full form:\n{form_data[:-1]}')
+            return "That wasn't a valid db..."
     else:
         return "You need to specify a database!"
-
-    # Ensure that table was provided, active, and not blacklisted. its required for any further functionality.
-    if table not in ACTIVE_TABLES:
-        print(request.form)
-
-        print(request.form['db'])
-        log(
-            f"Someone just tried to register to table <code>{request.form['db']}</code>"
-        )
-        form_data = ''
-        for k, v in request.form.items():
-            form_data += f'<code>{k}</code> - <code>{v}</code>\n'
-        log(f'Full form:\n{form_data[:-1]}')
-        return "That wasn't a valid db..."
 
     # If we have only one active event - we know the event name already
     if len(ACTIVE_EVENTS) == 1:
