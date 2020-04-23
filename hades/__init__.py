@@ -249,10 +249,12 @@ def submit():
     -> department - Person's department
 
     Some optional fields which are *NOT* members of any class
+    -> no_qr - To disable QR generation and attachment in email
     -> whatsapp_number - To store WhatsApp number separately
     -> chat_id - Alternative Telegram Chat ID where registrations should be logged
     -> email_content - Alternative email content to be sent to user
-    -> email_content_fields - list of additional form fields which need to be replaced with variable's value in the email_content
+    -> email_formattable_content - content where some field needs to be replaced with the fields in email_content_fields
+    -> email_content_fields - list of additional form fields which need to be replaced with variable's value in the email_formattable_content
     -> extra_message - Extra information to be appended to end of email
     -> extra_field_telegram - If anything besides ID and name are to be logged to Telegram, it is specified here
 
