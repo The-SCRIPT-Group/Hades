@@ -26,7 +26,8 @@ from flask_login import (
 from flask_sqlalchemy import SQLAlchemy
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Attachment, Content, Mail
-from sqlalchemy import desc, exc, inspect
+from sqlalchemy import desc, inspect
+from sqlalchemy.exc import DataError, IntegrityError
 
 from hades.telegram import TG
 
@@ -349,7 +350,7 @@ def submit():
     try:
         db.session.add(user)
         db.session.commit()
-    except exc.IntegrityError as e:
+    except (IntegrityError, DataError) as e:
         print(e)
         return """It appears there was an error while trying to enter your data into our database.<br/>Kindly contact someone from the team and we will have this resolved ASAP"""
 
@@ -512,7 +513,7 @@ def register():
         try:
             db.session.add(u)
             db.session.commit()
-        except exc.IntegrityError:
+        except IntegrityError:
             return (
                 jsonify(
                     {
@@ -567,7 +568,7 @@ def update_user(**kwargs):
 
     try:
         db.session.commit()
-    except exc.IntegrityError as e:
+    except IntegrityError as e:
         print(e.body)
 
 
@@ -626,7 +627,7 @@ def update():
 
         try:
             db.session.commit()
-        except exc.IntegrityError:
+        except IntegrityError:
             return 'Integrity constraint violated, please re-check your data!'
 
         log(
@@ -777,7 +778,7 @@ def create():
     try:
         db.session.add(user)
         db.session.commit()
-    except exc.IntegrityError:
+    except IntegrityError:
         return (
             jsonify(
                 {
@@ -846,7 +847,7 @@ def update_user():
             print(f'Updated {k} of {user} to {v}')
     try:
         db.session.commit()
-    except exc.IntegrityError:
+    except IntegrityError:
         return (
             jsonify(
                 {
