@@ -166,7 +166,17 @@ def load_user_from_request(request):
     """
     credentials = request.headers.get('Credentials')
     if credentials:
-        credentials = base64.b64decode(credentials).decode('utf-8')
+        try:
+            credentials = base64.b64decode(credentials).decode('utf-8')
+        except UnicodeDecodeError:
+            return (
+                jsonify(
+                    {
+                        'response': 'UnicodeDecodeError, what kinda data did you even pass?'
+                    }
+                ),
+                400,
+            )
         username, password = credentials.split('|')
         user = db.session.query(Users).get(username)
         if user is not None:
