@@ -55,36 +55,6 @@ from hades.utils import users_to_json
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 
-DEPARTMENTS = {
-    'cse': 'Computer Science and Engineering',
-    'mtech': 'M.Tech',
-    'ece': 'Electronics and Communication Engineering',
-    'ee': 'Electrical Engineering',
-    'mech': 'Mechanical Engineering',
-    'r&a': 'Robotics and Automation',
-    'civil': 'Civil Engineering',
-    'chem': 'Chemical Engineering',
-    'polymer': 'Polymer Engineering',
-    'petroleum': 'Petroleum Engineering',
-    'others': 'Others',
-}
-
-BLACKLISTED_FIELDS = (
-    'chat_id',
-    'date',
-    'department_second_person',
-    'db',
-    'email_content',
-    'email_formattable_content',
-    'email_content_fields',
-    'email_second_person',
-    'event',
-    'extra_field_telegram',
-    'extra_message',
-    'name_second_person',
-    'whatsapp_number',
-)
-
 QR_BLACKLIST = (
     'paid',
     '_sa_instance_state',
