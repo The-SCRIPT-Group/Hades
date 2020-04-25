@@ -12,7 +12,7 @@ class Coursera2020(db.Model):
     name = db.Column(db.String(30))
     email = db.Column(db.String(50), unique=True)
     phone = db.Column(db.String(10), unique=True)
-    prn = db.Column(db.Integer(), unique=True)
+    prn = db.Column(db.String(10), unique=True)
     faculty = db.Column(db.String(30))
     school = db.Column(db.String(25))
     program = db.Column(db.String(35))
