@@ -30,7 +30,7 @@ server {
 
     location /static {
         root /home/akhil/Hades/hades;
-        try_files $uri $uri/ =404;
+        try_files \$uri \$uri/ =404;
     }
 
     location ^~ / {
@@ -52,7 +52,7 @@ echo '30 2 * * * /usr/bin/certbot renew --noninteractive --renew-hook "/usr/sbin
 sudo crontab /tmp/cron
 rm -v /tmp/cron
 cd - || exit
-git clone https://github.com/The-SCRIPT-Group/hades.git
-cd hades || exit
+git clone https://github.com/The-SCRIPT-Group/Hades.git
+cd Hades || exit
 pip3 install -r requirements.txt
 echo "Setup your configuration file and run the application! (make sure its running on port 5000, should be the default with waitress)"
