@@ -34,6 +34,8 @@ server {
     }
 
     location ^~ / {
+        add_header Access-Control-Allow-Origin 'https://thescriptgroup.in';
+
         proxy_pass        http://127.0.0.1:5500;
         proxy_redirect    off;
 
