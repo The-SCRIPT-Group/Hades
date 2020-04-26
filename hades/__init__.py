@@ -805,7 +805,16 @@ def delete():
 @app.route('/api/update', methods=['PUT'])
 @login_required
 def update_user():
-    """Updates a user as specified in the request data"""
+    """
+    Updates a user as specified in the request data
+
+    Fields required
+
+    -> table - The name of the table
+    -> key - The name of the attribute used to identify the user, for example `id`
+    -> data - The value of the identifier
+    -> Rest of the parameters will be the attributes to be updated
+    """
     try:
         table_name = request.form['table']
         key = request.form['key']
