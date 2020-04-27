@@ -22,9 +22,7 @@ A few environment variables should be set for proper functionality
 
 `FROM_EMAIL` - Email address SendGrid should use as sender
 
-`DATABASE_URL` - URL to database including credentials - set by default in heroku
-
-To test locally if everything is deployed on heroku
+`DATABASE_URL` - URL to MySQL (can change, but need to update requirements accordingly) database including credentials
 
 To export everything in .env to your environment, you can simply run
 ```bash
