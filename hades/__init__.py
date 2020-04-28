@@ -185,10 +185,7 @@ def check_access(table_name: str) -> bool:
 
 def get_table_by_name(name: str) -> db.Model:
     """Returns the database model class corresponding to the given name."""
-    try:
-        return DATABASE_CLASSES[name]
-    except KeyError:
-        return None
+    return DATABASE_CLASSES.get(name)
 
 
 def is_safe_url(target: str) -> bool:
@@ -378,10 +375,9 @@ You're <b>required</b> to present this on the day of the event."""
         if 'email_content' in request.form:
             message += request.form['email_content']
         message += request.form['email_formattable_content'].format(**d)
-    try:
+
+    if 'extra_message' in request.form:
         message += '<br/>' + request.form['extra_message']
-    except KeyError:
-        pass
 
     # Set the email content, recepients, sender, and the subject
     content = Content('text/html', message)
@@ -469,13 +465,14 @@ def register():
     Password and API key are hashed before being stored in the database
     """
     if request.method == 'POST':
-        try:
-            name = request.form['name']
-            username = request.form['username']
-            password = request.form['password']
-            email = request.form['email']
-        except KeyError:
-            return jsonify({'response': 'Please provide all required data'}), 400
+        required_fields = ('name', 'username', 'password', 'email')
+        for field in required_fields:
+            if field not in request.form:
+                return jsonify({'response': f'{field} is required!'}), 400
+        name = request.form['name']
+        username = request.form['username']
+        password = request.form['password']
+        email = request.form['email']
 
         # Generate API key
         api_key = ''.join(
@@ -515,9 +512,14 @@ def events():
     For POST, it checks the `table` provided and accordingly returns a table listing the users in that table
     """
     if request.method == 'POST':
-        table = get_table_by_name(request.form['table'])
+        if 'table' not in request.form:
+            return jsonify(
+                {'response': 'Please specify the table you want to access!'}, 400
+            )
+        table_name = request.form['table']
+        table = get_table_by_name(table_name)
         if table is None:
-            return 'How exactly did you reach here?'
+            return jsonify({'response': f'Table {table} does not seem to exist!'}, 400)
         log(
             f"User <code>{current_user.name}</code> is accessing <code>{request.form['table']}</code>!"
         )
@@ -528,40 +530,52 @@ def events():
     return render_template('events.html', events=get_accessible_tables())
 
 
-def update_user(**kwargs):
+def update_user(id: int, table_name: str, user_data: dict) -> (bool, str):
     """
-    Takes a dictionary as an argument
-    id and table keys to get id of user and table it belongs to
-    Rest of the keys are attributes that need to be updated
+    :param id -> User ID
+    :param table_name -> Name of the table
+    :param user_data -> Dictionary containing fields to be updated
+    :return success/failure, reasoning
     """
-    id = kwargs['id']
-    table = kwargs['table']
-    del kwargs['id']
-    del kwargs['table']
+
+    table = get_table_by_name(table_name)
+
+    if table is None:
+        return False, f'Table {table_name} does not seem to exist!'
 
     user = db.session.query(table).get(id)
     if user is None:
-        return None
+        return False, f'Table {table_name} does not have a user with ID {id}'
 
-    for k, v in kwargs.items():
+    for k, v in user_data.items():
         setattr(user, k, v)
 
     try:
         db.session.commit()
     except IntegrityError as e:
-        print(e.body)
+        return (
+            False,
+            f'You violated an integrity constraint trying to update {id} in {table_name} with {user_data}!',
+        )
+    return True, f'{user} has been successfully updated!'
 
 
-def delete_user(id, table_name: str) -> bool:
+def delete_user(id: int, table_name: str) -> (bool, str):
     """
-    Takes a dictionary as an argument
-    id and table keys to get id of user and table it belongs to
-    Deletes the user
+    :param id -> User ID
+    :param table_name -> Name of the table user is to be deleted from
+    :return success/failure, reasoning
     """
+
     table = get_table_by_name(table_name)
+
+    if table is None:
+        return False, f'Table {table_name} does not seem to exist!'
+
     user = db.session.query(table).get(id)
     if user is None:
-        return False
+        return False, f'Table {table_name} does not have a user with ID {id}'
+
     db.session.delete(user)
     log(
         f'User <code>{current_user.name}</code> has deleted <code>{user}</code> from <code>{table_name}</code>!'
@@ -569,11 +583,10 @@ def delete_user(id, table_name: str) -> bool:
     try:
         db.session.commit()
     except Exception as e:
-        print(e.body)
         log(f'Exception occurred in above deletion!')
-        log(e.body)
-        return False
-    return True
+        log(e)
+        return False, f'Exception occurred trying to delete {id} from {table_name}!'
+    return True, f'{user} deleted successfully!'
 
 
 @app.route('/update', methods=['GET', 'POST'])
@@ -734,15 +747,15 @@ def users_api():
 @login_required
 def create():
     """Creates a user as specified in the request data"""
-    try:
+
+    if 'table' in request.form:
         table_name = request.form['table']
-    except KeyError:
-        return jsonify({'response': 'Please provide all required data'}), 400
+    else:
+        return jsonify({'response': 'Please provide the table name!'}, 400)
 
     table = get_table_by_name(table_name)
-
     if table is None:
-        return jsonify({'response': 'Table does not exist!'}), 400
+        return jsonify({'response': f'Table {table_name} does not seem to exist!'}, 400)
 
     access = check_access(table_name)
     if access is None:
@@ -754,7 +767,16 @@ def create():
         if k == 'table':
             continue
         user_data[k] = v
-    user = table(**user_data)
+
+    try:
+        user = table(**user_data)
+    except Exception as e:
+        log(
+            f'Exception occurred when <code>{current_user.name} tried to create user with {user_data} in {table_name}'
+        )
+        log(e)
+        return jsonify({'response': 'Exception occurred trying to create user'}), 400
+
     try:
         db.session.add(user)
         db.session.commit()
@@ -777,10 +799,10 @@ def create():
 @login_required
 def delete():
     """Deletes the user as specified in the request data"""
-    try:
+    if 'table_name' in request.form and 'id' in request.form:
         table_name = request.form['table']
         id = request.form['id']
-    except KeyError:
+    else:
         return jsonify({'response': 'Please provide all required data'}), 400
     access = check_access(table_name)
     if access is None:
@@ -815,19 +837,27 @@ def update_user():
     -> data - The value of the identifier
     -> Rest of the parameters will be the attributes to be updated
     """
-    try:
+    if (
+        'table' in request.form
+        and 'key' in request.form
+        and request.form['key'] in request.form
+    ):
         table_name = request.form['table']
         key = request.form['key']
         data = request.form[key]
-    except KeyError:
+    else:
         return jsonify({'response': 'Please provide all required data'}), 400
+
     access = check_access(table_name)
     if access is None:
         return jsonify({'response': 'Unauthorized'}), 401
+
     table = get_table_by_name(table_name)
     if table is None:
         return jsonify({'response': 'Please provide a valid table name'}), 400
+
     user = db.session.query(table).get(data)
+
     for k, v in request.form.items():
         if k in ('key', 'table', key):
             continue
