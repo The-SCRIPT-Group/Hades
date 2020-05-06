@@ -75,7 +75,7 @@ from hades.models.workshop import (
 
 # Import miscellaneous classes
 from hades.models.test import TestTable
-from hades.models.user import Users
+from hades.models.user import Users, TSG
 from hades.models.event import Events
 from hades.models.user_access import Access
 
@@ -84,6 +84,7 @@ BLACKLISTED_TABLES = (
     Events,
     Users,
     TestTable,
+    TSG,
 )
 
 DATABASE_CLASSES = {
@@ -105,6 +106,7 @@ DATABASE_CLASSES = {
     'codex_december_2019': CodexDecember2019,
     'bov_2020': BOV2020,
     'coursera_2020': Coursera2020,
+    'tsg': TSG,
 }
 
 ACTIVE_TABLES = [Coursera2020]
