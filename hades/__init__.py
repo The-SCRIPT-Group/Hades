@@ -79,14 +79,6 @@ from hades.models.user import Users, TSG
 from hades.models.event import Events
 from hades.models.user_access import Access
 
-BLACKLISTED_TABLES = (
-    Access,
-    Events,
-    Users,
-    TestTable,
-    TSG,
-)
-
 DATABASE_CLASSES = {
     'codex_april_2019': CodexApril2019,
     'eh_july_2019': EHJuly2019,
@@ -801,29 +793,41 @@ def create():
 @login_required
 def delete():
     """Deletes the user as specified in the request data"""
+
+    # Ensure user has passed `table` and `id`
     if 'table' in request.form and 'id' in request.form:
         table_name = request.form['table']
         id = request.form['id']
     else:
         return jsonify({'response': 'Please provide all required data'}), 400
+
+    # Confirm that the user has access to the desired table
     access = check_access(table_name)
     if access is None:
-        return jsonify({'response': 'Unauthorized'}), 401
+        return (
+            jsonify({'response': f'You are not authorized to access {table_name}'}),
+            401,
+        )
+
     table = get_table_by_name(table_name)
-    ret = []
+    if table is None:
+        return jsonify({'response': f'{table_name} does not seem to exist!'}), 400
+
+    # Let us delete all entries, if so required
     if id == 'all':
+        # Store the message to be returned
+        ret = []
         for user in db.session.query(table).all():
             if delete_user(user.id, table_name):
                 ret.append(f'Deleted user {user} from {table_name}')
             else:
                 ret.append(f'Failed to delete user with {user} from {table_name}')
         return jsonify({'response': ret})
-    else:
-        if delete_user(id, table_name):
-            return jsonify({'response': f'Deleted user with {id} from {table_name}'})
-        return jsonify(
-            {'response': f'Failed to delete user with {id} from {table_name}'}
-        )
+
+    # If just a specific ID is to be deleted
+    if delete_user(id, table_name):
+        return jsonify({'response': f'Deleted user with {id} from {table_name}'})
+    return jsonify({'response': f'Failed to delete user with {id} from {table_name}'})
 
 
 @app.route('/api/update', methods=['PUT'])
