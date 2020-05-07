@@ -821,13 +821,15 @@ def delete():
             if delete_user(user.id, table_name):
                 ret.append(f'Deleted user {user} from {table_name}')
             else:
-                ret.append(f'Failed to delete user with {user} from {table_name}')
+                ret.append(f'Failed to delete user {user} from {table_name}')
         return jsonify({'response': ret})
 
     # If just a specific ID is to be deleted
     if delete_user(id, table_name):
-        return jsonify({'response': f'Deleted user with {id} from {table_name}'})
-    return jsonify({'response': f'Failed to delete user with {id} from {table_name}'})
+        return jsonify({'response': f'Deleted user with id {id} from {table_name}'})
+    return jsonify(
+        {'response': f'Failed to delete user with id {id} from {table_name}'}
+    )
 
 
 @app.route('/api/update', methods=['PUT'])
