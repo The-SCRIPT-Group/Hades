@@ -801,7 +801,7 @@ def create():
 @login_required
 def delete():
     """Deletes the user as specified in the request data"""
-    if 'table_name' in request.form and 'id' in request.form:
+    if 'table' in request.form and 'id' in request.form:
         table_name = request.form['table']
         id = request.form['id']
     else:
