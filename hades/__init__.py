@@ -480,9 +480,16 @@ def register():
             email=email,
             api_key=bcrypt.generate_password_hash(api_key).decode('utf-8'),
         )
-        # Add the user object to the database and commit the transaction
+        # Add the user object to the database
+        db.session.add(u)
+
+        # If you're a TSG member, you get some access by default
+        if db.session.query(TSG).filter(TSG.email == email).first():
+            db.session.add(Access('tsg', username))
+            db.session.add(Access('test_users', username))
+
+        # Commit the transaction and confirm that no integrity constraints have been violated
         try:
-            db.session.add(u)
             db.session.commit()
         except IntegrityError:
             return (
