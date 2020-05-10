@@ -1,3 +1,4 @@
+import base64
 import os
 from json import dumps
 from typing import Union
@@ -9,18 +10,59 @@ from flask_login import current_user
 from sqlalchemy import desc
 from sqlalchemy.exc import IntegrityError
 
-from hades import db, TG, DATABASE_CLASSES
+from hades import db, TG
 
-# Retrieve telegram bot API key
+# Import event related classes
+from hades.models.codex import CodexApril2019, RSC2019, CodexDecember2019, BOV2020
+from hades.models.csi import CSINovember2019, CSINovemberNonMember2019
 from hades.models.event import Events
-from hades.models.user import Users
+from hades.models.giveaway import Coursera2020
+from hades.models.techo import EHJuly2019, P5November2019
+
+# Import miscellaneous classes
+from hades.models.test import TestTable
+from hades.models.user import Users, TSG
 from hades.models.user_access import Access
+from hades.models.workshop import (
+    CPPWSMay2019,
+    CCPPWSAugust2019,
+    Hacktoberfest2019,
+    CNovember2019,
+    BitgritDecember2019,
+)
 
 # Initialize object for sending messages to telegram
 tg = TG(os.getenv('BOT_API_KEY'))
 
 # Retrieve ID of Telegram log channel
 log_channel = os.getenv('LOG_ID')
+
+DATABASE_CLASSES = {
+    'codex_april_2019': CodexApril2019,
+    'eh_july_2019': EHJuly2019,
+    'cpp_workshop_may_2019': CPPWSMay2019,
+    'rsc_2019': RSC2019,
+    'c_cpp_workshop_august_2019': CCPPWSAugust2019,
+    'do_hacktoberfest_2019': Hacktoberfest2019,
+    'csi_november_2019': CSINovember2019,
+    'csi_november_non_member_2019': CSINovemberNonMember2019,
+    'p5_november_2019': P5November2019,
+    'c_november_2019': CNovember2019,
+    'bitgrit_december_2019': BitgritDecember2019,
+    'test_users': TestTable,
+    'access': Access,
+    'users': Users,
+    'events': Events,
+    'codex_december_2019': CodexDecember2019,
+    'bov_2020': BOV2020,
+    'coursera_2020': Coursera2020,
+    'tsg': TSG,
+}
+
+QR_BLACKLIST = (
+    'paid',
+    '_sa_instance_state',
+)
 
 
 def validate(data: db.Model, table: db.Model) -> Union[str, bool]:

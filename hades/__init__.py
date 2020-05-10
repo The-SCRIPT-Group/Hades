@@ -27,6 +27,15 @@ from sqlalchemy import inspect
 from sqlalchemy.exc import DataError, IntegrityError
 
 from hades.telegram import TG
+from hades.utils import (
+    log,
+    get_table_by_name,
+    get_current_id,
+    generate_qr,
+    tg,
+    is_safe_url,
+    get_accessible_tables,
+)
 
 FROM_EMAIL = os.getenv('FROM_EMAIL')
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
@@ -39,23 +48,7 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 bcrypt = Bcrypt(app)
 
-from hades.utils import (
-    users_to_json,
-    get_table_by_name,
-    log,
-    tg,
-    is_safe_url,
-    get_accessible_tables,
-    generate_qr,
-    get_current_id,
-)
-
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
-
-QR_BLACKLIST = (
-    'paid',
-    '_sa_instance_state',
-)
 
 # Import event related classes
 from hades.models.csi import CSINovember2019, CSINovemberNonMember2019
@@ -75,28 +68,6 @@ from hades.models.test import TestTable
 from hades.models.user import Users, TSG
 from hades.models.event import Events
 from hades.models.user_access import Access
-
-DATABASE_CLASSES = {
-    'codex_april_2019': CodexApril2019,
-    'eh_july_2019': EHJuly2019,
-    'cpp_workshop_may_2019': CPPWSMay2019,
-    'rsc_2019': RSC2019,
-    'c_cpp_workshop_august_2019': CCPPWSAugust2019,
-    'do_hacktoberfest_2019': Hacktoberfest2019,
-    'csi_november_2019': CSINovember2019,
-    'csi_november_non_member_2019': CSINovemberNonMember2019,
-    'p5_november_2019': P5November2019,
-    'c_november_2019': CNovember2019,
-    'bitgrit_december_2019': BitgritDecember2019,
-    'test_users': TestTable,
-    'access': Access,
-    'users': Users,
-    'events': Events,
-    'codex_december_2019': CodexDecember2019,
-    'bov_2020': BOV2020,
-    'coursera_2020': Coursera2020,
-    'tsg': TSG,
-}
 
 ACTIVE_TABLES = [Coursera2020]
 ACTIVE_EVENTS = ['Coursera 2020']
