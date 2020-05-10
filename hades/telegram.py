@@ -36,8 +36,6 @@ class TG:
             )
         except ProtocolError as e:
             print(e, e.__class__)
-            with open('extra-logs.txt', 'a') as f:
-                f.write(str(data) + '\n\n\n')
 
     def send_message(self, chat_id, message, parse_mode='HTML'):
         data = {
