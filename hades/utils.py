@@ -13,10 +13,8 @@ from hades.models.event import Events
 from hades.models.user import Users
 from hades.models.user_access import Access
 
-bot_api_key = os.getenv('BOT_API_KEY')
-
 # Initialize object for sending messages to telegram
-tg = TG(bot_api_key)
+tg = TG(os.getenv('BOT_API_KEY'))
 
 # Retrieve ID of Telegram log channel
 log_channel = os.getenv('LOG_ID')

@@ -25,6 +25,9 @@ class TG:
         self.api_key = api_key
 
     def send(self, function, data):
+        # Silently return incase we haven't set an API key
+        if self.api_key is None:
+            return
         try:
             return manager.request(
                 'POST',
