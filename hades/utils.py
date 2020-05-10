@@ -1,9 +1,12 @@
 import os
 from json import dumps
+from typing import Union
 from urllib.parse import urlparse, urljoin
 
+import qrcode
 from flask import request
 from flask_login import current_user
+from sqlalchemy import desc
 from sqlalchemy.exc import IntegrityError
 
 from hades import db, TG, DATABASE_CLASSES
@@ -20,7 +23,7 @@ tg = TG(os.getenv('BOT_API_KEY'))
 log_channel = os.getenv('LOG_ID')
 
 
-def validate(data, table):
+def validate(data: db.Model, table: db.Model) -> Union[str, bool]:
     # Ensure nobody else in the table has the same email address
     if db.session.query(table).filter(table.email == data.email).first():
         return f'Email address {data.email} already found in database! Please re-enter the form correctly!'
@@ -33,7 +36,7 @@ def validate(data, table):
     return True
 
 
-def users_to_json(users):
+def users_to_json(users: list) -> str:
     json_data = []
     for user in users:
         user_data = {}
@@ -145,7 +148,7 @@ def delete_user(id: int, table_name: str) -> (bool, str):
     return True, f'{user} deleted successfully!'
 
 
-def get_current_id(table):
+def get_current_id(table: db.Model) -> int:
     """Function to return the latest ID based on the database entries. 1 if DB is empty."""
     try:
         id = db.session.query(table).order_by(desc(table.id)).first().id
