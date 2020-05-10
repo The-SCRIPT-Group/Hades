@@ -1,8 +1,8 @@
 from hades import db
-from hades.utils import validate
+from hades.models.validate import ValidateMixin
 
 
-class Coursera2020(db.Model):
+class Coursera2020(ValidateMixin, db.Model):
     """
     Database model class
     """
@@ -34,4 +34,4 @@ class Coursera2020(db.Model):
     def validate(self):
         if db.session.query(Coursera2020).filter(Coursera2020.prn == self.prn).first():
             return f'PRN {self.prn} is already registered in the database'
-        return validate(self, Coursera2020)
+        return super.validate(self, Coursera2020)

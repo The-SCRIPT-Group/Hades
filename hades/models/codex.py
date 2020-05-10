@@ -1,10 +1,11 @@
 from hades import db
-from hades.utils import validate
 
 from requests import get
 
+from hades.models.validate import ValidateMixin
 
-class CodexApril2019(db.Model):
+
+class CodexApril2019(ValidateMixin, db.Model):
     """
     Database model class
     """
@@ -20,10 +21,10 @@ class CodexApril2019(db.Model):
         return '%r' % [self.id, self.name, self.email, self.phone, self.department]
 
     def validate(self):
-        return validate(self, CodexApril2019)
+        return super.validate(self, CodexApril2019)
 
 
-class RSC2019(db.Model):
+class RSC2019(ValidateMixin, db.Model):
     """
     Database model class
     """
@@ -47,10 +48,10 @@ class RSC2019(db.Model):
         ]
 
     def validate(self):
-        return validate(self, RSC2019)
+        return super.validate(self, RSC2019)
 
 
-class CodexDecember2019(db.Model):
+class CodexDecember2019(ValidateMixin, db.Model):
     """
     Database model class
     """
@@ -92,10 +93,10 @@ class CodexDecember2019(db.Model):
             .first()
         ):
             return f"Someone has already registered with hackerrank username <code>{self.hackerrank_username}</code>.<br/>Kindly contact the team if that is your username and it wasn't your registration"
-        return validate(self, CodexDecember2019)
+        return super.validate(self, CodexDecember2019)
 
 
-class BOV2020(db.Model):
+class BOV2020(ValidateMixin, db.Model):
     """
     Database model class
     """
@@ -133,4 +134,4 @@ class BOV2020(db.Model):
             .first()
         ):
             return f"Someone has already registered with hackerrank username <code>{self.hackerrank_username}</code>.<br/>Kindly contact the team if that is your username and it wasn't your registration"
-        return validate(self, BOV2020)
+        return super.validate(self, BOV2020)

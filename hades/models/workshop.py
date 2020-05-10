@@ -1,8 +1,8 @@
 from hades import db
-from hades.utils import validate
+from hades.models.validate import ValidateMixin
 
 
-class CPPWSMay2019(db.Model):
+class CPPWSMay2019(ValidateMixin, db.Model):
     """
     Database model class
     """
@@ -17,10 +17,10 @@ class CPPWSMay2019(db.Model):
         return '%r' % [self.id, self.name, self.email, self.phone]
 
     def validate(self):
-        return validate(self, CPPWSMay2019)
+        return super.validate(self, CPPWSMay2019)
 
 
-class CCPPWSAugust2019(db.Model):
+class CCPPWSAugust2019(ValidateMixin, db.Model):
     """
     Database model class
     """
@@ -45,11 +45,11 @@ class CCPPWSAugust2019(db.Model):
 
     def validate(self):
         if self.year == '1st':
-            return validate(self, CCPPWSAugust2019)
+            return super.validate(self, CCPPWSAugust2019)
         return 'This workshop is <b>only</b> for FY students'
 
 
-class Hacktoberfest2019(db.Model):
+class Hacktoberfest2019(ValidateMixin, db.Model):
     """
     Database model class
     """
@@ -75,10 +75,10 @@ class Hacktoberfest2019(db.Model):
         ]
 
     def validate(self):
-        return validate(self, Hacktoberfest2019)
+        return super.validate(self, Hacktoberfest2019)
 
 
-class CNovember2019(db.Model):
+class CNovember2019(ValidateMixin, db.Model):
     """
     Database model class
     """
@@ -105,7 +105,7 @@ class CNovember2019(db.Model):
 
     def validate(self):
         if self.year == '2nd':
-            return validate(self, CNovember2019)
+            return super.validate(self, CNovember2019)
         if (
             db.session.query(CNovember2019)
             .filter(CNovember2019.prn == self.prn)
@@ -121,7 +121,7 @@ class CNovember2019(db.Model):
         return 'This workshop is <b>only</b> for SY students'
 
 
-class BitgritDecember2019(db.Model):
+class BitgritDecember2019(ValidateMixin, db.Model):
     """
     Database model class
     """
@@ -145,4 +145,4 @@ class BitgritDecember2019(db.Model):
         ]
 
     def validate(self):
-        return validate(self, BitgritDecember2019)
+        return super.validate(self, BitgritDecember2019)

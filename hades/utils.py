@@ -10,16 +10,12 @@ from flask_login import current_user
 from sqlalchemy import desc
 from sqlalchemy.exc import IntegrityError
 
-from hades import db, TG
-
-# Import event related classes
+from hades import db
 from hades.models.codex import CodexApril2019, RSC2019, CodexDecember2019, BOV2020
 from hades.models.csi import CSINovember2019, CSINovemberNonMember2019
 from hades.models.event import Events
 from hades.models.giveaway import Coursera2020
 from hades.models.techo import EHJuly2019, P5November2019
-
-# Import miscellaneous classes
 from hades.models.test import TestTable
 from hades.models.user import Users, TSG
 from hades.models.user_access import Access
@@ -30,6 +26,7 @@ from hades.models.workshop import (
     CNovember2019,
     BitgritDecember2019,
 )
+from hades.telegram import TG
 
 # Initialize object for sending messages to telegram
 tg = TG(os.getenv('BOT_API_KEY'))
@@ -63,19 +60,6 @@ QR_BLACKLIST = (
     'paid',
     '_sa_instance_state',
 )
-
-
-def validate(data: db.Model, table: db.Model) -> Union[str, bool]:
-    # Ensure nobody else in the table has the same email address
-    if db.session.query(table).filter(table.email == data.email).first():
-        return f'Email address {data.email} already found in database! Please re-enter the form correctly!'
-
-    # Ensure nobody else int he table has the same phone number
-    for num in data.phone.split('|'):
-        if db.session.query(table).filter(table.phone.like(f'%{num}%')).first():
-            return f'Phone number {num} already found in database! Please re-enter the form correctly!'
-
-    return True
 
 
 def users_to_json(users: list) -> str:

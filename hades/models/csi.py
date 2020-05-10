@@ -1,8 +1,8 @@
 from hades import db
-from hades.utils import validate
+from hades.models.validate import ValidateMixin
 
 
-class CSINovember2019(db.Model):
+class CSINovember2019(ValidateMixin, db.Model):
     """
     Database model class
     """
@@ -34,10 +34,10 @@ class CSINovember2019(db.Model):
             .first()
         ):
             return f'CSI ID {self.csi_id} is already registered in the database'
-        return validate(self, CSINovember2019)
+        return super.validate(self, CSINovember2019)
 
 
-class CSINovemberNonMember2019(db.Model):
+class CSINovemberNonMember2019(ValidateMixin, db.Model):
     """
     Database model class
     """
@@ -70,4 +70,4 @@ class CSINovemberNonMember2019(db.Model):
             .first()
         ):
             return f'PRN {self.prn} is already registered in the database'
-        return validate(self, CSINovemberNonMember2019)
+        return super.validate(self, CSINovemberNonMember2019)

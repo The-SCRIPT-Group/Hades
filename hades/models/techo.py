@@ -1,8 +1,8 @@
 from hades import db
-from hades.utils import validate
+from hades.models.validate import ValidateMixin
 
 
-class EHJuly2019(db.Model):
+class EHJuly2019(ValidateMixin, db.Model):
     """
     Database model class
     """
@@ -18,10 +18,10 @@ class EHJuly2019(db.Model):
         return '%r' % [self.id, self.name, self.email, self.phone, self.department]
 
     def validate(self):
-        return validate(self, EHJuly2019)
+        return super.validate(self, EHJuly2019)
 
 
-class P5November2019(db.Model):
+class P5November2019(ValidateMixin, db.Model):
     """
     Database model class
     """
@@ -47,4 +47,4 @@ class P5November2019(db.Model):
         ]
 
     def validate(self):
-        return validate(self, P5November2019)
+        return super.validate(self, P5November2019)

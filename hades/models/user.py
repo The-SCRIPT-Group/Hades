@@ -1,7 +1,6 @@
 from flask_login import UserMixin
 
 from hades import db
-from hades.utils import validate
 
 
 class Users(db.Model, UserMixin):
@@ -36,6 +35,3 @@ class TSG(db.Model):
 
     def __repr__(self):
         return '%r' % [self.id, self.name, self.email, self.phone]
-
-    def validate(self):
-        return validate(self, TSG)

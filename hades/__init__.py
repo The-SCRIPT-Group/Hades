@@ -26,16 +26,6 @@ from sendgrid.helpers.mail import Attachment, Content, Mail
 from sqlalchemy import inspect
 from sqlalchemy.exc import DataError, IntegrityError
 
-from hades.telegram import TG
-from hades.utils import (
-    log,
-    get_table_by_name,
-    get_current_id,
-    generate_qr,
-    tg,
-    is_safe_url,
-    get_accessible_tables,
-)
 
 FROM_EMAIL = os.getenv('FROM_EMAIL')
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
@@ -49,6 +39,16 @@ login_manager.login_view = 'login'
 bcrypt = Bcrypt(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+
+from hades.utils import (
+    log,
+    get_table_by_name,
+    get_current_id,
+    generate_qr,
+    tg,
+    is_safe_url,
+    get_accessible_tables,
+)
 
 # Import event related classes
 from hades.models.csi import CSINovember2019, CSINovemberNonMember2019

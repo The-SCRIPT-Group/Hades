@@ -1,7 +1,8 @@
 from hades import db
+from hades.models.validate import ValidateMixin
 
 
-class Events(db.Model):
+class Events(ValidateMixin, db.Model):
     """
     Database model class
     """
