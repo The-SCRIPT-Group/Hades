@@ -34,7 +34,7 @@ class CSINovember2019(ValidateMixin, db.Model):
             .first()
         ):
             return f'CSI ID {self.csi_id} is already registered in the database'
-        return super().validate(CSINovember2019)
+        return super().validate()
 
 
 class CSINovemberNonMember2019(ValidateMixin, db.Model):
@@ -70,4 +70,4 @@ class CSINovemberNonMember2019(ValidateMixin, db.Model):
             .first()
         ):
             return f'PRN {self.prn} is already registered in the database'
-        return super().validate(CSINovemberNonMember2019)
+        return super().validate()
