@@ -16,9 +16,6 @@ class CPPWSMay2019(ValidateMixin, db.Model):
     def __repr__(self):
         return '%r' % [self.id, self.name, self.email, self.phone]
 
-    def validate(self):
-        return super().validate()
-
 
 class CCPPWSAugust2019(ValidateMixin, db.Model):
     """
@@ -73,9 +70,6 @@ class Hacktoberfest2019(ValidateMixin, db.Model):
             self.year,
             self.date,
         ]
-
-    def validate(self):
-        return super().validate()
 
 
 class CNovember2019(ValidateMixin, db.Model):
@@ -143,6 +137,3 @@ class BitgritDecember2019(ValidateMixin, db.Model):
             self.department,
             self.year,
         ]
-
-    def validate(self):
-        return super().validate()

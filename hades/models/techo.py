@@ -17,9 +17,6 @@ class EHJuly2019(ValidateMixin, db.Model):
     def __repr__(self):
         return '%r' % [self.id, self.name, self.email, self.phone, self.department]
 
-    def validate(self):
-        return super().validate()
-
 
 class P5November2019(ValidateMixin, db.Model):
     """
@@ -45,6 +42,3 @@ class P5November2019(ValidateMixin, db.Model):
             self.year,
             self.level,
         ]
-
-    def validate(self):
-        return super().validate()

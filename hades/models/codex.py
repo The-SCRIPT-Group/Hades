@@ -20,9 +20,6 @@ class CodexApril2019(ValidateMixin, db.Model):
     def __repr__(self):
         return '%r' % [self.id, self.name, self.email, self.phone, self.department]
 
-    def validate(self):
-        return super().validate()
-
 
 class RSC2019(ValidateMixin, db.Model):
     """
@@ -46,9 +43,6 @@ class RSC2019(ValidateMixin, db.Model):
             self.department,
             self.year,
         ]
-
-    def validate(self):
-        return super().validate()
 
 
 class CodexDecember2019(ValidateMixin, db.Model):
