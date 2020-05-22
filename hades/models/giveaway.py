@@ -34,4 +34,4 @@ class Coursera2020(ValidateMixin, db.Model):
     def validate(self):
         if db.session.query(Coursera2020).filter(Coursera2020.prn == self.prn).first():
             return f'PRN {self.prn} is already registered in the database'
-        return super.validate(self, Coursera2020)
+        return super().validate(Coursera2020)

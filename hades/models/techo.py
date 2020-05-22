@@ -18,7 +18,7 @@ class EHJuly2019(ValidateMixin, db.Model):
         return '%r' % [self.id, self.name, self.email, self.phone, self.department]
 
     def validate(self):
-        return super.validate(self, EHJuly2019)
+        return super().validate(EHJuly2019)
 
 
 class P5November2019(ValidateMixin, db.Model):
@@ -47,4 +47,4 @@ class P5November2019(ValidateMixin, db.Model):
         ]
 
     def validate(self):
-        return super.validate(self, P5November2019)
+        return super().validate(P5November2019)

@@ -26,7 +26,6 @@ from sendgrid.helpers.mail import Attachment, Content, Mail
 from sqlalchemy import inspect
 from sqlalchemy.exc import DataError, IntegrityError
 
-
 FROM_EMAIL = os.getenv('FROM_EMAIL')
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 
@@ -71,6 +70,8 @@ from hades.models.user_access import Access
 
 ACTIVE_TABLES = [Coursera2020]
 ACTIVE_EVENTS = ['Coursera 2020']
+
+REQUIRED_FIELDS = ('name', 'phone', 'email')
 
 
 @login_manager.user_loader
@@ -206,6 +207,10 @@ def submit():
     for k, v in request.form.items():
         if k in table.__table__.columns._data.keys():
             data[k] = v
+
+    for field in REQUIRED_FIELDS:
+        if field not in request.form:
+            return f'<code>{field}</code> is required but has not been submitted!'
 
     # Instantiate our user object based on the received form data and retrived ID
     user = table(**data, id=id)

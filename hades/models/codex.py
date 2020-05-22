@@ -21,7 +21,7 @@ class CodexApril2019(ValidateMixin, db.Model):
         return '%r' % [self.id, self.name, self.email, self.phone, self.department]
 
     def validate(self):
-        return super.validate(self, CodexApril2019)
+        return super().validate(CodexApril2019)
 
 
 class RSC2019(ValidateMixin, db.Model):
@@ -48,7 +48,7 @@ class RSC2019(ValidateMixin, db.Model):
         ]
 
     def validate(self):
-        return super.validate(self, RSC2019)
+        return super().validate(RSC2019)
 
 
 class CodexDecember2019(ValidateMixin, db.Model):
@@ -93,7 +93,7 @@ class CodexDecember2019(ValidateMixin, db.Model):
             .first()
         ):
             return f"Someone has already registered with hackerrank username <code>{self.hackerrank_username}</code>.<br/>Kindly contact the team if that is your username and it wasn't your registration"
-        return super.validate(self, CodexDecember2019)
+        return super().validate(CodexDecember2019)
 
 
 class BOV2020(ValidateMixin, db.Model):
@@ -134,4 +134,4 @@ class BOV2020(ValidateMixin, db.Model):
             .first()
         ):
             return f"Someone has already registered with hackerrank username <code>{self.hackerrank_username}</code>.<br/>Kindly contact the team if that is your username and it wasn't your registration"
-        return super.validate(self, BOV2020)
+        return super().validate(BOV2020)

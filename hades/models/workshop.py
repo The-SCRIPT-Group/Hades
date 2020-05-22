@@ -17,7 +17,7 @@ class CPPWSMay2019(ValidateMixin, db.Model):
         return '%r' % [self.id, self.name, self.email, self.phone]
 
     def validate(self):
-        return super.validate(self, CPPWSMay2019)
+        return super().validate(CPPWSMay2019)
 
 
 class CCPPWSAugust2019(ValidateMixin, db.Model):
@@ -45,7 +45,7 @@ class CCPPWSAugust2019(ValidateMixin, db.Model):
 
     def validate(self):
         if self.year == '1st':
-            return super.validate(self, CCPPWSAugust2019)
+            return super().validate(CCPPWSAugust2019)
         return 'This workshop is <b>only</b> for FY students'
 
 
@@ -75,7 +75,7 @@ class Hacktoberfest2019(ValidateMixin, db.Model):
         ]
 
     def validate(self):
-        return super.validate(self, Hacktoberfest2019)
+        return super().validate(Hacktoberfest2019)
 
 
 class CNovember2019(ValidateMixin, db.Model):
@@ -105,7 +105,7 @@ class CNovember2019(ValidateMixin, db.Model):
 
     def validate(self):
         if self.year == '2nd':
-            return super.validate(self, CNovember2019)
+            return super().validate(CNovember2019)
         if (
             db.session.query(CNovember2019)
             .filter(CNovember2019.prn == self.prn)
@@ -145,4 +145,4 @@ class BitgritDecember2019(ValidateMixin, db.Model):
         ]
 
     def validate(self):
-        return super.validate(self, BitgritDecember2019)
+        return super().validate(BitgritDecember2019)
