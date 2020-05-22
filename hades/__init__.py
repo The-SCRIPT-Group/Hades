@@ -68,9 +68,11 @@ from hades.models.user import Users, TSG
 from hades.models.event import Events
 from hades.models.user_access import Access
 
+# A list of currently active events
 ACTIVE_TABLES = [Coursera2020]
 ACTIVE_EVENTS = ['Coursera 2020']
 
+# The list of fields that will be required for any and all form submissions
 REQUIRED_FIELDS = ('name', 'phone', 'email')
 
 
@@ -198,6 +200,11 @@ def submit():
     else:
         return 'Hades does require the event name, you know?'
 
+    # Ensure that we have the required fields
+    for field in REQUIRED_FIELDS:
+        if field not in request.form:
+            return f'<code>{field}</code> is required but has not been submitted!'
+
     # ID is from a helper function that increments the latest ID by 1 and returns it
     id = get_current_id(table)
 
@@ -207,10 +214,6 @@ def submit():
     for k, v in request.form.items():
         if k in table.__table__.columns._data.keys():
             data[k] = v
-
-    for field in REQUIRED_FIELDS:
-        if field not in request.form:
-            return f'<code>{field}</code> is required but has not been submitted!'
 
     # Instantiate our user object based on the received form data and retrived ID
     user = table(**data, id=id)
