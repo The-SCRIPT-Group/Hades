@@ -393,7 +393,7 @@ def register():
         required_fields = ('name', 'username', 'password', 'email')
         for field in required_fields:
             if field not in request.form:
-                return jsonify({'response': f'{field} is required!'}), 400
+                return f'{field} is required!'
         name = request.form['name']
         username = request.form['username']
         password = request.form['password']
