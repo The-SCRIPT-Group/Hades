@@ -31,13 +31,13 @@ SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 bcrypt = Bcrypt(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 
 from hades.utils import (
     log,
@@ -101,14 +101,7 @@ def load_user_from_request(request):
         try:
             credentials = base64.b64decode(credentials).decode('utf-8')
         except UnicodeDecodeError:
-            return (
-                jsonify(
-                    {
-                        'response': 'UnicodeDecodeError, what kinda data did you even pass?'
-                    }
-                ),
-                400,
-            )
+            return None
         username, password = credentials.split('|')
         user = db.session.query(Users).get(username)
         if user is not None:
@@ -117,7 +110,6 @@ def load_user_from_request(request):
                     f'User <code>{user.name}</code> just authenticated a {request.method} API call with credentials!',
                 )
                 return user
-        return jsonify({'response': 'Invalid credentials'}, 403)
     api_key = request.headers.get('Authorization')
     if api_key:
         # Cases where the header may be of the form `Authorization: Basic api_key`
@@ -129,7 +121,6 @@ def load_user_from_request(request):
                     f'User <code>{user.name}</code> just authenticated a {request.method} API call with an API key!',
                 )
                 return user
-        return jsonify({'response': 'Invalid API key'}, 403)
     return None
 
 
