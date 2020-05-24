@@ -49,6 +49,8 @@ from hades.utils import (
     get_accessible_tables,
 )
 
+from hades import api
+
 # Import event related classes
 from hades.models.csi import CSINovember2019, CSINovemberNonMember2019
 from hades.models.codex import CodexApril2019, RSC2019, CodexDecember2019, BOV2020

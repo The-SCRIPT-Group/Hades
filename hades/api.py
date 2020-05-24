@@ -10,13 +10,11 @@ from hades import (
     log,
     get_accessible_tables,
     db,
-    DATABASE_CLASSES,
     get_table_by_name,
-    users_to_json,
     FROM_EMAIL,
     SENDGRID_API_KEY,
 )
-from hades.utils import check_access, delete_user
+from hades.utils import check_access, delete_user, DATABASE_CLASSES, users_to_json
 
 
 @app.route('/api/authenticate', methods=['POST'])
