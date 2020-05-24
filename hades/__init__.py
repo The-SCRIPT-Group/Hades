@@ -117,7 +117,7 @@ def load_user_from_request(request):
                     f'User <code>{user.name}</code> just authenticated a {request.method} API call with credentials!',
                 )
                 return user
-        return None
+        return jsonify({'response': 'Invalid credentials'}, 403)
     api_key = request.headers.get('Authorization')
     if api_key:
         # Cases where the header may be of the form `Authorization: Basic api_key`
@@ -129,7 +129,7 @@ def load_user_from_request(request):
                     f'User <code>{user.name}</code> just authenticated a {request.method} API call with an API key!',
                 )
                 return user
-
+        return jsonify({'response': 'Invalid API key'}, 403)
     return None
 
 
