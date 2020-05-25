@@ -8,11 +8,9 @@ Flask application to accept some details, generate, display, and email a QR code
 import base64
 import os
 from datetime import datetime
-from random import choice
-from string import ascii_letters, digits, punctuation
+
 
 from flask import Flask, redirect, render_template, request, url_for, jsonify, abort
-from flask_bcrypt import Bcrypt
 from flask_login import (
     LoginManager,
     login_required,
@@ -36,7 +34,6 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
-bcrypt = Bcrypt(app)
 
 
 from hades.utils import (
@@ -105,7 +102,7 @@ def load_user_from_request(request):
         username, password = credentials.split('|')
         user = db.session.query(Users).get(username)
         if user is not None:
-            if bcrypt.check_password_hash(user.password, password.strip()):
+            if user.check_password_hash(password.strip()):
                 log(
                     f'User <code>{user.name}</code> just authenticated a {request.method} API call with credentials!',
                 )
@@ -116,7 +113,7 @@ def load_user_from_request(request):
         api_key = api_key.replace('Basic ', '', 1)
         users = db.session.query(Users).all()
         for user in users:
-            if bcrypt.check_password_hash(user.api_key, api_key):
+            if user.check_api_key(api_key):
                 log(
                     f'User <code>{user.name}</code> just authenticated a {request.method} API call with an API key!',
                 )
@@ -362,7 +359,7 @@ def login():
         if user is not None:
             password = request.form['password']
             # Check the password against the hash stored in the database
-            if bcrypt.check_password_hash(user.password, password):
+            if user.check_password_hash(password):
                 # Log the login and redirect
                 log(f'User <code>{user.name}</code> logged in via webpage!')
                 login_user(user)
@@ -395,23 +392,19 @@ def register():
         password = request.form['password']
         email = request.form['email']
 
-        # Generate API key
-        api_key = ''.join(
-            choice(ascii_letters + digits + punctuation) for _ in range(32)
-        )
         # Create user object
-        u = Users(
-            name=name,
-            username=username,
-            password=bcrypt.generate_password_hash(password).decode('utf-8'),
-            email=email,
-            api_key=bcrypt.generate_password_hash(api_key).decode('utf-8'),
-        )
+        u = Users()
+        u.name = name
+        u.username = username
+        u.generate_password_hash(password)
+        u.email = email
+        api_key = u.generate_api_key()
+
         # Add the user object to the database
         db.session.add(u)
 
         # If you're a TSG member, you get some access by default
-        if db.session.query(TSG).filter(TSG.email == email).first():
+        if TSG.query.filter(TSG.email == email).first():
             db.session.add(Access('tsg', username))
             db.session.add(Access('test_users', username))
 
@@ -512,8 +505,8 @@ def change_password():
         new_password = request.form['new_password']
 
         # If current password is correct, update and store the new hash
-        if bcrypt.check_password_hash(current_user.password, current_password):
-            current_user.password = bcrypt.generate_password_hash(new_password)
+        if current_user.check_password_hash(current_password):
+            current_user.generate_password_hash(new_password)
         else:
             return 'Current password you entered is wrong! Please try again!'
 
