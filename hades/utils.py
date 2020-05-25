@@ -1,16 +1,15 @@
 import base64
 import os
 from json import dumps
-from typing import Union
 from urllib.parse import urlparse, urljoin
 
 import qrcode
 from flask import request
 from flask_login import current_user
+from flask_sqlalchemy.model import Model
 from sqlalchemy import desc
 from sqlalchemy.exc import IntegrityError
 
-from hades import db
 from hades.models.codex import CodexApril2019, RSC2019, CodexDecember2019, BOV2020
 from hades.models.csi import CSINovember2019, CSINovemberNonMember2019
 from hades.models.event import Events
@@ -85,14 +84,12 @@ def check_access(table_name: str) -> bool:
     log(
         f'User <code>{current_user.name}</code> trying to access <code>{table_name}</code>!',
     )
-    return (
-        db.session.query(Access)
-        .filter(Access.user == current_user.username)
-        .filter(Access.event == table_name)
+    return Access.query.filter(Access.user == current_user.username).filter(
+        Access.event == table_name
     )
 
 
-def get_table_by_name(name: str) -> db.Model:
+def get_table_by_name(name: str) -> Model:
     """Returns the database model class corresponding to the given name."""
     return DATABASE_CLASSES.get(name)
 
@@ -107,8 +104,7 @@ def is_safe_url(target: str) -> bool:
 def get_accessible_tables():
     """Returns the list of tables the currently logged in user can access"""
     return (
-        db.session.query(Events)
-        .filter(Users.username == current_user.username)
+        Events.query.filter(Users.username == current_user.username)
         .filter(Users.username == Access.user)
         .filter(Access.event == Events.name)
         .all()
@@ -128,7 +124,7 @@ def update_user(id: int, table_name: str, user_data: dict) -> (bool, str):
     if table is None:
         return False, f'Table {table_name} does not seem to exist!'
 
-    user = db.session.query(table).get(id)
+    user = table.query.get(id)
     if user is None:
         return False, f'Table {table_name} does not have a user with ID {id}'
 
@@ -136,7 +132,7 @@ def update_user(id: int, table_name: str, user_data: dict) -> (bool, str):
         setattr(user, k, v)
 
     try:
-        db.session.commit()
+        table.query.session.commit()
     except IntegrityError as e:
         return (
             False,
@@ -157,16 +153,16 @@ def delete_user(id: int, table_name: str) -> (bool, str):
     if table is None:
         return False, f'Table {table_name} does not seem to exist!'
 
-    user = db.session.query(table).get(id)
+    user = table.query.get(id)
     if user is None:
         return False, f'Table {table_name} does not have a user with ID {id}'
 
-    db.session.delete(user)
+    table.query.session.delete(user)
     log(
         f'User <code>{current_user.name}</code> has deleted <code>{user}</code> from <code>{table_name}</code>!'
     )
     try:
-        db.session.commit()
+        table.query.session.commit()
     except Exception as e:
         log(f'Exception occurred in above deletion!')
         log(e)
@@ -174,10 +170,10 @@ def delete_user(id: int, table_name: str) -> (bool, str):
     return True, f'{user} deleted successfully!'
 
 
-def get_current_id(table: db.Model) -> int:
+def get_current_id(table: Model) -> int:
     """Function to return the latest ID based on the database entries. 1 if DB is empty."""
     try:
-        id = db.session.query(table).order_by(desc(table.id)).first().id
+        id = table.query.order_by(desc(table.id)).first().id
     except Exception:
         id = 0
     return int(id) + 1
