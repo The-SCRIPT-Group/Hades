@@ -100,17 +100,9 @@ class CNovember2019(ValidateMixin, db.Model):
     def validate(self):
         if self.year == '2nd':
             return super().validate()
-        if (
-            db.session.query(CNovember2019)
-            .filter(CNovember2019.prn == self.prn)
-            .first()
-        ):
+        if self.query.filter(CNovember2019.prn == self.prn).first():
             return f'PRN {self.prn} has already been registered!'
-        if (
-            db.session.query(CNovember2019)
-            .filter(CNovember2019.roll == self.roll)
-            .first()
-        ):
+        if self.query.filter(CNovember2019.roll == self.roll).first():
             return f'Roll number {self.roll} has already been registered!'
         return 'This workshop is <b>only</b> for SY students'
 

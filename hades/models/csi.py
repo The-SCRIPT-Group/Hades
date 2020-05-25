@@ -28,11 +28,7 @@ class CSINovember2019(ValidateMixin, db.Model):
         ]
 
     def validate(self):
-        if (
-            db.session.query(CSINovember2019)
-            .filter(CSINovember2019.csi_id == self.csi_id)
-            .first()
-        ):
+        if self.query.filter(CSINovember2019.csi_id == self.csi_id).first():
             return f'CSI ID {self.csi_id} is already registered in the database'
         return super().validate()
 
@@ -64,10 +60,6 @@ class CSINovemberNonMember2019(ValidateMixin, db.Model):
         ]
 
     def validate(self):
-        if (
-            db.session.query(CSINovemberNonMember2019)
-            .filter(CSINovemberNonMember2019.prn == self.prn)
-            .first()
-        ):
+        if self.query.filter(CSINovemberNonMember2019.prn == self.prn).first():
             return f'PRN {self.prn} is already registered in the database'
         return super().validate()
