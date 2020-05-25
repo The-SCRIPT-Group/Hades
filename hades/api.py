@@ -1,8 +1,8 @@
+import os
 from json import dumps, loads
 
 from flask import jsonify, request
 from flask_login import login_required, current_user
-from sendgrid import Mail
 from sqlalchemy.exc import IntegrityError
 
 from hades import (
@@ -10,7 +10,6 @@ from hades import (
     log,
     get_accessible_tables,
     get_table_by_name,
-    FROM_EMAIL,
 )
 from hades.models.user import Users
 from hades.utils import check_access, delete_user, users_to_json, send_mail
@@ -268,7 +267,7 @@ def sendmail():
     if 'email_address' in request.form:
         email_address = request.form['email_address']
     else:
-        email_address = FROM_EMAIL
+        email_address = os.getenv('FROM_EMAIL', 'noreply@thescriptgroup.in')
 
     for user in users:
         if 'formattable_content' in request.form and 'content_fields' in request.form:

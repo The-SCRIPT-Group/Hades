@@ -61,9 +61,6 @@ from hades.models.user import Users, TSG
 from hades.models.event import Events
 from hades.models.user_access import Access
 
-# Email address for the from: field
-FROM_EMAIL = os.getenv('FROM_EMAIL')
-
 # A list of currently active events
 ACTIVE_TABLES = [Coursera2020]
 ACTIVE_EVENTS = ['Coursera 2020']
@@ -249,7 +246,7 @@ def submit():
         return """It appears there was an error while trying to enter your data into our database.<br/>Kindly contact someone from the team and we will have this resolved ASAP"""
 
     # Prepare the email sending
-    from_email = FROM_EMAIL
+    from_email = os.getenv('FROM_EMAIL', 'noreply@thescriptgroup.in')
     to_emails = []
     email_1 = (request.form['email'], request.form['name'])
     to_emails.append(email_1)
