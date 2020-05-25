@@ -9,11 +9,11 @@ from hades import (
     app,
     log,
     get_accessible_tables,
-    db,
     get_table_by_name,
     FROM_EMAIL,
     SENDGRID_API_KEY,
 )
+from hades.models.user import Users
 from hades.utils import check_access, delete_user, DATABASE_CLASSES, users_to_json
 
 
@@ -47,9 +47,7 @@ def stats_api():
     log(f'<code>{current_user.name}</code> is accessing the stats of events!</code>')
     for table in get_accessible_tables():
         if table.name not in ('access', 'events', 'test_users', 'tsg', 'users',):
-            ret[table.full_name] = len(
-                db.session.query(DATABASE_CLASSES[table.name]).all()
-            )
+            ret[table.full_name] = len(table.query.all())
     return jsonify(ret), 200
 
 
@@ -67,7 +65,7 @@ def users_api():
         for table in tables:
             if table.name in ('access', 'events', 'users'):
                 continue
-            table_users = db.session.query(get_table_by_name(table.name)).all()
+            table_users = table.query.all()
             for user in table_users:
                 phone = (
                     user.phone.split('|')[1]
@@ -89,7 +87,7 @@ def users_api():
     table = get_table_by_name(table_name)
     if table is None:
         return jsonify({'response': f'Table {table_name} does not exist!'}), 400
-    return users_to_json(db.session.query(table).all()), 200
+    return users_to_json(table.query.all()), 200
 
 
 @app.route('/api/create', methods=['POST'])
@@ -127,8 +125,8 @@ def create():
         return jsonify({'response': 'Exception occurred trying to create user'}), 400
 
     try:
-        db.session.add(user)
-        db.session.commit()
+        Users.query.session.add(user)
+        Users.query.session.commit()
     except IntegrityError:
         return (
             jsonify(
@@ -172,7 +170,7 @@ def delete():
     if id == 'all':
         # Store the message to be returned
         ret = []
-        for user in db.session.query(table).all():
+        for user in table.query.all():
             if delete_user(user.id, table_name):
                 ret.append(f'Deleted user {user} from {table_name}')
             else:
@@ -219,7 +217,7 @@ def update_user():
     if table is None:
         return jsonify({'response': 'Please provide a valid table name'}), 400
 
-    user = db.session.query(table).get(data)
+    user = table.query.get(data)
 
     for k, v in request.form.items():
         if k in ('key', 'table', key):
@@ -228,7 +226,7 @@ def update_user():
             setattr(user, k, v)
             print(f'Updated {k} of {user} to {v}')
     try:
-        db.session.commit()
+        table.query.session.commit()
     except IntegrityError:
         return (
             jsonify(
@@ -264,9 +262,9 @@ def send_mail():
     table = get_table_by_name(table_name)
     if 'ids' in request.form and request.form['ids'] != 'all':
         ids = list(map(lambda x: int(x), request.form['ids'].split(' ')))
-        users = db.session.query(table).filter(table.id.in_(ids)).all()
+        users = table.query.filter(table.id.in_(ids)).all()
     else:
-        users = db.session.query(table).all()
+        users = table.query.all()
 
     if 'email_address' in request.form:
         email_address = request.form['email_address']
