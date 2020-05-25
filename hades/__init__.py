@@ -9,7 +9,6 @@ import base64
 import os
 from datetime import datetime
 
-
 from flask import Flask, redirect, render_template, request, url_for, jsonify, abort
 from flask_login import (
     LoginManager,
@@ -19,13 +18,8 @@ from flask_login import (
     current_user,
 )
 from flask_sqlalchemy import SQLAlchemy
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Attachment, Content, Mail
 from sqlalchemy import inspect
 from sqlalchemy.exc import DataError, IntegrityError
-
-FROM_EMAIL = os.getenv('FROM_EMAIL')
-SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
@@ -35,7 +29,6 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-
 from hades.utils import (
     log,
     get_table_by_name,
@@ -44,6 +37,7 @@ from hades.utils import (
     tg,
     is_safe_url,
     get_accessible_tables,
+    send_mail,
 )
 
 from hades import api
@@ -66,6 +60,9 @@ from hades.models.test import TestTable
 from hades.models.user import Users, TSG
 from hades.models.event import Events
 from hades.models.user_access import Access
+
+# Email address for the from: field
+FROM_EMAIL = os.getenv('FROM_EMAIL')
 
 # A list of currently active events
 ACTIVE_TABLES = [Coursera2020]
@@ -299,23 +296,15 @@ You're <b>required</b> to present this on the day of the event."""
     if 'extra_message' in request.form:
         message += '<br/>' + request.form['extra_message']
 
-    # Set the email content, recepients, sender, and the subject
-    content = Content('text/html', message)
-    mail = Mail(from_email, to_emails, subject, html_content=content)
-
+    # Take care of attachments, if any
+    attachments = []
     if 'no_qr' not in request.form:
-        # Add the base64 encoded QRCode as an attachment with mimetype image/png
-        mail.add_attachment(Attachment(encoded, 'qr.png', 'image/png'))
+        attachments.append(
+            {'data': encoded, 'filename': 'qr.png', 'type': 'image/png',}
+        )
 
-    # Actually send the mail. Print the errors if any.
-    try:
-        response = SendGridAPIClient(SENDGRID_API_KEY).send(mail)
-        print(response.status_code)
-        print(response.body)
-        print(response.headers)
-    except Exception as e:
-        print(e)
-        print(e.body)
+    # Send the mail
+    mail_sent = send_mail(from_email, to_emails, subject, message, attachments)
 
     # Log the new entry to desired telegram channel
     chat_id = (
@@ -334,7 +323,10 @@ You're <b>required</b> to present this on the day of the event."""
 
     ret = f'Thank you for registering, {user.name}!'
     if 'no_qr' not in request.form:
-        ret += "<br>Please save this QR Code. It has also been emailed to you.<br><img src=\
+        ret += "<br>Please save this QR Code. "
+        if mail_sent:
+            ret += "It has also been emailed to you."
+        ret += "<br><img src=\
                 'data:image/png;base64, {}'/>".format(
             encoded
         )

@@ -2,7 +2,7 @@ from json import dumps, loads
 
 from flask import jsonify, request
 from flask_login import login_required, current_user
-from sendgrid import Content, Mail, SendGridAPIClient
+from sendgrid import Mail
 from sqlalchemy.exc import IntegrityError
 
 from hades import (
@@ -11,10 +11,9 @@ from hades import (
     get_accessible_tables,
     get_table_by_name,
     FROM_EMAIL,
-    SENDGRID_API_KEY,
 )
 from hades.models.user import Users
-from hades.utils import check_access, delete_user, DATABASE_CLASSES, users_to_json
+from hades.utils import check_access, delete_user, users_to_json, send_mail
 
 
 @app.route('/api/authenticate', methods=['POST'])
@@ -244,7 +243,7 @@ def update_user():
 
 @app.route('/api/sendmail', methods=['POST'])
 @login_required
-def send_mail():
+def sendmail():
     """Sends a mail to users as specified in the request data"""
     for field in ('content', 'subject', 'table', 'ids'):
         if field not in request.form:
@@ -286,19 +285,16 @@ def send_mail():
                 '\n', '<br/>'
             )
 
-        mail_content = Content('text/html', content)
+        to_emails = []
         if ',' in user.name:
-            mail = Mail(FROM_EMAIL, email_address, subject, mail_content)
-            mail.add_cc((user.email.split(',')[0], user.name.split(',')[0]))
-            mail.add_cc(
+            to_emails.append((user.email.split(',')[0], user.name.split(',')[0]))
+            to_emails.append(
                 (user.email.split(',')[1].rstrip(), user.name.split(',')[1].rstrip())
             )
         else:
-            mail = Mail(FROM_EMAIL, (user.email, user.name), subject, mail_content)
-        try:
-            SendGridAPIClient(SENDGRID_API_KEY).send(mail)
-        except Exception as e:
-            print(e)
+            to_emails.append((user.email, user.name))
+
+        if not send_mail(email_address, to_emails, subject, content):
             return jsonify({'response': f'Failed to send mail to {user}'}), 500
 
     log(

@@ -7,6 +7,8 @@ import qrcode
 from flask import request
 from flask_login import current_user
 from flask_sqlalchemy.model import Model
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Attachment, Content, Mail
 from sqlalchemy import desc
 from sqlalchemy.exc import IntegrityError
 
@@ -26,6 +28,9 @@ from hades.models.workshop import (
     BitgritDecember2019,
 )
 from hades.telegram import TG
+
+# SendGrid API Key
+SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 
 # Initialize object for sending messages to telegram
 tg = TG(os.getenv('BOT_API_KEY'))
@@ -184,3 +189,36 @@ def generate_qr(user):
     data = {k: v for k, v in user.__dict__.items() if k not in QR_BLACKLIST}
     data['table'] = user.__tablename__
     return qrcode.make(base64.b64encode(dumps(data).encode()))
+
+
+def send_mail(
+    from_user: tuple, to: list, subject: str, content: str, attachments: list = None
+) -> bool:
+    # Bail out if SendGrid API key has not been set
+    if SENDGRID_API_KEY is None:
+        return False
+
+    # Create a Content object
+    html_content = Content('text/html', content)
+
+    # Create a Mail object
+    mail = Mail(from_user, to, subject, html_content)
+
+    # Add attachments, if any
+    for attachment in attachments:
+        try:
+            mail.add_attachment(
+                Attachment(
+                    attachment['data'], attachment['filename'], attachment['type']
+                )
+            )
+        except KeyError:
+            return False
+
+    # Actually send the email
+    try:
+        SendGridAPIClient(SENDGRID_API_KEY).send(mail)
+    except Exception as e:
+        print(e)
+        return False
+    return True
