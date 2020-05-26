@@ -30,7 +30,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-from hades.utils import (
+from .utils import (
     log,
     get_table_by_name,
     get_current_id,
@@ -40,14 +40,14 @@ from hades.utils import (
     send_mail,
 )
 
-from hades import api
+from . import api
 
 # Import event related classes
-from hades.models.giveaway import Coursera2020
+from .models.giveaway import Coursera2020
 
 # Import miscellaneous classes
-from hades.models.user import Users, TSG
-from hades.models.user_access import Access
+from .models.user import Users, TSG
+from .models.user_access import Access
 
 # A list of currently active events
 ACTIVE_TABLES = [Coursera2020]

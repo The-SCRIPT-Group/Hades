@@ -10,22 +10,22 @@ from sendgrid.helpers.mail import Attachment, Content, Mail
 from sqlalchemy import desc
 from sqlalchemy.exc import IntegrityError
 
-from hades.models.codex import CodexApril2019, RSC2019, CodexDecember2019, BOV2020
-from hades.models.csi import CSINovember2019, CSINovemberNonMember2019
-from hades.models.event import Events
-from hades.models.giveaway import Coursera2020
-from hades.models.techo import EHJuly2019, P5November2019
-from hades.models.test import TestTable
-from hades.models.user import Users, TSG
-from hades.models.user_access import Access
-from hades.models.workshop import (
+from .models.codex import CodexApril2019, RSC2019, CodexDecember2019, BOV2020
+from .models.csi import CSINovember2019, CSINovemberNonMember2019
+from .models.event import Events
+from .models.giveaway import Coursera2020
+from .models.techo import EHJuly2019, P5November2019
+from .models.test import TestTable
+from .models.user import Users, TSG
+from .models.user_access import Access
+from .models.workshop import (
     CPPWSMay2019,
     CCPPWSAugust2019,
     Hacktoberfest2019,
     CNovember2019,
     BitgritDecember2019,
 )
-from hades.telegram import TG
+from .telegram import TG
 
 # SendGrid API Key
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')

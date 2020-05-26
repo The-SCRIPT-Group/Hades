@@ -5,14 +5,14 @@ from flask import jsonify, request
 from flask_login import login_required, current_user
 from sqlalchemy.exc import IntegrityError
 
-from hades import (
+from . import (
     app,
     log,
     get_accessible_tables,
     get_table_by_name,
 )
-from hades.models.user import Users
-from hades.utils import check_access, delete_user, users_to_json, send_mail
+from .models.user import Users
+from .utils import check_access, delete_user, users_to_json, send_mail
 
 
 @app.route('/api/authenticate', methods=['POST'])
