@@ -45,7 +45,7 @@ def stats_api():
     log(f'<code>{current_user.name}</code> is accessing the stats of events!</code>')
     for table in get_accessible_tables():
         if table.name not in ('access', 'events', 'test_users', 'tsg', 'users',):
-            ret[table.full_name] = len(table.query.all())
+            ret[table.full_name] = len(get_table_by_name(table.name).query.all())
     return jsonify(ret), 200
 
 
