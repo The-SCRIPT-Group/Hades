@@ -63,7 +63,7 @@ def users_api():
         for table in tables:
             if table.name in ('access', 'events', 'users'):
                 continue
-            table_users = table.query.all()
+            table_users = get_table_by_name(table.name).query.all()
             for user in table_users:
                 phone = (
                     user.phone.split('|')[1]
