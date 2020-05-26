@@ -1,10 +1,8 @@
 import base64
 import os
 from json import dumps
-from urllib.parse import urlparse, urljoin
 
 import qrcode
-from flask import request
 from flask_login import current_user
 from flask_sqlalchemy.model import Model
 from sendgrid import SendGridAPIClient
@@ -97,13 +95,6 @@ def check_access(table_name: str) -> bool:
 def get_table_by_name(name: str) -> Model:
     """Returns the database model class corresponding to the given name."""
     return DATABASE_CLASSES.get(name)
-
-
-def is_safe_url(target: str) -> bool:
-    """Returns whether or not the target URL is safe or a malicious redirect"""
-    ref_url = urlparse(request.host_url)
-    test_url = urlparse(urljoin(request.host_url, target))
-    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
 
 
 def get_accessible_tables():

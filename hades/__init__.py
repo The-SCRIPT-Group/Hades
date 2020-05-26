@@ -8,6 +8,7 @@ Flask application to accept some details, generate, display, and email a QR code
 import base64
 import os
 from datetime import datetime
+from urllib.parse import urlparse, urljoin
 
 from flask import Flask, redirect, render_template, request, url_for, jsonify, abort
 from flask_login import (
@@ -35,7 +36,6 @@ from hades.utils import (
     get_current_id,
     generate_qr,
     tg,
-    is_safe_url,
     get_accessible_tables,
     send_mail,
 )
@@ -43,22 +43,10 @@ from hades.utils import (
 from hades import api
 
 # Import event related classes
-from hades.models.csi import CSINovember2019, CSINovemberNonMember2019
-from hades.models.codex import CodexApril2019, RSC2019, CodexDecember2019, BOV2020
 from hades.models.giveaway import Coursera2020
-from hades.models.techo import EHJuly2019, P5November2019
-from hades.models.workshop import (
-    CPPWSMay2019,
-    CCPPWSAugust2019,
-    Hacktoberfest2019,
-    CNovember2019,
-    BitgritDecember2019,
-)
 
 # Import miscellaneous classes
-from hades.models.test import TestTable
 from hades.models.user import Users, TSG
-from hades.models.event import Events
 from hades.models.user_access import Access
 
 # A list of currently active events
@@ -69,10 +57,17 @@ ACTIVE_EVENTS = ['Coursera 2020']
 REQUIRED_FIELDS = ('name', 'phone', 'email')
 
 
+def is_safe_url(target: str) -> bool:
+    """Returns whether or not the target URL is safe or a malicious redirect"""
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
+
+
 @login_manager.user_loader
 def load_user(user_id):
     """Return `User` object for the corresponding `user_id`"""
-    return db.session.query(Users).get(user_id)
+    return Users.query.get(user_id)
 
 
 @login_manager.request_loader
