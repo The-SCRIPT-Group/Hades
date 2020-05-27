@@ -97,6 +97,11 @@ def get_table_by_name(name: str) -> Model:
     return DATABASE_CLASSES.get(name)
 
 
+def get_table_full_name(name: str) -> str:
+    """Returns the full name of the table"""
+    return Events.query.filter(Events.name == name).first().full_name
+
+
 def get_accessible_tables():
     """Returns the list of tables the currently logged in user can access"""
     return (

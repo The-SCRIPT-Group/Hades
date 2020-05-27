@@ -12,7 +12,13 @@ from . import (
     get_table_by_name,
 )
 from .models.user import Users
-from .utils import check_access, delete_user, users_to_json, send_mail
+from .utils import (
+    check_access,
+    delete_user,
+    users_to_json,
+    send_mail,
+    get_table_full_name,
+)
 
 
 @app.route('/api/authenticate', methods=['POST'])
@@ -41,12 +47,32 @@ def events_api():
 @login_required
 def stats_api():
     """Returns a JSON consisting of the tables the user has the permission to view and the users registered per table"""
-    ret = {}
     log(f'<code>{current_user.name}</code> is accessing the stats of events!</code>')
+    if 'table' in request.args:
+        table_name = request.args.get('table')
+        table = get_table_by_name(table_name)
+        if table is None:
+            return jsonify({'response': f'Table {table_name} does not exist'}), 400
+        if check_access(table_name):
+            return (
+                jsonify(
+                    {
+                        'response': {
+                            get_table_full_name(table_name): len(table.query.all())
+                        }
+                    }
+                ),
+                200,
+            )
+        return (
+            jsonify({'response': f'You do not have access to table {table}'}),
+            403,
+        )
+    ret = {}
     for table in get_accessible_tables():
         if table.name not in ('access', 'events', 'test_users', 'tsg', 'users',):
             ret[table.full_name] = len(get_table_by_name(table.name).query.all())
-    return jsonify(ret), 200
+    return jsonify({'response': ret}), 200
 
 
 @app.route('/api/users')
