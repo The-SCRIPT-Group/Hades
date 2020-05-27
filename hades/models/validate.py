@@ -12,6 +12,8 @@ class ValidateMixin(object):
 
         # Ensure nobody else in the table has the same phone number
         for num in self.phone.split('|'):
+            if len(str(num)) < 10:
+                return f'Phone number {num} is too short! Please re-enter the form correctly!'
             if self.query.filter(table.phone.like(f'%{num}%')).first():
                 return f'Phone number {num} already found in database! Please re-enter the form correctly!'
 

@@ -17,10 +17,8 @@ from flask_login import (
     login_user,
     logout_user,
     current_user,
-    user_loaded_from_header,
 )
 from flask_login.utils import login_url
-
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import inspect
 from sqlalchemy.exc import DataError, IntegrityError
@@ -45,14 +43,14 @@ from .utils import (
 from . import api
 
 # Import event related classes
-from .models.giveaway import Coursera2020
+import hades.models
 
 # Import miscellaneous classes
 from .models.user import Users, TSG
 from .models.user_access import Access
 
 # A list of currently active events
-ACTIVE_TABLES = [Coursera2020]
+ACTIVE_TABLES = [models.giveaway.Coursera2020]
 ACTIVE_EVENTS = ['Coursera 2020']
 
 # The list of fields that will be required for any and all form submissions
