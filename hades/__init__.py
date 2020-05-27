@@ -17,7 +17,10 @@ from flask_login import (
     login_user,
     logout_user,
     current_user,
+    user_loaded_from_header,
 )
+from flask_login.utils import login_url
+
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import inspect
 from sqlalchemy.exc import DataError, IntegrityError
@@ -28,7 +31,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'login'
 
 from .utils import (
     log,
@@ -108,6 +110,16 @@ def load_user_from_request(request):
                 )
                 return user
     return None
+
+
+@login_manager.unauthorized_handler
+def unauthorized():
+    if 'Authorization' in request.headers or 'Credentials' in request.headers:
+        return jsonify({'response': 'Access denied'}), 401
+
+    # Generate the URL the login page should redirect to based on the URL user is trying to access in the same way
+    # flask-login does so internally
+    return redirect(login_url('login', request.url))
 
 
 @app.route('/submit', methods=['POST'])
