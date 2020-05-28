@@ -68,10 +68,8 @@ def users_to_json(users: list) -> str:
     json_data = []
     for user in users:
         user_data = {}
-        for k, v in user.__dict__.items():
-            if k == '_sa_instance_state':
-                continue
-            user_data[k] = v
+        for k in user.__table__.columns._data.keys():
+            user_data[k] = getattr(user, k)
         json_data.append(user_data)
 
     return dumps(json_data)
