@@ -64,7 +64,7 @@ QR_BLACKLIST = (
 )
 
 
-def users_to_json(users: list) -> str:
+def users_to_json(users: list) -> list:
     json_data = []
     for user in users:
         user_data = {}
@@ -72,7 +72,7 @@ def users_to_json(users: list) -> str:
             user_data[k] = getattr(user, k)
         json_data.append(user_data)
 
-    return dumps(json_data)
+    return json_data
 
 
 def log(message: str):
