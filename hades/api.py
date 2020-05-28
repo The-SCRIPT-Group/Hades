@@ -26,7 +26,7 @@ from .utils import (
 def authenticate_api():
     """Used to authenticate a login from an external application"""
     return (
-        jsonify({'message': f'Successfully authenticated as {current_user.username}'}),
+        jsonify({'response': f'Successfully authenticated as {current_user.username}'}),
         200,
     )
 
@@ -40,7 +40,7 @@ def events_api():
     for table in get_accessible_tables():
         if table.name not in ('access', 'events', 'users',):
             ret[table.name] = table.full_name
-    return jsonify(ret), 200
+    return jsonify({'response': ret}), 200
 
 
 @app.route('/api/stats')
