@@ -103,7 +103,7 @@ def users_api():
         final_users = []
         for user in users:
             final_users.append(loads(user))
-        return dumps(final_users)
+        return jsonify({'response': dumps(final_users)}), 200
 
     access = check_access(table_name)
     if access is None:
@@ -111,7 +111,7 @@ def users_api():
     table = get_table_by_name(table_name)
     if table is None:
         return jsonify({'response': f'Table {table_name} does not exist!'}), 400
-    return users_to_json(table.query.all()), 200
+    return jsonify({'response': users_to_json(table.query.all())}), 200
 
 
 @app.route('/api/create', methods=['POST'])
