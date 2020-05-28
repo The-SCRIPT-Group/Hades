@@ -3,26 +3,19 @@
 from sys import exit
 from getpass import getpass
 
-from sqlalchemy.exc import IntegrityError
-
-from hades import app, bcrypt, db
-from hades.models.event import Events
 from hades.models.user import Users
-from hades.models.user_access import Access
 
 username = input('Enter username: ')
 
-user = db.session.query(Users).get(username)
+user = Users.query.get(username)
 if user is None:
     print(f'User {username} does not exist!')
     exit(1)
 
-user.password = bcrypt.generate_password_hash(
-    getpass(prompt='Enter new password: ')
-).decode('utf-8')
+user.generate_password_hash(getpass(prompt='Enter new password: '))
 try:
-    db.session.commit()
+    Users.query.session.commit()
 except Exception as e:
     print('Exception occurred!')
     print(e)
-    db.session.rollback()
+    Users.query.session.rollback()

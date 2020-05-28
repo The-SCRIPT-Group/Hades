@@ -5,14 +5,13 @@ from sys import stdin, stdout, exit
 from sqlalchemy.exc import IntegrityError
 
 from hades import db
-from hades.models.event import Events
 from hades.models.user import Users
 from hades.models.user_access import Access
 
 
 tables = db.engine.table_names()
 username = input(f'Enter username that needs access to all tables: ')
-user = db.session.query(Users).get(username)
+user = Users.query.get(username)
 if user is None:
     print(f'User {username} does not seem to exist!')
     exit(1)
