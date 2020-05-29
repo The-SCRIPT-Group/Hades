@@ -535,7 +535,7 @@ def forgot_password():
     return render_template('forgot_password.html')
 
 
-@app.route('/reset_password/<str:slug>', methods=['GET', 'POST'])
+@app.route('/reset_password/<string:slug>', methods=['GET', 'POST'])
 def reset_password(slug: str):
     # Check whether link is still valid
     expiry = utils.extract_timestamp(slug) + 600
