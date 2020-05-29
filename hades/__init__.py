@@ -43,7 +43,6 @@ from .utils import (
 from . import api
 
 # Import event related classes
-import hades.models
 
 # Import miscellaneous classes
 from .models.user import Users, TSG
@@ -515,19 +514,36 @@ def change_password():
     return render_template('change_password.html')
 
 
+@app.route('/forgot_username', methods=['GET', '{POST'])
+def forgot_username():
+    if request.method == 'POST':
+        if 'email' in request.form:
+            email = request.form['email']
+            user = Users.query.filter(Users.email == email).first()
+            if user:
+                from_email = ('noreply@thescriptgroup.in', 'TSG Bot')
+                to_email = [(user.email, user.name)]
+                subject = 'Hades username'
+                content = (
+                    f"Hello {user.name}, your username is <code>{user.username}</code>!"
+                )
+                utils.send_mail(from_email, to_email, subject, content)
+        return redirect(url_for('login'))
+    return render_template('forgot_username.html')
+
+
 @app.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
     """Sends a password reset email"""
     if request.method == 'POST':
-        if 'username' in request.form and 'email' in request.form:
+        if 'username' in request.form:
             username = request.form['username']
-            email = request.form['email']
             user = Users.query.get(username)
-            if user is not None and user.email == email:
+            if user:
                 reset_slug = utils.encrypt(username)
                 reset_url = request.host_url + 'reset_password' + '/' + reset_slug
                 from_email = ('noreply@thescriptgroup.in', 'TSG Bot')
-                to_email = [(email, user.name)]
+                to_email = [(user.email, user.name)]
                 subject = 'Password reset for Hades account'
                 content = f"Hello {user.name}, please click <a href=\"{reset_url}\">here</a> to reset your password!"
                 utils.send_mail(from_email, to_email, subject, content)

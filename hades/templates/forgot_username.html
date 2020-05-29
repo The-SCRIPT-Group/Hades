@@ -1,18 +1,17 @@
 {% extends "base.html" %}
 
 {% block title %}
-    <title>Forgot Password</title>
+    <title>Forgot Username</title>
 {% endblock %}
 
 {% block content %}
     <h1 class="h3 mb-3 font-weight-normal">
-        Please enter your registered username!
-        If they match our records, you will be emailed a link to reset your password!
+        Please enter your registered email address!
+        If they match our records, you will be emailed your username!
     </h1>
     <label for="inputUsername" class="sr-only">Username</label>
     <input type="password" id="inputUsername" class="form-control" placeholder="Username" name="username"
            required>
     <br>
-
     <button class="btn btn-lg btn-primary btn-block" type="submit" value="">Submit password reset request</button>
 {% endblock %}
