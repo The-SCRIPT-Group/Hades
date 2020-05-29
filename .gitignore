@@ -3,3 +3,4 @@ __pycache__/
 qr.png
 venv/
 .env
+.vscode
