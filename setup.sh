@@ -34,8 +34,9 @@ server {
     }
 
     location ^~ / {
-        add_header Access-Control-Allow-Origin 'https://thescriptgroup.in';
-
+        if ($http_origin ~* (^https://(charon\.)?thescriptgroup\.in$)) {
+            add_header Access-Control-Allow-Origin $http_origin;
+        }
         proxy_pass        http://127.0.0.1:5500;
         proxy_redirect    off;
 
