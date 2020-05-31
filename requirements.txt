@@ -10,7 +10,7 @@ dnspython==1.16.0
 Flask==1.1.2
 Flask-Bcrypt==0.7.1
 Flask-Login==0.5.0
-Flask-SQLAlchemy==2.4.1
+Flask-SQLAlchemy==2.4.3
 gunicorn==20.0.4
 idna==2.9
 itsdangerous==1.1.0
@@ -19,7 +19,7 @@ MarkupSafe==1.1.1
 mysql-connector-python==8.0.20
 pathspec==0.8.0
 Pillow==7.1.2
-protobuf==3.12.1
+protobuf==3.12.2
 psycopg2-binary==2.8.5
 pycparser==2.20
 python-http-client==3.2.7
