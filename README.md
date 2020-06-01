@@ -24,6 +24,8 @@ A few environment variables should be set for proper functionality
 
 `DATABASE_URL` - URL to MySQL (can change, but need to update requirements accordingly) database including credentials
 
+`FERNET_KEY` - Key for Fernet cryptography algorithm
+
 To export everything in .env to your environment, you can simply run
 ```bash
 for f in $(awk -F'=' '{print $1}' .env); do export $f; done
