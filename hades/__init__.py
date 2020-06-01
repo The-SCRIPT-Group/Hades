@@ -555,7 +555,7 @@ def forgot_password():
 def reset_password(slug: str):
     # Check whether link is still valid
     expiry = utils.extract_timestamp(slug) + 600
-    if expiry > int(datetime.now().timestamp()):
+    if expiry < int(datetime.now().timestamp()):
         return "This password reset link has expired!"
 
     # Retrieve the username
@@ -578,6 +578,7 @@ def reset_password(slug: str):
             log(e)
             db.session.rollback()
             return 'Exception occurred trying to change your password!'
+        return 'Your password has been successfully changed!'
     return render_template('reset_password.html', username=username)
 
 
