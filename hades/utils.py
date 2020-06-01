@@ -190,7 +190,7 @@ def generate_qr(user):
 
 
 def send_mail(
-    from_user: tuple, to: list, subject: str, content: str, attachments: list = None
+    from_user: tuple, to: list, subject: str, content: str, attachments: list = []
 ) -> bool:
     # Bail out if SendGrid API key has not been set
     if SENDGRID_API_KEY is None:
