@@ -514,7 +514,7 @@ def change_password():
     return render_template('change_password.html')
 
 
-@app.route('/forgot_username', methods=['GET', '{POST'])
+@app.route('/forgot_username', methods=['GET', 'POST'])
 def forgot_username():
     if request.method == 'POST':
         if 'email' in request.form:
