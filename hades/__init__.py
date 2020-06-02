@@ -114,7 +114,7 @@ def load_user_from_request(request):
 @login_manager.unauthorized_handler
 def unauthorized():
     if 'Authorization' in request.headers or 'Credentials' in request.headers:
-        return jsonify({'response': 'Access denied'}), 401
+        return jsonify({'message': 'Access denied'}), 401
 
     # Generate the URL the login page should redirect to based on the URL user is trying to access in the same way
     # flask-login does so internally

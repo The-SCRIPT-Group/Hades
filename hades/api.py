@@ -26,7 +26,7 @@ from .utils import (
 def authenticate_api():
     """Used to authenticate a login from an external application"""
     return (
-        jsonify({'response': f'Successfully authenticated as {current_user.username}'}),
+        jsonify({'message': f'Successfully authenticated as {current_user.username}'}),
         200,
     )
 
@@ -40,7 +40,7 @@ def events_api():
     for table in get_accessible_tables():
         if table.name not in ('access', 'events', 'users',):
             ret[table.name] = table.full_name
-    return jsonify({'response': ret}), 200
+    return jsonify(ret), 200
 
 
 @app.route('/api/stats')
@@ -52,27 +52,21 @@ def stats_api():
         table_name = request.args.get('table')
         table = get_table_by_name(table_name)
         if table is None:
-            return jsonify({'response': f'Table {table_name} does not exist'}), 400
+            return jsonify({'message': f'Table {table_name} does not exist'}), 400
         if check_access(table_name):
             return (
-                jsonify(
-                    {
-                        'response': {
-                            get_table_full_name(table_name): len(table.query.all())
-                        }
-                    }
-                ),
+                jsonify({get_table_full_name(table_name): len(table.query.all())}),
                 200,
             )
         return (
-            jsonify({'response': f'You do not have access to table {table}'}),
+            jsonify({'message': f'You do not have access to table {table}'}),
             403,
         )
     ret = {}
     for table in get_accessible_tables():
         if table.name not in ('access', 'events', 'test_users', 'tsg', 'users',):
             ret[table.full_name] = len(get_table_by_name(table.name).query.all())
-    return jsonify({'response': ret}), 200
+    return jsonify(ret), 200
 
 
 @app.route('/api/users')
@@ -81,7 +75,7 @@ def users_api():
     """Returns a JSON consisting of the users in the given table"""
     table_name = request.args.get('table')
     if not table_name:
-        return jsonify({'response': 'Please provide all required data'}), 400
+        return jsonify({'message': 'Please provide all required data'}), 400
 
     if table_name == 'all':
         tables = get_accessible_tables()
@@ -103,15 +97,15 @@ def users_api():
         final_users = []
         for user in users:
             final_users.append(loads(user))
-        return jsonify({'response': dumps(final_users)}), 200
+        return jsonify(dumps(final_users)), 200
 
     access = check_access(table_name)
     if access is None:
-        return jsonify({'response': 'Unauthorized'}), 401
+        return jsonify({'message': 'Unauthorized'}), 401
     table = get_table_by_name(table_name)
     if table is None:
-        return jsonify({'response': f'Table {table_name} does not exist!'}), 400
-    return jsonify({'response': users_to_json(table.query.all())}), 200
+        return jsonify({'message': f'Table {table_name} does not exist!'}), 400
+    return jsonify(users_to_json(table.query.all())), 200
 
 
 @app.route('/api/create', methods=['POST'])
@@ -122,15 +116,15 @@ def create():
     if 'table' in request.form:
         table_name = request.form['table']
     else:
-        return jsonify({'response': 'Please provide the table name!'}, 400)
+        return jsonify({'message': 'Please provide the table name!'}, 400)
 
     table = get_table_by_name(table_name)
     if table is None:
-        return jsonify({'response': f'Table {table_name} does not seem to exist!'}, 400)
+        return jsonify({'message': f'Table {table_name} does not seem to exist!'}, 400)
 
     access = check_access(table_name)
     if access is None:
-        return jsonify({'response': 'Unauthorized'}), 401
+        return jsonify({'message': 'Unauthorized'}), 401
 
     user_data = {}
 
@@ -146,7 +140,7 @@ def create():
             f'Exception occurred when <code>{current_user.name} tried to create user with {user_data} in {table_name}'
         )
         log(e)
-        return jsonify({'response': 'Exception occurred trying to create user'}), 400
+        return jsonify({'message': 'Exception occurred trying to create user'}), 400
 
     try:
         Users.query.session.add(user)
@@ -154,16 +148,14 @@ def create():
     except IntegrityError:
         return (
             jsonify(
-                {
-                    'response': 'Integrity constraint violated, please re-check your data!'
-                }
+                {'message': 'Integrity constraint violated, please re-check your data!'}
             ),
             400,
         )
     log(
         f'User <code>{user}</code> has been created in table <code>{table_name}</code>!',
     )
-    return jsonify({'response': f'Created user {user} successfully!'}), 200
+    return jsonify({'message': f'Created user {user} successfully!'}), 200
 
 
 @app.route('/api/delete', methods=['DELETE'])
@@ -176,19 +168,19 @@ def delete():
         table_name = request.form['table']
         id = request.form['id']
     else:
-        return jsonify({'response': 'Please provide all required data'}), 400
+        return jsonify({'message': 'Please provide all required data'}), 400
 
     # Confirm that the user has access to the desired table
     access = check_access(table_name)
     if access is None:
         return (
-            jsonify({'response': f'You are not authorized to access {table_name}'}),
+            jsonify({'message': f'You are not authorized to access {table_name}'}),
             401,
         )
 
     table = get_table_by_name(table_name)
     if table is None:
-        return jsonify({'response': f'{table_name} does not seem to exist!'}), 400
+        return jsonify({'message': f'{table_name} does not seem to exist!'}), 400
 
     # Let us delete all entries, if so required
     if id == 'all':
@@ -199,14 +191,12 @@ def delete():
                 ret.append(f'Deleted user {user} from {table_name}')
             else:
                 ret.append(f'Failed to delete user {user} from {table_name}')
-        return jsonify({'response': ret})
+        return jsonify({'message': ret})
 
     # If just a specific ID is to be deleted
     if delete_user(id, table_name):
-        return jsonify({'response': f'Deleted user with id {id} from {table_name}'})
-    return jsonify(
-        {'response': f'Failed to delete user with id {id} from {table_name}'}
-    )
+        return jsonify({'message': f'Deleted user with id {id} from {table_name}'})
+    return jsonify({'message': f'Failed to delete user with id {id} from {table_name}'})
 
 
 @app.route('/api/update', methods=['PUT'])
@@ -231,15 +221,15 @@ def update_user():
         key = request.form['key']
         data = request.form[key]
     else:
-        return jsonify({'response': 'Please provide all required data'}), 400
+        return jsonify({'message': 'Please provide all required data'}), 400
 
     access = check_access(table_name)
     if access is None:
-        return jsonify({'response': 'Unauthorized'}), 401
+        return jsonify({'message': 'Unauthorized'}), 401
 
     table = get_table_by_name(table_name)
     if table is None:
-        return jsonify({'response': 'Please provide a valid table name'}), 400
+        return jsonify({'message': 'Please provide a valid table name'}), 400
 
     user = table.query.get(data)
 
@@ -254,16 +244,14 @@ def update_user():
     except IntegrityError:
         return (
             jsonify(
-                {
-                    'response': 'Integrity constraint violated, please re-check your data!'
-                }
+                {'message': 'Integrity constraint violated, please re-check your data!'}
             ),
             400,
         )
     log(
         f'User <code>{current_user.name}</code> has updated <code>{user}</code> in <code>{table_name}</code>!',
     )
-    return jsonify({'response': f'Updated user {user}'}), 200
+    return jsonify({'message': f'Updated user {user}'}), 200
 
 
 @app.route('/api/sendmail', methods=['POST'])
@@ -272,16 +260,16 @@ def sendmail():
     """Sends a mail to users as specified in the request data"""
     for field in ('content', 'subject', 'table', 'ids'):
         if field not in request.form:
-            return jsonify({'response': 'Please provide all required data'}), 400
+            return jsonify({'message': 'Please provide all required data'}), 400
 
     subject = request.form['subject']
     table_name = request.form['table']
 
     if table_name in ('access', 'events', 'users'):
-        return jsonify({'response': 'Seriously?'}), 400
+        return jsonify({'message': 'Seriously?'}), 400
     access = check_access(table_name)
     if access is None:
-        return jsonify({'response': 'Unauthorized'}), 401
+        return jsonify({'message': 'Unauthorized'}), 401
 
     table = get_table_by_name(table_name)
     if 'ids' in request.form and request.form['ids'] != 'all':
@@ -320,9 +308,9 @@ def sendmail():
             to_emails.append((user.email, user.name))
 
         if not send_mail(email_address, to_emails, subject, content):
-            return jsonify({'response': f'Failed to send mail to {user}'}), 500
+            return jsonify({'message': f'Failed to send mail to {user}'}), 500
 
     log(
         f'User <code>{current_user.name}</code> has sent mails with subject <code>{subject}</code> to <code>{table_name}</code>!',
     )
-    return jsonify({'response': 'Sent mail'}), 200
+    return jsonify({'message': 'Sent mail'}), 200
