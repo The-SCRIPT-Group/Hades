@@ -1,6 +1,7 @@
 import base64
 import os
 from json import dumps
+from cryptography.fernet import Fernet
 
 import qrcode
 from flask_login import current_user
@@ -35,6 +36,9 @@ tg = TG(os.getenv('BOT_API_KEY'))
 
 # Retrieve ID of Telegram log channel
 log_channel = os.getenv('LOG_ID')
+
+# Create fernet object using secret key
+fernet = Fernet(os.getenv('FERNET_KEY'))
 
 DATABASE_CLASSES = {
     'codex_april_2019': CodexApril2019,
@@ -186,7 +190,7 @@ def generate_qr(user):
 
 
 def send_mail(
-    from_user: tuple, to: list, subject: str, content: str, attachments: list = None
+    from_user: tuple, to: list, subject: str, content: str, attachments: list = []
 ) -> bool:
     # Bail out if SendGrid API key has not been set
     if SENDGRID_API_KEY is None:
@@ -216,3 +220,30 @@ def send_mail(
         print(e)
         return False
     return True
+
+
+def encrypt(data: str) -> str:
+    """
+    Function to encrypt a string using Fernet (symmetric encryption)
+    :param data: String to be encrypted
+    :return: Encrypted string
+    """
+    return fernet.encrypt(data.encode()).decode('utf-8')
+
+
+def decrypt(data: str) -> str:
+    """
+    Function to decrypt a string that was encrypted with Fernet
+    :param data: String to be decrypted
+    :return: Decrypted string
+    """
+    return fernet.decrypt(data.encode()).decode('utf-8')
+
+
+def extract_timestamp(data: str) -> int:
+    """
+    Function to extract the timestamp from Fernet encrypted string
+    :param data: The encrypted string
+    :return: The timestamp at which it was created
+    """
+    return fernet.extract_timestamp(data.encode())

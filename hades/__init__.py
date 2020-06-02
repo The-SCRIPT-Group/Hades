@@ -45,7 +45,6 @@ from .utils import (
 from . import api
 
 # Import event related classes
-import hades.models
 
 # Import miscellaneous classes
 from .models.user import Users, TSG
@@ -515,6 +514,74 @@ def change_password():
         logout_user()
         return redirect(url_for('login'))
     return render_template('change_password.html')
+
+
+@app.route('/forgot_username', methods=['GET', 'POST'])
+def forgot_username():
+    if request.method == 'POST':
+        if 'email' in request.form:
+            email = request.form['email']
+            user = Users.query.filter(Users.email == email).first()
+            if user:
+                from_email = ('noreply@thescriptgroup.in', 'TSG Bot')
+                to_email = [(user.email, user.name)]
+                subject = 'Hades username'
+                content = (
+                    f"Hello {user.name}, your username is <code>{user.username}</code>!"
+                )
+                utils.send_mail(from_email, to_email, subject, content)
+        return redirect(url_for('login'))
+    return render_template('forgot_username.html')
+
+
+@app.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
+    """Sends a password reset email"""
+    if request.method == 'POST':
+        if 'username' in request.form:
+            username = request.form['username']
+            user = Users.query.get(username)
+            if user:
+                reset_slug = utils.encrypt(username)
+                reset_url = request.host_url + 'reset_password' + '/' + reset_slug
+                from_email = ('noreply@thescriptgroup.in', 'TSG Bot')
+                to_email = [(user.email, user.name)]
+                subject = 'Password reset for Hades account'
+                content = f"Hello {user.name}, please click <a href=\"{reset_url}\">here</a> to reset your password!"
+                utils.send_mail(from_email, to_email, subject, content)
+        return redirect(url_for('login'))
+    return render_template('forgot_password.html')
+
+
+@app.route('/reset_password/<string:slug>', methods=['GET', 'POST'])
+def reset_password(slug: str):
+    # Check whether link is still valid
+    expiry = utils.extract_timestamp(slug) + 600
+    if expiry < int(datetime.now().timestamp()):
+        return "This password reset link has expired!"
+
+    # Retrieve the username
+    username = utils.decrypt(slug)
+    if request.method == 'POST':
+        form_username = request.form['username']
+        if username != form_username:
+            log(f'{form_username} just tried to use reset link for {username}!')
+            return f'This link is not valid for {form_username}!'
+        # Update password
+        password = request.form['new_password']
+        user = Users.query.get(username)
+        user.generate_password_hash(password)
+        try:
+            db.session.commit()
+        except Exception as e:
+            log(
+                f"Exception occurred trying to change <code>{username}</code>'s password"
+            )
+            log(e)
+            db.session.rollback()
+            return 'Exception occurred trying to change your password!'
+        return 'Your password has been successfully changed!'
+    return render_template('reset_password.html', username=username)
 
 
 @app.route('/logout')
