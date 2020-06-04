@@ -73,7 +73,9 @@ def users_to_json(users: list) -> list:
     for user in users:
         user_data = {}
         for k in user.__table__.columns._data.keys():
-            user_data[k] = getattr(user, k)
+            value = getattr(user, k)
+            if value is not None and value != '':
+                user_data[k] = value
         json_data.append(user_data)
 
     return json_data
