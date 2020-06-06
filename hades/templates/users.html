@@ -42,6 +42,8 @@
                             <td><a href="https://api.whatsapp.com/send?phone=91{{ user['phone'] }}" target=_blank
                                    class="w3-text-blue">WhatsApp</a></td>
                         {% endif %}
+                    {% elif c == 'email' %}
+                        <td><a href="mailto:{{ user[c] }}">{{ user[c] }}</a></td>
                     {% else %}
                         <td>{{ user[c] }}</td>
                     {% endif %}
