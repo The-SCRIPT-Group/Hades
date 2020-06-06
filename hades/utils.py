@@ -88,9 +88,6 @@ def log(message: str):
 
 def check_access(table_name: str) -> bool:
     """Returns whether or not the currently logged in user has access to `table_name`"""
-    log(
-        f'User <code>{current_user.name}</code> trying to access <code>{table_name}</code>!',
-    )
     return Access.query.filter(Access.user == current_user.username).filter(
         Access.event == table_name
     )
@@ -219,7 +216,8 @@ def send_mail(
     try:
         SendGridAPIClient(SENDGRID_API_KEY).send(mail)
     except Exception as e:
-        print(e)
+        log('Exception occurred while sending mail!')
+        log(e)
         return False
     return True
 

@@ -36,7 +36,7 @@ def authenticate_api():
 def events_api():
     """Returns a JSON consisting of the tables the user has the permission to view"""
     ret = {}
-    log(f'<code>{current_user.name}</code> is accessing the list of events!</code>')
+    log(f'<code>{current_user.name}</code> is accessing the list of events!')
     for table in get_accessible_tables():
         if table.name not in ('access', 'events', 'users',):
             ret[table.name] = table.full_name
@@ -47,7 +47,7 @@ def events_api():
 @login_required
 def stats_api():
     """Returns a JSON consisting of the tables the user has the permission to view and the users registered per table"""
-    log(f'<code>{current_user.name}</code> is accessing the stats of events!</code>')
+    log(f'<code>{current_user.name}</code> is accessing the stats of events!')
     if 'table' in request.args:
         table_name = request.args.get('table')
         table = get_table_by_name(table_name)
@@ -78,6 +78,9 @@ def users_api():
         return jsonify({'message': 'Please provide all required data'}), 400
 
     if table_name == 'all':
+        log(
+            f'<code>{current_user.name}</code> is accessing all tables that they have access to!'
+        )
         tables = get_accessible_tables()
         users = set()
         for table in tables:
@@ -99,6 +102,7 @@ def users_api():
             final_users.append(loads(user))
         return jsonify(dumps(final_users)), 200
 
+    log(f'<code>{current_user.name}</code> is accessing table {table_name}!')
     access = check_access(table_name)
     if access is None:
         return jsonify({'message': 'Unauthorized'}), 401
@@ -112,7 +116,6 @@ def users_api():
 @login_required
 def create():
     """Creates a user as specified in the request data"""
-
     if 'table' in request.form:
         table_name = request.form['table']
     else:
@@ -125,6 +128,10 @@ def create():
     access = check_access(table_name)
     if access is None:
         return jsonify({'message': 'Unauthorized'}), 401
+
+    log(
+        f'<code>{current_user.name}</code> is trying to add a user to table {table_name}!'
+    )
 
     user_data = {}
 
@@ -184,6 +191,9 @@ def delete():
 
     # Let us delete all entries, if so required
     if id == 'all':
+        log(
+            f'<code>{current_user.name}</code> is trying to delete all entries from table {table_name}!'
+        )
         # Store the message to be returned
         ret = []
         for user in table.query.all():
@@ -193,6 +203,9 @@ def delete():
                 ret.append(f'Failed to delete user {user} from {table_name}')
         return jsonify({'message': ret})
 
+    log(
+        f'<code>{current_user.name}</code> is trying to delete ID {id} from table {table_name}!'
+    )
     # If just a specific ID is to be deleted
     if delete_user(id, table_name):
         return jsonify({'message': f'Deleted user with id {id} from {table_name}'})
@@ -231,6 +244,10 @@ def update_user():
     if table is None:
         return jsonify({'message': 'Please provide a valid table name'}), 400
 
+    log(
+        f'<code>{current_user.name}</code> is trying to update user {key} {data} in table {table_name}!'
+    )
+
     user = table.query.get(data)
 
     for k, v in request.form.items():
@@ -238,7 +255,7 @@ def update_user():
             continue
         if getattr(user, k) != v:
             setattr(user, k, v)
-            print(f'Updated {k} of {user} to {v}')
+            log(f'Updated {k} of {user} to {v}')
     try:
         table.query.session.commit()
     except IntegrityError:
@@ -270,6 +287,8 @@ def sendmail():
     access = check_access(table_name)
     if access is None:
         return jsonify({'message': 'Unauthorized'}), 401
+
+    log(f'<code>{current_user.name}</code> is send a mail to table {table_name}!')
 
     table = get_table_by_name(table_name)
     if 'ids' in request.form and request.form['ids'] != 'all':

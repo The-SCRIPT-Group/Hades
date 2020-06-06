@@ -168,9 +168,6 @@ def submit():
         table = get_table_by_name(request.form['db'])
         # Ensure that the provided table is active
         if table not in ACTIVE_TABLES:
-            print(request.form)
-
-            print(request.form['db'])
             log(
                 f"Someone just tried to register to table <code>{request.form['db']}</code>"
             )
@@ -248,7 +245,9 @@ def submit():
         db.session.add(user)
         db.session.commit()
     except (IntegrityError, DataError) as e:
-        print(e)
+        log('Exception occurred while registering user!')
+        log(e.__class__)
+        log(e)
         return """It appears there was an error while trying to enter your data into our database.<br/>Kindly contact someone from the team and we will have this resolved ASAP"""
 
     # Prepare the email sending
