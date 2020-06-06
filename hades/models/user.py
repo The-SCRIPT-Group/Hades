@@ -37,7 +37,7 @@ class Users(db.Model, UserMixin):
         api_key = ''.join(
             choice(ascii_letters + digits + punctuation) for _ in range(32)
         )
-        self.api_key = bcrypt.generate_password_hash().decode('utf-8')
+        self.api_key = bcrypt.generate_password_hash(api_key).decode('utf-8')
         return api_key
 
     def __repr__(self):
