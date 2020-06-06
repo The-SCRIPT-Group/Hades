@@ -399,8 +399,8 @@ def register():
 
         # If you're a TSG member, you get some access by default
         if TSG.query.filter(TSG.email == email).first():
-            db.session.add(Access('tsg', username))
-            db.session.add(Access('test_users', username))
+            db.session.add(Access(event='tsg', user=username))
+            db.session.add(Access(event='test_users', user=username))
 
         # Commit the transaction and confirm that no integrity constraints have been violated
         try:
