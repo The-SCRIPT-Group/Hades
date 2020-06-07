@@ -88,7 +88,10 @@ def log(message: str):
         app, version = request.headers.get('User-Agent').split('/')
         tg.send_message(log_channel, f'<b>Hades/{app}/{version}</b>: {message}')
     except ValueError:
-        tg.send_message(log_channel, f'<b>Hades</b>: {message}')
+        if request.headers.get('Origin') == 'https://charon.thescriptgroup.in':
+            tg.send_message(log_channel, f'<b>Hades/Charon/1.0</b>: {message}')
+        else:
+            tg.send_message(log_channel, f'<b>Hades</b>: {message}')
 
 
 def check_access(table_name: str) -> bool:
