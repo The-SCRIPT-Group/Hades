@@ -1,9 +1,10 @@
 import base64
 import os
 from json import dumps
-from cryptography.fernet import Fernet
 
 import qrcode
+from cryptography.fernet import Fernet
+from flask import request
 from flask_login import current_user
 from flask_sqlalchemy.model import Model
 from sendgrid import SendGridAPIClient
@@ -83,7 +84,11 @@ def users_to_json(users: list) -> list:
 
 def log(message: str):
     """Logs the given `message` to our Telegram logging channel"""
-    tg.send_message(log_channel, f'<b>Hades</b>: {message}')
+    try:
+        app, version = request.headers.get('User-Agent').split('/')
+        tg.send_message(log_channel, f'<b>Hades/{app}/{version}</b>: {message}')
+    except ValueError:
+        tg.send_message(log_channel, f'<b>Hades</b>: {message}')
 
 
 def check_access(table_name: str) -> bool:
