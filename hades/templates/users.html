@@ -33,7 +33,10 @@
                     {% if c == "hackerrank_username" %}
                         <td><a href="https://hackerrank.com/{{ user[c] }}">{{ user[c] }}</a></td>
                     {% elif c == "phone" %}
-                        {% if '|' in user['phone'] %}
+                        {% if user['phone'] == '' %}
+                            <td>---</td>
+                            <td>---</td>
+                        {% elif '|' in user['phone'] %}
                             <td>{{ user['phone'].split('|')[0] }}</td>
                             <td><a href="https://api.whatsapp.com/send?phone=91{{ user['phone'].split('|')[1] }}"
                                    target=_blank class="w3-text-blue">WhatsApp</a></td>
