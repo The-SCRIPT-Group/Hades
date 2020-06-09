@@ -250,12 +250,16 @@ def update_user():
 
     user = table.query.get(data)
 
+    log_message = f'{current_user.name} has:'
     for k, v in request.form.items():
         if k in ('key', 'table', key):
             continue
-        if getattr(user, k) != v:
+        o = getattr(user, k)
+        if o != v:
             setattr(user, k, v)
-            log(f'Updated {k} of {user} to {v}')
+            log_message += f'\nUpdated {k} of {user.name} from {o} to {v}'
+
+    log(log_message)
     try:
         table.query.session.commit()
     except IntegrityError:
