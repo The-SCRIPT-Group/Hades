@@ -121,32 +121,38 @@ def get_accessible_tables():
     )
 
 
-def update_user(id: int, table_name: str, user_data: dict) -> (bool, str):
+def update_user(id: int, table: Model, user_data: dict) -> (bool, str):
     """
     :param id -> User ID
-    :param table_name -> Name of the table
+    :param table -> Table class
     :param user_data -> Dictionary containing fields to be updated
     :return success/failure, reasoning
     """
 
-    table = get_table_by_name(table_name)
-
-    if table is None:
-        return False, f'Table {table_name} does not seem to exist!'
+    table_name = get_table_full_name(table.__tablename__)
 
     user = table.query.get(id)
     if user is None:
-        return False, f'Table {table_name} does not have a user with ID {id}'
+        return False, f'No user with ID {id}'
+
+    log_message = (
+        f'{current_user.name} updated the following for {user.name} in {table_name}:'
+    )
 
     for k, v in user_data.items():
-        setattr(user, k, v)
+        o = getattr(user, k)
+        if o != v:
+            setattr(user, k, v)
+            log_message += f'\nUpdated {k} of {user.name} from {o} to {v}'
 
     try:
         table.query.session.commit()
     except IntegrityError as e:
+        log(f'IntegrityError while updating {id} in {table_name}')
+        log(e)
         return (
             False,
-            f'You violated an integrity constraint trying to update {id} in {table_name} with {user_data}!',
+            f'Integrity constraint violated trying to update {id} with {user_data}!',
         )
     return True, f'{user} has been successfully updated!'
 
