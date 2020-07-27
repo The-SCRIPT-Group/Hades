@@ -23,6 +23,7 @@ Pillow==7.1.2
 protobuf==3.12.2
 psycopg2-binary==2.8.5
 pycparser==2.20
+python-decouple==3.3
 python-http-client==3.2.7
 qrcode==6.1
 regex==2020.5.14

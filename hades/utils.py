@@ -1,9 +1,9 @@
 import base64
-import os
 from json import dumps
 
 import qrcode
 from cryptography.fernet import Fernet
+from decouple import config
 from flask import request
 from flask_login import current_user
 from flask_sqlalchemy.model import Model
@@ -30,16 +30,16 @@ from .models.workshop import (
 from .telegram import TG
 
 # SendGrid API Key
-SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
+SENDGRID_API_KEY = config('SENDGRID_API_KEY')
 
 # Initialize object for sending messages to telegram
-tg = TG(os.getenv('BOT_API_KEY'))
+tg = TG(config('BOT_API_KEY', default=None))
 
 # Retrieve ID of Telegram log channel
-log_channel = os.getenv('LOG_ID')
+log_channel = config('LOG_ID', default=None)
 
 # Create fernet object using secret key
-fernet = Fernet(os.getenv('FERNET_KEY'))
+fernet = Fernet(config('FERNET_KEY'))
 
 DATABASE_CLASSES = {
     'codex_april_2019': CodexApril2019,

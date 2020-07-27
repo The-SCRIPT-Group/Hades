@@ -10,6 +10,7 @@ import os
 from datetime import datetime
 from urllib.parse import urlparse, urljoin
 
+from decouple import config
 from flask import Flask, redirect, render_template, request, url_for, jsonify, abort
 from flask_login import (
     LoginManager,
@@ -24,8 +25,8 @@ from sqlalchemy import inspect
 from sqlalchemy.exc import DataError, IntegrityError
 
 app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+app.secret_key = config('SECRET_KEY')
+app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
 app.config['JSON_SORT_KEYS'] = False
 
 db = SQLAlchemy(app)
@@ -251,7 +252,7 @@ def submit():
         return """It appears there was an error while trying to enter your data into our database.<br/>Kindly contact someone from the team and we will have this resolved ASAP"""
 
     # Prepare the email sending
-    from_email = os.getenv('FROM_EMAIL', 'noreply@thescriptgroup.in')
+    from_email = config('FROM_EMAIL', default='noreply@thescriptgroup.in')
     to_emails = []
     email_1 = (request.form['email'], request.form['name'])
     to_emails.append(email_1)
@@ -310,7 +311,7 @@ You're <b>required</b> to present this on the day of the event."""
 
     # Log the new entry to desired telegram channel
     chat_id = (
-        request.form['chat_id'] if 'chat_id' in request.form else os.getenv('GROUP_ID')
+        request.form['chat_id'] if 'chat_id' in request.form else config('GROUP_ID')
     )
     caption = f'Name: {user.name} | ID: {user.id}'
     if 'extra_field_telegram' in request.form:

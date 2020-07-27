@@ -1,6 +1,6 @@
-import os
 from json import dumps, loads
 
+from decouple import config
 from flask import jsonify, request
 from flask_login import login_required, current_user
 from sqlalchemy.exc import IntegrityError
@@ -304,7 +304,7 @@ def sendmail():
     if 'email_address' in request.form:
         email_address = request.form['email_address']
     else:
-        email_address = os.getenv('FROM_EMAIL', 'noreply@thescriptgroup.in')
+        email_address = config('FROM_EMAIL', default='noreply@thescriptgroup.in')
 
     for user in users:
         if 'formattable_content' in request.form and 'content_fields' in request.form:

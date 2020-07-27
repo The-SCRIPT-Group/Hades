@@ -10,7 +10,7 @@ pip install -r requirements.txt
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-A few environment variables should be set for proper functionality
+A few environment variables should be set for proper functionality -- you can just add these in a `.env` file and `decouple` will pick them up
 
 `BOT_API_KEY` - Telegram Bot API Key
 
@@ -26,10 +26,6 @@ A few environment variables should be set for proper functionality
 
 `FERNET_KEY` - Key for Fernet cryptography algorithm
 
-To export everything in .env to your environment, you can simply run
-```bash
-for f in $(awk -F'=' '{print $1}' .env); do export $f; done
-```
 
 There are various ways to run the application
 
