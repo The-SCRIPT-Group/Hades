@@ -8,16 +8,16 @@ from sqlalchemy.exc import IntegrityError
 from . import (
     app,
     log,
-    get_accessible_tables,
-    get_table_by_name,
 )
-from .models.user import Users
+from .db_utils import insert
 from .utils import (
     check_access,
     delete_user,
     users_to_json,
     send_mail,
     get_table_full_name,
+    get_accessible_tables,
+    get_table_by_name,
 )
 
 
@@ -149,14 +149,11 @@ def create():
         log(e)
         return jsonify({'message': 'Exception occurred trying to create user'}), 400
 
-    try:
-        Users.query.session.add(user)
-        Users.query.session.commit()
-    except IntegrityError:
+    success, reason = insert([user])
+
+    if not success:
         return (
-            jsonify(
-                {'message': 'Integrity constraint violated, please re-check your data!'}
-            ),
+            jsonify({'message': f'Error occurred, {reason}'}),
             400,
         )
     log(

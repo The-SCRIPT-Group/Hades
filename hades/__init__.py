@@ -24,6 +24,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import inspect
 from sqlalchemy.exc import DataError, IntegrityError
 
+
 app = Flask(__name__)
 app.secret_key = config('SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
@@ -33,15 +34,9 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-from .utils import (
-    log,
-    get_table_by_name,
-    get_current_id,
-    generate_qr,
-    tg,
-    get_accessible_tables,
-    send_mail,
-)
+from .db_utils import *
+
+from .utils import *
 
 from . import api
 
@@ -91,8 +86,8 @@ def load_user_from_request(request):
         except UnicodeDecodeError:
             return None
         username, password = credentials.split('|')
-        user = db.session.query(Users).get(username)
-        if user is not None:
+        user = get_row_from_table(Users, username)
+        if user:
             if user.check_password_hash(password.strip()):
                 log(
                     f'User <code>{user.name}</code> just authenticated a {request.method} API call with credentials!',
@@ -102,7 +97,7 @@ def load_user_from_request(request):
     if api_key:
         # Cases where the header may be of the form `Authorization: Basic api_key`
         api_key = api_key.replace('Basic ', '', 1)
-        users = db.session.query(Users).all()
+        users = get_data_from_table(Users)
         for user in users:
             if user.check_api_key(api_key):
                 log(
@@ -242,13 +237,10 @@ def submit():
         encoded = base64.b64encode(img_data).decode()
 
     # Add the user to the database and commit the transaction, ensuring no integrity errors.
-    try:
-        db.session.add(user)
-        db.session.commit()
-    except (IntegrityError, DataError) as e:
-        log('Exception occurred while registering user!')
-        log(e.__class__)
-        log(e)
+    success, reason = insert(user)
+    if not success:
+        log(f'Could not insert user {user}')
+        log(reason)
         return """It appears there was an error while trying to enter your data into our database.<br/>Kindly contact someone from the team and we will have this resolved ASAP"""
 
     # Prepare the email sending
@@ -349,7 +341,7 @@ def login():
     """
     if request.method == 'POST':
         user = request.form['username']
-        user = db.session.query(Users).filter_by(username=user).first()
+        user = get_user(Users, user)
         # Ensure user exists in the database
         if user is not None:
             password = request.form['password']
@@ -395,26 +387,18 @@ def register():
         u.email = email
         api_key = u.generate_api_key()
 
-        # Add the user object to the database
-        db.session.add(u)
+        # Add user object to list of objects to be inserted
+        objects = [u]
 
         # If you're a TSG member, you get some access by default
-        if TSG.query.filter(TSG.email == email).first():
-            db.session.add(Access(event='tsg', user=username))
-            db.session.add(Access(event='test_users', user=username))
+        if is_user_tsg(email):
+            objects.append(Access(event='tsg', user=username))
+            objects.append(Access(event='test_users', user=username))
 
-        # Commit the transaction and confirm that no integrity constraints have been violated
-        try:
-            db.session.commit()
-        except IntegrityError:
-            return (
-                jsonify(
-                    {
-                        'response': 'Integrity constraint violated, please re-check your data!'
-                    }
-                ),
-                400,
-            )
+        success, reason = insert(objects)
+
+        if not success:
+            return f'Error occurred, {reason}', 400
         log(f'User <code>{u.name}</code> has been registered!')
         return f"Hello {username}, your account has been successfully created.<br>If you wish to use an API Key for sending requests, your key is <code>{api_key}</code><br/>Don't share it with anyone, if you're unsure of what it is, you don't need it"
     return render_template('register.html')
@@ -439,7 +423,7 @@ def events():
         log(
             f"User <code>{current_user.name}</code> is accessing <code>{request.form['table']}</code>!"
         )
-        user_data = db.session.query(table).all()
+        user_data = get_data_from_table(table)
         return render_template(
             'users.html', users=user_data, columns=table.__table__.columns._data.keys()
         )
@@ -472,13 +456,13 @@ def update():
         if table is None:
             return 'Table not chosen?'
 
-        user = db.session.query(table).get(request.form[request.form['key']])
-        setattr(user, request.form['field'], request.form['value'])
+        user = get_user(table, request.form['key'])
+        success, reason = update_row_in_table(
+            user, request.form['field'], request.form['value']
+        )
 
-        try:
-            db.session.commit()
-        except IntegrityError:
-            return 'Integrity constraint violated, please re-check your data!'
+        if not success:
+            return f'Error occurred trying to update - {reason}'
 
         log(
             f"<code>{current_user.name}</code> has updated <code>{request.form['field']}</code> of <code>{user}</code> to <code>{request.form['value']}</code>"
