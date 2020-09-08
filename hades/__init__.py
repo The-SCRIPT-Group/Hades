@@ -18,14 +18,17 @@ from flask_login import (
 )
 from flask_login.utils import login_url
 from flask_sqlalchemy import SQLAlchemy
+from mongoengine import connect
 from sqlalchemy import inspect
 
 app = Flask(__name__)
 app.secret_key = config('SECRET_KEY')
-app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
+# app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
 app.config['JSON_SORT_KEYS'] = False
 
-db = SQLAlchemy(app)
+# db = SQLAlchemy(app)
+connect(config("DB_NAME"), 'default', host=config("DATABASE_URL"))
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -36,6 +39,7 @@ from .utils import *
 from . import api
 
 # Import event related classes
+from . import models
 
 # Import miscellaneous classes
 from .models.user import Users, TSG
