@@ -5,25 +5,20 @@ Flask application to accept some details, generate, display, and email a QR code
 
 # pylint: disable=invalid-name,too-few-public-methods,no-member,line-too-long,too-many-locals
 
-import base64
-import os
 from datetime import datetime
 from urllib.parse import urlparse, urljoin
 
 from decouple import config
-from flask import Flask, redirect, render_template, request, url_for, jsonify, abort
+from flask import Flask, redirect, render_template, url_for, jsonify, abort
 from flask_login import (
     LoginManager,
     login_required,
     login_user,
     logout_user,
-    current_user,
 )
 from flask_login.utils import login_url
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import inspect
-from sqlalchemy.exc import DataError, IntegrityError
-
 
 app = Flask(__name__)
 app.secret_key = config('SECRET_KEY')
@@ -189,7 +184,7 @@ def submit():
             return f'<code>{field}</code> is required but has not been submitted!'
 
     # ID is from a helper function that increments the latest ID by 1 and returns it
-    id = get_current_id(table)
+    id_ = get_current_id(table)
 
     data = {}
 
@@ -199,7 +194,7 @@ def submit():
             data[k] = v
 
     # Instantiate our user object based on the received form data and retrived ID
-    user = table(**data, id=id)
+    user = table(**data, id=id_)
 
     # If a separate WhatsApp number has been provided, store that in the database as well
     if 'whatsapp_number' in request.form:
@@ -264,7 +259,7 @@ def submit():
         date = request.form['date']
     else:
         date = datetime.now().strftime('%B,%Y')
-    subject = 'Registration for {} - {} - ID {}'.format(event_name, date, id)
+    subject = 'Registration for {} - {} - ID {}'.format(event_name, date, id_)
     message = """<img src='https://drive.google.com/uc?id=12VCUzNvU53f_mR7Hbumrc6N66rCQO5r-&export=download' style='width:30%;height:50%'>
 <hr>
 {}, your registration is done!

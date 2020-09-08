@@ -121,7 +121,7 @@ def get_accessible_tables():
     )
 
 
-def update_user(id: int, table: Model, user_data: dict) -> (bool, str):
+def update_user(id_: int, table: Model, user_data: dict) -> (bool, str):
     """
     :param id -> User ID
     :param table -> Table class
@@ -131,9 +131,9 @@ def update_user(id: int, table: Model, user_data: dict) -> (bool, str):
 
     table_name = get_table_full_name(table.__tablename__)
 
-    user = table.query.get(id)
+    user = table.query.get(id_)
     if user is None:
-        return False, f'No user with ID {id}'
+        return False, f'No user with ID {id_}'
 
     log_message = (
         f'{current_user.name} updated the following for {user.name} in {table_name}:'
@@ -148,16 +148,16 @@ def update_user(id: int, table: Model, user_data: dict) -> (bool, str):
     try:
         table.query.session.commit()
     except IntegrityError as e:
-        log(f'IntegrityError while updating {id} in {table_name}')
+        log(f'IntegrityError while updating {id_} in {table_name}')
         log(e)
         return (
             False,
-            f'Integrity constraint violated trying to update {id} with {user_data}!',
+            f'Integrity constraint violated trying to update {id_} with {user_data}!',
         )
     return True, f'{user} has been successfully updated!'
 
 
-def delete_user(id: int, table_name: str) -> (bool, str):
+def delete_user(id_: int, table_name: str) -> (bool, str):
     """
     :param id -> User ID
     :param table_name -> Name of the table user is to be deleted from
@@ -169,9 +169,9 @@ def delete_user(id: int, table_name: str) -> (bool, str):
     if table is None:
         return False, f'Table {table_name} does not seem to exist!'
 
-    user = table.query.get(id)
+    user = table.query.get(id_)
     if user is None:
-        return False, f'Table {table_name} does not have a user with ID {id}'
+        return False, f'Table {table_name} does not have a user with ID {id_}'
 
     table.query.session.delete(user)
     log(
@@ -182,17 +182,17 @@ def delete_user(id: int, table_name: str) -> (bool, str):
     except Exception as e:
         log(f'Exception occurred in above deletion!')
         log(e)
-        return False, f'Exception occurred trying to delete {id} from {table_name}!'
+        return False, f'Exception occurred trying to delete {id_} from {table_name}!'
     return True, f'{user} deleted successfully!'
 
 
 def get_current_id(table: Model) -> int:
     """Function to return the latest ID based on the database entries. 1 if DB is empty."""
     try:
-        id = table.query.order_by(desc(table.id)).first().id
+        id_ = table.query.order_by(desc(table.id)).first().id
     except Exception:
-        id = 0
-    return int(id) + 1
+        id_ = 0
+    return int(id_) + 1
 
 
 def generate_qr(user):
@@ -203,8 +203,12 @@ def generate_qr(user):
 
 
 def send_mail(
-    from_user: tuple, to: list, subject: str, content: str, attachments: list = []
+    from_user: tuple, to: list, subject: str, content: str, attachments=None
 ) -> bool:
+
+    if attachments is None:
+        attachments = []
+
     # Bail out if SendGrid API key has not been set
     if SENDGRID_API_KEY is None:
         return False

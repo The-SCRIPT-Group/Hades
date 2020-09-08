@@ -170,7 +170,7 @@ def delete():
     # Ensure user has passed `table` and `id`
     if 'table' in request.form and 'id' in request.form:
         table_name = request.form['table']
-        id = request.form['id']
+        id_ = request.form['id']
     else:
         return jsonify({'message': 'Please provide all required data'}), 400
 
@@ -187,7 +187,7 @@ def delete():
         return jsonify({'message': f'{table_name} does not seem to exist!'}), 400
 
     # Let us delete all entries, if so required
-    if id == 'all':
+    if id_ == 'all':
         log(
             f'<code>{current_user.name}</code> is trying to delete all entries from table {table_name}!'
         )
@@ -201,12 +201,14 @@ def delete():
         return jsonify({'message': ret})
 
     log(
-        f'<code>{current_user.name}</code> is trying to delete ID {id} from table {table_name}!'
+        f'<code>{current_user.name}</code> is trying to delete ID {id_} from table {table_name}!'
     )
     # If just a specific ID is to be deleted
-    if delete_user(id, table_name):
-        return jsonify({'message': f'Deleted user with id {id} from {table_name}'})
-    return jsonify({'message': f'Failed to delete user with id {id} from {table_name}'})
+    if delete_user(id_, table_name):
+        return jsonify({'message': f'Deleted user with id {id_} from {table_name}'})
+    return jsonify(
+        {'message': f'Failed to delete user with id {id_} from {table_name}'}
+    )
 
 
 @app.route('/api/update', methods=['PUT'])
