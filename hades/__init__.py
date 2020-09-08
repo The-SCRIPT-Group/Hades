@@ -436,6 +436,7 @@ def update():
     the form as well)
     """
     if request.method == 'POST':
+        # TODO: Use utils.update_user()
         if 'field' not in request.form:
             table_name = request.form['table']
             table = get_table_by_name(table_name)

@@ -27,7 +27,10 @@ from .models.workshop import (
     CNovember2019,
     BitgritDecember2019,
 )
+
 from .telegram import TG
+
+from .db_utils import *
 
 # SendGrid API Key
 SENDGRID_API_KEY = config('SENDGRID_API_KEY')
@@ -131,7 +134,7 @@ def update_user(id_: int, table: Model, user_data: dict) -> (bool, str):
 
     table_name = get_table_full_name(table.__tablename__)
 
-    user = table.query.get(id_)
+    user = get_user(table, id_)
     if user is None:
         return False, f'No user with ID {id_}'
 
@@ -143,18 +146,17 @@ def update_user(id_: int, table: Model, user_data: dict) -> (bool, str):
         o = getattr(user, k)
         if o != v:
             setattr(user, k, v)
-            log_message += f'\nUpdated {k} of {user.name} from {o} to {v}'
+            log_message += f'\nUpdated {k} of {user} from {o} to {v}'
+        else:
+            log_message += f'\n{k} of {user} is already {v}'
 
-    try:
-        table.query.session.commit()
-    except IntegrityError as e:
-        log(f'IntegrityError while updating {id_} in {table_name}')
-        log(e)
-        return (
-            False,
-            f'Integrity constraint violated trying to update {id_} with {user_data}!',
-        )
-    return True, f'{user} has been successfully updated!'
+    log(log_message)
+
+    success, reason = commit_transaction()
+    if not success:
+        log(f'Could not update {id_} in {table_name} - {reason}')
+        return success, reason
+    return success, f'{user} has been successfully updated!'
 
 
 def delete_user(id_: int, table_name: str) -> (bool, str):
@@ -173,17 +175,14 @@ def delete_user(id_: int, table_name: str) -> (bool, str):
     if user is None:
         return False, f'Table {table_name} does not have a user with ID {id_}'
 
-    table.query.session.delete(user)
+    success, reason = delete_row_from_table(user)
+    if not success:
+        log(f'Could not delete user {user} - {reason}!')
+        return success, f'Could not delete user {user} - {reason}!'
     log(
         f'User <code>{current_user.name}</code> has deleted <code>{user}</code> from <code>{table_name}</code>!'
     )
-    try:
-        table.query.session.commit()
-    except Exception as e:
-        log(f'Exception occurred in above deletion!')
-        log(e)
-        return False, f'Exception occurred trying to delete {id_} from {table_name}!'
-    return True, f'{user} deleted successfully!'
+    return success, f'{current_user.name} has deleted {user} from {table_name}'
 
 
 def get_current_id(table: Model) -> int:

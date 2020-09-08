@@ -167,6 +167,7 @@ def create():
 def delete():
     """Deletes the user as specified in the request data"""
 
+    # TODO: use utils.delete_user()
     # Ensure user has passed `table` and `id`
     if 'table' in request.form and 'id' in request.form:
         table_name = request.form['table']
@@ -224,6 +225,9 @@ def update_user():
     -> data - The value of the identifier
     -> Rest of the parameters will be the attributes to be updated
     """
+
+    # TODO: use utils.update_user()
+
     if (
         'table' in request.form
         and 'key' in request.form

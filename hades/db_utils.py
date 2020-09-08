@@ -54,6 +54,8 @@ def update_row_in_table(user: Model, column: str, value) -> (bool, str):
     :return: success, and reason if failure (empty on success)
     """
     temp = getattr(user, column)
+    if temp == value:
+        return True, ''
     setattr(user, column, value)
     try:
         db.session.commit()
@@ -64,6 +66,25 @@ def update_row_in_table(user: Model, column: str, value) -> (bool, str):
     except DataError as e:
         db.session.rollback()
         setattr(user, column, temp)
+        return False, f'DataError occurred - {e}'
+    return True, ''
+
+
+def delete_row_from_table(user: Model) -> (bool, str):
+    """
+    Function to delete a user (i.e. a single row) from the given table
+    :param user: The object of that user
+    :return: success, and reason if failure (empty on success)
+    """
+
+    db.session.delete(user)
+    try:
+        db.session.commit()
+    except IntegrityError as e:
+        db.session.rollback()
+        return False, f'IntegrityError occurred - {e}'
+    except DataError as e:
+        db.session.rollback()
         return False, f'DataError occurred - {e}'
     return True, ''
 
