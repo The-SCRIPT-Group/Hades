@@ -3,6 +3,7 @@ from string import ascii_letters, digits, punctuation
 
 from flask_bcrypt import Bcrypt
 from flask_login import UserMixin
+from mongoengine import DynamicDocument, IntField, StringField
 
 from hades import app, db
 
@@ -44,16 +45,17 @@ class Users(db.Model, UserMixin):
         return '%r' % [self.username, self.name, self.email]
 
 
-class TSG(db.Model):
+class TSG(DynamicDocument):
     """
     Database model class
     """
 
-    __tablename__ = 'tsg'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30))
-    email = db.Column(db.String(50), unique=True)
-    phone = db.Column(db.String(10), unique=True)
+    meta = {'collection': 'tsg'}
+
+    id = IntField(primary_key=True)
+    name = StringField()
+    email = StringField(unique=True)
+    phone = StringField(unique=True)
 
     def __repr__(self):
         return '%r' % [self.id, self.name, self.email, self.phone]

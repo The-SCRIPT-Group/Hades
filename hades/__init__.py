@@ -23,11 +23,11 @@ from sqlalchemy import inspect
 
 app = Flask(__name__)
 app.secret_key = config('SECRET_KEY')
-# app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
 app.config['JSON_SORT_KEYS'] = False
 
-# db = SQLAlchemy(app)
-connect(config("DB_NAME"), 'default', host=config("DATABASE_URL"))
+db = SQLAlchemy(app)
+connect(config("DB_NAME"), 'default', host=config("DB_URI"))
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -465,9 +465,7 @@ def update():
             return 'Table not chosen?'
 
         user = get_user(table, request.form['key'])
-        success, reason = update_row_in_table(
-            user, request.form['field'], request.form['value']
-        )
+        success, reason = update_doc(user, request.form['field'], request.form['value'])
 
         if not success:
             return f'Error occurred trying to update - {reason}'
