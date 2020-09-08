@@ -123,7 +123,7 @@ def get_accessible_tables():
 
 def update_user(id_: int, table: Model, user_data: dict) -> (bool, str):
     """
-    :param id -> User ID
+    :param id_ -> User ID
     :param table -> Table class
     :param user_data -> Dictionary containing fields to be updated
     :return: success/failure, reasoning
@@ -159,7 +159,7 @@ def update_user(id_: int, table: Model, user_data: dict) -> (bool, str):
 
 def delete_user(id_: int, table_name: str) -> (bool, str):
     """
-    :param id -> User ID
+    :param id_ -> User ID
     :param table_name -> Name of the table user is to be deleted from
     :return success/failure, reasoning
     """
@@ -190,7 +190,7 @@ def get_current_id(table: Model) -> int:
     """Function to return the latest ID based on the database entries. 1 if DB is empty."""
     try:
         id_ = table.query.order_by(desc(table.id)).first().id
-    except Exception:
+    except:
         id_ = 0
     return int(id_) + 1
 
@@ -205,7 +205,6 @@ def generate_qr(user):
 def send_mail(
     from_user: tuple, to: list, subject: str, content: str, attachments=None
 ) -> bool:
-
     if attachments is None:
         attachments = []
 
