@@ -68,5 +68,26 @@ def update_row_in_table(user: Model, column: str, value) -> (bool, str):
     return True, ''
 
 
+def commit_transaction() -> (bool, str):
+    """
+    Function to commit the current changes in the database
+    :return: success, and reason if failure (empty on success)
+    """
+    try:
+        db.session.commit()
+    except IntegrityError as e:
+        db.session.rollback()
+        return False, f'IntegrityError occurred - {e}'
+    except DataError as e:
+        db.session.rollback()
+        return False, f'DataError occurred - {e}'
+    return True, ''
+
+
 def is_user_tsg(email: str) -> bool:
+    """
+    Function to check if the email address used belongs to a TSG member
+    :param email: Email address
+    :return: True if a member, False if not
+    """
     return TSG.query.filter(TSG.email == email).first() is not None

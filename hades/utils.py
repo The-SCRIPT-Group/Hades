@@ -126,7 +126,7 @@ def update_user(id: int, table: Model, user_data: dict) -> (bool, str):
     :param id -> User ID
     :param table -> Table class
     :param user_data -> Dictionary containing fields to be updated
-    :return success/failure, reasoning
+    :return: success/failure, reasoning
     """
 
     table_name = get_table_full_name(table.__tablename__)

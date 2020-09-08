@@ -489,8 +489,10 @@ def change_password():
         else:
             return 'Current password you entered is wrong! Please try again!'
 
-        # Complete the transaction. No exceptions should occur here
-        db.session.commit()
+        # Commit the changes we made in the object to the database
+        success, reason = commit_transaction()
+        if not success:
+            return f'Error occurred while changing your password - {reason}!'
 
         log(f'<code>{current_user.name}</code> has updated their password!</code>')
 
@@ -551,19 +553,16 @@ def reset_password(slug: str):
         if username != form_username:
             log(f'{form_username} just tried to use reset link for {username}!')
             return f'This link is not valid for {form_username}!'
+
         # Update password
         password = request.form['new_password']
         user = Users.query.get(username)
         user.generate_password_hash(password)
-        try:
-            db.session.commit()
-        except Exception as e:
-            log(
-                f"Exception occurred trying to change <code>{username}</code>'s password"
-            )
-            log(e)
-            db.session.rollback()
-            return 'Exception occurred trying to change your password!'
+
+        # Commit the changes we made in the object to the database
+        success, reason = commit_transaction()
+        if not success:
+            return f'Error occurred while changing your password - {reason}!'
         return 'Your password has been successfully changed!'
     return render_template('reset_password.html', username=username)
 
