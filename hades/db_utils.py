@@ -33,7 +33,7 @@ def get_user(table: Model, id_: str) -> Union[Model, None]:
     :param id_: The value of the ID
     :return: User object if it exists, else None
     """
-    return table.query(id_)
+    return table.query.get(id_)
 
 
 def get_data_from_table(table: Model) -> Union[list, None]:
