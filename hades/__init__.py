@@ -63,7 +63,7 @@ def is_safe_url(target: str) -> bool:
 @login_manager.user_loader
 def load_user(user_id):
     """Return `User` object for the corresponding `user_id`"""
-    return Users.query.get(user_id)
+    return Users.objects(pk=user_id)
 
 
 @login_manager.request_loader
@@ -85,7 +85,7 @@ def load_user_from_request(request):
         except UnicodeDecodeError:
             return None
         username, password = credentials.split('|')
-        user = get_row_from_table(Users, username)
+        user = get_user(Users, username)
         if user:
             if user.check_password_hash(password.strip()):
                 log(
@@ -513,7 +513,7 @@ def forgot_username():
     if request.method == 'POST':
         if 'email' in request.form:
             email = request.form['email']
-            user = Users.query.filter(Users.email == email).first()
+            user = Users.objects(email=email).first()
             if user:
                 from_email = ('noreply@thescriptgroup.in', 'TSG Bot')
                 to_email = [(user.email, user.name)]
@@ -532,7 +532,7 @@ def forgot_password():
     if request.method == 'POST':
         if 'username' in request.form:
             username = request.form['username']
-            user = Users.query.get(username)
+            user = Users.objects(pk=username)
             if user:
                 reset_slug = utils.encrypt(username)
                 reset_url = request.host_url + 'reset_password' + '/' + reset_slug
@@ -562,7 +562,7 @@ def reset_password(slug: str):
 
         # Update password
         password = request.form['new_password']
-        user = Users.query.get(username)
+        user = Users.objects(pk=username)
         user.generate_password_hash(password)
 
         # Commit the changes we made in the object to the database

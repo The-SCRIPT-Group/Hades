@@ -10,17 +10,18 @@ from hades import app, db
 bcrypt = Bcrypt(app)
 
 
-class Users(db.Model, UserMixin):
+class Users(DynamicDocument):
     """
     Database model class
     """
 
-    __tablename__ = 'users'
-    name = db.Column(db.String(30))
-    username = db.Column(db.String(20), primary_key=True)
-    password = db.Column(db.String(100))
-    api_key = db.Column(db.String(100), unique=True)
-    email = db.Column(db.String(50), unique=True)
+    meta = {'collection': 'users'}
+
+    name = StringField()
+    username = StringField(primary_key=True)
+    password = StringField()
+    api_key = StringField(unique=True)
+    email = StringField(unique=True)
 
     def get_id(self):
         return self.username if self is not None else None
