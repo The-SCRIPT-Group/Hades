@@ -38,7 +38,11 @@ def events_api():
     ret = {}
     log(f'<code>{current_user.name}</code> is accessing the list of events!')
     for table in get_accessible_tables():
-        if table.name not in ('access', 'events', 'users',):
+        if table.name not in (
+            'access',
+            'events',
+            'users',
+        ):
             ret[table.name] = table.full_name
     return jsonify(ret), 200
 
@@ -64,7 +68,13 @@ def stats_api():
         )
     ret = {}
     for table in get_accessible_tables():
-        if table.name not in ('access', 'events', 'test_users', 'tsg', 'users',):
+        if table.name not in (
+            'access',
+            'events',
+            'test_users',
+            'tsg',
+            'users',
+        ):
             ret[table.full_name] = len(get_table_by_name(table.name).query.all())
     return jsonify(ret), 200
 

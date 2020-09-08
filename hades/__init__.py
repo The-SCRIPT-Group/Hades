@@ -290,7 +290,11 @@ You're <b>required</b> to present this on the day of the event."""
     attachments = []
     if 'no_qr' not in request.form:
         attachments.append(
-            {'data': encoded, 'filename': 'qr.png', 'type': 'image/png',}
+            {
+                'data': encoded,
+                'filename': 'qr.png',
+                'type': 'image/png',
+            }
         )
 
     # Send the mail
@@ -446,7 +450,11 @@ def update():
                 if i.columns[f].primary_key or i.columns[f].unique:
                     fields.remove(f)
 
-            return render_template('update.html', fields=fields, table_name=table_name,)
+            return render_template(
+                'update.html',
+                fields=fields,
+                table_name=table_name,
+            )
 
         table = get_table_by_name(request.form['table'])
         if table is None:
@@ -471,8 +479,8 @@ def update():
 @login_required
 def change_password():
     """
-       Displays a page to enter current and a new password on a GET request
-       For POST, changes the password if current one matches and logs you out
+    Displays a page to enter current and a new password on a GET request
+    For POST, changes the password if current one matches and logs you out
     """
 
     if request.method == 'POST':
