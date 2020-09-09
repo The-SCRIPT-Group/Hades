@@ -1,4 +1,4 @@
-from mongoengine import ValidationError, IntField, StringField
+from mongoengine import ValidationError, StringField
 from requests import get
 
 from hades.models.validate import ValidateMixin
@@ -11,7 +11,6 @@ class CodexApril2019(ValidateMixin):
 
     meta = {'collection': 'codex_april_2019'}
 
-    id = IntField(primary_key=True)
     department = StringField()
 
     def __repr__(self):
@@ -25,7 +24,6 @@ class RSC2019(ValidateMixin):
 
     meta = {'collection': 'rsc_2019'}
 
-    id = IntField(primary_key=True)
     department = StringField()
     year = StringField(max_length=3)
 
@@ -60,7 +58,6 @@ class CodexDecember2019(ValidateMixin):
 
     meta = {'collection': 'codex_december_2019'}
 
-    id = IntField(primary_key=True)
     department = StringField()
     year = StringField(max_length=3)
     hackerrank_username = StringField(
@@ -101,7 +98,6 @@ class BOV2020(ValidateMixin):
 
     meta = {'collection': 'bov_2020'}
 
-    id = IntField(primary_key=True)
     hackerrank_username = StringField(
         unique=True, validation=__validate_hackerrank_username__
     )

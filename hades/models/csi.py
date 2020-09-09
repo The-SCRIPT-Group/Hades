@@ -32,7 +32,6 @@ class CSINovemberNonMember2019(ValidateMixin):
 
     meta = {'collection': 'csi_november_non_member_2019'}
 
-    id = IntField(primary_key=True)
     department = StringField()
     year = StringField(max_length=3)
     prn = StringField(unique=True)
