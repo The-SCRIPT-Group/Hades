@@ -2,10 +2,16 @@ from random import choice
 from string import ascii_letters, digits, punctuation
 
 from flask_bcrypt import Bcrypt
-from flask_login import UserMixin
-from mongoengine import DynamicDocument, IntField, StringField
+from mongoengine import (
+    DynamicDocument,
+    IntField,
+    StringField,
+    ListField,
+    ReferenceField,
+)
 
-from hades import app, db
+from hades import app
+from hades.models.event import Events
 
 bcrypt = Bcrypt(app)
 
@@ -22,6 +28,7 @@ class Users(DynamicDocument):
     password = StringField()
     api_key = StringField(unique=True)
     email = StringField(unique=True)
+    access = ListField(ReferenceField(Events))
 
     def get_id(self):
         return self.username if self is not None else None
