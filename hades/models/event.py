@@ -1,13 +1,12 @@
-from hades import db
-from hades.models.validate import ValidateMixin
+from mongoengine import StringField, DynamicDocument
 
 
-class Events(ValidateMixin, db.Model):
+class Events(DynamicDocument):
     """
     Database model class
     """
 
-    __tablename__ = 'events'
+    meta = {'collection': 'events'}
 
-    name = db.Column(db.String(50), primary_key=True)
-    full_name = db.Column(db.String(60), unique=True)
+    name = StringField(primary_key=True)
+    full_name = StringField(unique=True)
