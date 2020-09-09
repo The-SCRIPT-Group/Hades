@@ -1,4 +1,4 @@
-from mongoengine import IntField, StringField
+from mongoengine import StringField
 
 from hades.models.validate import ValidateMixin
 
