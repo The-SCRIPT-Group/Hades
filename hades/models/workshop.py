@@ -1,34 +1,28 @@
-from hades import db
+from mongoengine import StringField, IntField
+
 from hades.models.validate import ValidateMixin
 
 
-class CPPWSMay2019(ValidateMixin, db.Model):
+class CPPWSMay2019(ValidateMixin):
     """
     Database model class
     """
 
-    __tablename__ = 'cpp_workshop_may_2019'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30))
-    email = db.Column(db.String(50), unique=True)
-    phone = db.Column(db.String(21), unique=True)
+    meta = {'collection': 'cpp_workshop_may_2019'}
 
     def __repr__(self):
         return '%r' % [self.id, self.name, self.email, self.phone]
 
 
-class CCPPWSAugust2019(ValidateMixin, db.Model):
+class CCPPWSAugust2019(ValidateMixin):
     """
     Database model class
     """
 
-    __tablename__ = 'c_cpp_workshop_august_2019'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30))
-    email = db.Column(db.String(50), unique=True)
-    phone = db.Column(db.String(21), unique=True)
-    department = db.Column(db.String(50))
-    year = db.Column(db.String(3))
+    meta = {'collection': 'c_cpp_workshop_august_2019'}
+
+    department = StringField()
+    year = StringField(choices=['1st'])
 
     def __repr__(self):
         return '%r' % [
@@ -40,25 +34,17 @@ class CCPPWSAugust2019(ValidateMixin, db.Model):
             self.year,
         ]
 
-    def validate(self):
-        if self.year == '1st':
-            return super().validate()
-        return 'This workshop is <b>only</b> for FY students'
 
-
-class Hacktoberfest2019(ValidateMixin, db.Model):
+class Hacktoberfest2019(ValidateMixin):
     """
     Database model class
     """
 
-    __tablename__ = 'do_hacktoberfest_2019'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30))
-    email = db.Column(db.String(50), unique=True)
-    phone = db.Column(db.String(21), unique=True)
-    department = db.Column(db.String(50))
-    year = db.Column(db.String(3))
-    date = db.Column(db.String(2))
+    meta = {'collection': 'do_hacktoberfest_2019'}
+
+    department = StringField()
+    year = StringField(max_length=3)
+    date = StringField(max_length=2)
 
     def __repr__(self):
         return '%r' % [
@@ -72,19 +58,16 @@ class Hacktoberfest2019(ValidateMixin, db.Model):
         ]
 
 
-class CNovember2019(ValidateMixin, db.Model):
+class CNovember2019(ValidateMixin):
     """
     Database model class
     """
 
     __tablename__ = 'c_november_2019'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30))
-    email = db.Column(db.String(50), unique=True)
-    phone = db.Column(db.String(21), unique=True)
-    year = db.Column(db.String(3))
-    prn = db.Column(db.Integer, unique=True)
-    roll = db.Column(db.String(4), unique=True)
+
+    year = StringField(choices=['2nd'])
+    prn = IntField(unique=True)
+    roll = StringField(max_length=4, unique=True)
 
     def __repr__(self):
         return '%r' % [
@@ -97,28 +80,16 @@ class CNovember2019(ValidateMixin, db.Model):
             self.roll,
         ]
 
-    def validate(self):
-        if self.year == '2nd':
-            return super().validate()
-        if self.query.filter(CNovember2019.prn == self.prn).first():
-            return f'PRN {self.prn} has already been registered!'
-        if self.query.filter(CNovember2019.roll == self.roll).first():
-            return f'Roll number {self.roll} has already been registered!'
-        return 'This workshop is <b>only</b> for SY students'
 
-
-class BitgritDecember2019(ValidateMixin, db.Model):
+class BitgritDecember2019(ValidateMixin):
     """
     Database model class
     """
 
-    __tablename__ = 'bitgrit_december_2019'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30))
-    email = db.Column(db.String(50), unique=True)
-    phone = db.Column(db.String(21), unique=True)
-    department = db.Column(db.String(50))
-    year = db.Column(db.String(3))
+    meta = {'collection': 'bitgrit_december_2019'}
+
+    department = StringField()
+    year = StringField(max_length=3)
 
     def __repr__(self):
         return '%r' % [
