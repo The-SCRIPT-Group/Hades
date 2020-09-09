@@ -1,7 +1,7 @@
 from mongoengine import DynamicDocument, ValidationError, StringField, IntField
 
 
-class ValidateMixin(DynamicDocument):
+class EventMixin(DynamicDocument):
     """
     Class with common fields and validation
     """

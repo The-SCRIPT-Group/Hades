@@ -1,10 +1,10 @@
 from mongoengine import ValidationError, StringField
 from requests import get
 
-from hades.models.validate import ValidateMixin
+from hades.models.validate import EventMixin
 
 
-class CodexApril2019(ValidateMixin):
+class CodexApril2019(EventMixin):
     """
     Database model class
     """
@@ -17,7 +17,7 @@ class CodexApril2019(ValidateMixin):
         return '%r' % [self.id, self.name, self.email, self.phone, self.department]
 
 
-class RSC2019(ValidateMixin):
+class RSC2019(EventMixin):
     """
     Database model class
     """
@@ -38,7 +38,7 @@ class RSC2019(ValidateMixin):
         ]
 
 
-class CodexDecember2019(ValidateMixin):
+class CodexDecember2019(EventMixin):
     """
     Database model class
     """
@@ -78,7 +78,7 @@ class CodexDecember2019(ValidateMixin):
         ]
 
 
-class BOV2020(ValidateMixin):
+class BOV2020(EventMixin):
     """
     Database model class
     """

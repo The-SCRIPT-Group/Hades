@@ -1,9 +1,9 @@
 from mongoengine import StringField
 
-from hades.models.validate import ValidateMixin
+from hades.models.validate import EventMixin
 
 
-class CSINovember2019(ValidateMixin):
+class CSINovember2019(EventMixin):
     """
     Database model class
     """
@@ -25,7 +25,7 @@ class CSINovember2019(ValidateMixin):
         ]
 
 
-class CSINovemberNonMember2019(ValidateMixin):
+class CSINovemberNonMember2019(EventMixin):
     """
     Database model class
     """

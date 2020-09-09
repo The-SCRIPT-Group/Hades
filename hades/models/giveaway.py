@@ -1,10 +1,10 @@
 from mongoengine import IntField, StringField
 
 from hades import db
-from hades.models.validate import ValidateMixin
+from hades.models.validate import EventMixin
 
 
-class Coursera2020(ValidateMixin):
+class Coursera2020(EventMixin):
     """
     Database model class
     """
