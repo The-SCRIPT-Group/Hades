@@ -8,6 +8,7 @@ from mongoengine import (
     StringField,
     ListField,
     ReferenceField,
+    CASCADE,
 )
 
 from hades import app
@@ -28,7 +29,7 @@ class Users(DynamicDocument):
     password = StringField()
     api_key = StringField(unique=True)
     email = StringField(unique=True)
-    access = ListField(ReferenceField(Events))
+    access = ListField(ReferenceField(Events, reverse_delete_rule=CASCADE))
 
     def get_id(self):
         return self.username if self is not None else None
