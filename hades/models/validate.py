@@ -1,20 +1,28 @@
-from typing import Union
-
-from hades import db
+from mongoengine import DynamicDocument, ValidationError, StringField, IntField
 
 
-class ValidateMixin(object):
-    def validate(self) -> Union[str, bool]:
-        table = self.__class__
-        # Ensure nobody else in the table has the same email address
-        if self.query.filter(table.email == self.email).first():
-            return f'Email address {self.email} already found in database! Please re-enter the form correctly!'
+class ValidateMixin(DynamicDocument):
+    """
+    Class with common fields and validation
+    """
 
-        # Ensure nobody else in the table has the same phone number
-        for num in self.phone.split('|'):
+    @staticmethod
+    def __validate_phone__(phone):
+        """
+        Ensure nobody else in the table has the same phone number
+        :param phone: phone number to be checked
+        """
+        for num in phone.split('|'):
             if len(str(num)) < 10:
-                return f'Phone number {num} is too short! Please re-enter the form correctly!'
-            if self.query.filter(table.phone.like(f'%{num}%')).first():
-                return f'Phone number {num} already found in database! Please re-enter the form correctly!'
+                raise ValidationError(
+                    f'Phone number {num} is too short! Please re-enter the form correctly!'
+                )
 
-        return True
+    id = IntField(primary_key=True)
+    name = StringField()
+    phone = StringField(validation=__validate_phone__, required=True)
+    email = StringField(
+        unique=True,
+        regex=r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$",
+        required=True,
+    )
