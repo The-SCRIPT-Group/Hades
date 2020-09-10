@@ -354,7 +354,7 @@ def login():
                     return abort(400)
                 return redirect(next or url_for('events'))
             return f'Wrong password for {user.username}!'
-        return f"{request.form['username']} doesn't exist!"
+        return f"User <code>{request.form['username']}</code> doesn't exist!"
     return render_template('login.html')
 
 
