@@ -75,30 +75,26 @@ def load_user_from_request(request):
     If they match any user in the database, that user is logged into that session
     """
     credentials = request.headers.get('Credentials')
-    if credentials:
-        try:
-            credentials = base64.b64decode(credentials).decode('utf-8')
-        except UnicodeDecodeError:
+    if not credentials:
+        credentials = request.headers.get('Authorization')
+        if not credentials:
             return None
-        username, password = credentials.split('|')
-        user = get_user(Users, username)
-        if user:
-            if user.check_password_hash(password.strip()):
-                log(
-                    f'User <code>{user.name}</code> just authenticated a {request.method} API call with credentials!',
-                )
-                return user
-    api_key = request.headers.get('Authorization')
-    if api_key:
-        # Cases where the header may be of the form `Authorization: Basic api_key`
-        api_key = api_key.replace('Basic ', '', 1)
-        users = get_data_from_table(Users)
-        for user in users:
-            if user.check_api_key(api_key):
-                log(
-                    f'User <code>{user.name}</code> just authenticated a {request.method} API call with an API key!',
-                )
-                return user
+
+    # Cases where the header may be of the form `Authorization: Basic api_key`
+    credentials = credentials.replace('Basic ', '', 1)
+
+    try:
+        credentials = base64.b64decode(credentials).decode('utf-8')
+    except UnicodeDecodeError:
+        return None
+    username, password = credentials.split('|')
+    user = get_user(Users, username)
+    if user:
+        if user.check_password_hash(password.strip()):
+            log(
+                f'User <code>{user.name}</code> just authenticated a {request.method} API call with credentials!',
+            )
+            return user
     return None
 
 
@@ -384,7 +380,6 @@ def register():
         u.username = username
         u.generate_password_hash(password)
         u.email = email
-        api_key = u.generate_api_key()
 
         # Add user object to list of objects to be inserted
         objects = [u]
@@ -404,10 +399,8 @@ def register():
         login_user(u)
 
         return (
-            f"Hello {username}, your account has been successfully created.<br>If you wish to use an API Key for "
-            f"sending requests, your key is <code>{api_key}</code><br/>Don't share it with anyone, "
-            f"if you're unsure of what it is, you don't need it!<br/>You're logged into your account, feel free to "
-            f"browse around "
+            f"Hello {username}, your account has been successfully created.<br/>You're logged into your account, feel "
+            f"free to browse around "
         )
 
     # Logout current user before trying to register a new account
