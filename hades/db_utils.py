@@ -26,7 +26,7 @@ def get_user(table: Document, id_: str) -> Union[Document, None]:
     :param id_: The value of the ID
     :return: User object if it exists, else None
     """
-    return table.objects(id_=id_).first()
+    return table.objects(pk=id_).first()
 
 
 def get_data_from_table(table: Document) -> Union[list, None]:

@@ -1,4 +1,5 @@
 from flask_bcrypt import Bcrypt
+from flask_login import UserMixin
 from mongoengine import (
     DynamicDocument,
     IntField,
@@ -14,7 +15,7 @@ from hades.models.event import Events
 bcrypt = Bcrypt(app)
 
 
-class Users(DynamicDocument):
+class Users(DynamicDocument, UserMixin):
     """
     Database model class
     """
