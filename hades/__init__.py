@@ -358,7 +358,7 @@ def login():
                     return abort(400)
                 return redirect(next or url_for('events'))
             return f'Wrong password for {user.username}!'
-        return f"{request.form['username']} doesn't exist!"
+        return f"User <code>{request.form['username']}</code> doesn't exist!"
     return render_template('login.html')
 
 
@@ -403,7 +403,20 @@ def register():
         if not success:
             return f'Error occurred, {reason}', 400
         log(f'User <code>{u.name}</code> has been registered!')
-        return f"Hello {username}, your account has been successfully created.<br>If you wish to use an API Key for sending requests, your key is <code>{api_key}</code><br/>Don't share it with anyone, if you're unsure of what it is, you don't need it"
+
+        # Login to the new user account!
+        login_user(u)
+
+        return (
+            f"Hello {username}, your account has been successfully created.<br>If you wish to use an API Key for "
+            f"sending requests, your key is <code>{api_key}</code><br/>Don't share it with anyone, "
+            f"if you're unsure of what it is, you don't need it!<br/>You're logged into your account, feel free to "
+            f"browse around "
+        )
+
+    # Logout current user before trying to register a new account
+    if not current_user.is_anonymous:
+        logout_user()
     return render_template('register.html')
 
 
