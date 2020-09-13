@@ -1,14 +1,12 @@
-from mongoengine import DynamicDocument, ValidationError, StringField, IntField
+from mongoengine import ValidationError, StringField, IntField
 
 
-class EventMixin(DynamicDocument):
+class EventMixin:
     """
     Class with common fields and validation
     """
 
-    meta = {'allow_inheritance': True}
-
-    def __validate_phone__(phone):
+    def __validate_phone__(phone: str):
         """
         Ensure nobody else in the table has the same phone number
         :param phone: phone number to be checked

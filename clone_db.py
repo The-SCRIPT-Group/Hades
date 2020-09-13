@@ -1,28 +1,12 @@
 #!/usr/bin/env python3
 
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-# Import event related classes
-from hades.models.csi import CSINovember2019, CSINovemberNonMember2019
-from hades.models.codex import CodexApril2019, RSC2019
-from hades.models.techo import EHJuly2019, P5November2019
-from hades.models.workshop import (
-    CPPWSMay2019,
-    CCPPWSAugust2019,
-    Hacktoberfest2019,
-    CNovember2019,
-    BitgritDecember2019,
-)
-
-# Import miscellaneous classes
-from hades.models.test import TestTable
-from hades.models.user import Users
-from hades.models.event import Events
-from hades.models.user_access import Access
-
-from flask import Flask
-
 from hades import app, db, EVENT_CLASSES
+
+# Import event related classes
+# Import miscellaneous classes
 
 # Source is taken from app
 src = input('Enter source DB URI: ')

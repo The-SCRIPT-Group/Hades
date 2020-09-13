@@ -1,9 +1,9 @@
-from mongoengine import StringField
+from mongoengine import StringField, DynamicDocument
 
 from hades.models.validate import EventMixin
 
 
-class EHJuly2019(EventMixin):
+class EHJuly2019(DynamicDocument, EventMixin):
     """
     Database model class
     """
@@ -16,7 +16,7 @@ class EHJuly2019(EventMixin):
         return '%r' % [self.id, self.name, self.email, self.phone, self.department]
 
 
-class P5November2019(EventMixin):
+class P5November2019(DynamicDocument, EventMixin):
     """
     Database model class
     """

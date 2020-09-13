@@ -1,9 +1,9 @@
-from mongoengine import IntField, StringField
+from mongoengine import IntField, StringField, DynamicDocument
 
 from hades.models.validate import EventMixin
 
 
-class Coursera2020(EventMixin):
+class Coursera2020(DynamicDocument, EventMixin):
     """
     Database model class
     """

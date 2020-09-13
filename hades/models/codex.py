@@ -1,10 +1,10 @@
-from mongoengine import ValidationError, StringField
+from mongoengine import ValidationError, StringField, DynamicDocument
 from requests import get
 
 from hades.models.validate import EventMixin
 
 
-class CodexApril2019(EventMixin):
+class CodexApril2019(DynamicDocument, EventMixin):
     """
     Database model class
     """
@@ -17,7 +17,7 @@ class CodexApril2019(EventMixin):
         return '%r' % [self.id, self.name, self.email, self.phone, self.department]
 
 
-class RSC2019(EventMixin):
+class RSC2019(DynamicDocument, EventMixin):
     """
     Database model class
     """
@@ -38,7 +38,7 @@ class RSC2019(EventMixin):
         ]
 
 
-class CodexDecember2019(EventMixin):
+class CodexDecember2019(DynamicDocument, EventMixin):
     """
     Database model class
     """
@@ -77,7 +77,7 @@ class CodexDecember2019(EventMixin):
         ]
 
 
-class BOV2020(EventMixin):
+class BOV2020(DynamicDocument, EventMixin):
     """
     Database model class
     """

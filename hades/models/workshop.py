@@ -1,9 +1,9 @@
-from mongoengine import StringField, IntField
+from mongoengine import StringField, IntField, DynamicDocument
 
 from hades.models.validate import EventMixin
 
 
-class CPPWSMay2019(EventMixin):
+class CPPWSMay2019(DynamicDocument, EventMixin):
     """
     Database model class
     """
@@ -14,7 +14,7 @@ class CPPWSMay2019(EventMixin):
         return '%r' % [self.id, self.name, self.email, self.phone]
 
 
-class CCPPWSAugust2019(EventMixin):
+class CCPPWSAugust2019(DynamicDocument, EventMixin):
     """
     Database model class
     """
@@ -35,7 +35,7 @@ class CCPPWSAugust2019(EventMixin):
         ]
 
 
-class Hacktoberfest2019(EventMixin):
+class Hacktoberfest2019(DynamicDocument, EventMixin):
     """
     Database model class
     """
@@ -58,7 +58,7 @@ class Hacktoberfest2019(EventMixin):
         ]
 
 
-class CNovember2019(EventMixin):
+class CNovember2019(DynamicDocument, EventMixin):
     """
     Database model class
     """
@@ -81,7 +81,7 @@ class CNovember2019(EventMixin):
         ]
 
 
-class BitgritDecember2019(EventMixin):
+class BitgritDecember2019(DynamicDocument, EventMixin):
     """
     Database model class
     """
