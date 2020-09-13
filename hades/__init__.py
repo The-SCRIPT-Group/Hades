@@ -455,11 +455,7 @@ def update():
             table_name = request.form['table']
             table = get_table_by_name(table_name)
 
-            i = inspect(table)
-            fields = i.columns.keys()
-            for f in fields:
-                if i.columns[f].primary_key or i.columns[f].unique:
-                    fields.remove(f)
+            fields = table._db_field_map.keys()
 
             return render_template(
                 'update.html',
