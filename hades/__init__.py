@@ -4,7 +4,7 @@ Flask application to accept some details, generate, display, and email a QR code
 """
 
 # pylint: disable=invalid-name,too-few-public-methods,no-member,line-too-long,too-many-locals
-
+import binascii
 from datetime import datetime
 from urllib.parse import urlparse, urljoin
 
@@ -85,7 +85,7 @@ def load_user_from_request(request):
 
     try:
         credentials = base64.b64decode(credentials).decode('utf-8')
-    except UnicodeDecodeError:
+    except (UnicodeDecodeError, binascii.Error):
         return None
     username, password = credentials.split('|')
     user = get_user(Users, username)
