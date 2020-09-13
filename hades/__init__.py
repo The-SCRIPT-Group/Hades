@@ -467,7 +467,7 @@ def update():
         if table is None:
             return 'Table not chosen?'
 
-        user = get_user(table, request.form['key'])
+        user = get_user(table, request.form['id'])
         success, reason = update_doc(user, request.form['field'], request.form['value'])
 
         if not success:
