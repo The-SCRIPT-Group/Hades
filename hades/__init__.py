@@ -63,7 +63,7 @@ def is_safe_url(target: str) -> bool:
 @login_manager.user_loader
 def load_user(user_id):
     """Return `User` object for the corresponding `user_id`"""
-    return Users.objects(pk=user_id)
+    return Users.objects(pk=user_id).first()
 
 
 @login_manager.request_loader
