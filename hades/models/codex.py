@@ -43,7 +43,6 @@ class CodexDecember2019(EventMixin):
     Database model class
     """
 
-    @staticmethod
     def __validate_hackerrank_username__(username):
         """
         Validate if hackerrank username exists
@@ -83,7 +82,6 @@ class BOV2020(EventMixin):
     Database model class
     """
 
-    @staticmethod
     def __validate_hackerrank_username__(username):
         """
         Validate if hackerrank username exists

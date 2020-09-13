@@ -8,7 +8,6 @@ class EventMixin(DynamicDocument):
 
     meta = {'allow_inheritance': True}
 
-    @staticmethod
     def __validate_phone__(phone):
         """
         Ensure nobody else in the table has the same phone number
