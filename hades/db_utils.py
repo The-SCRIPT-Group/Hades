@@ -1,6 +1,5 @@
 from typing import Union, List
 
-from flask_sqlalchemy import Model
 from mongoengine import Document
 from sqlalchemy.exc import DataError, IntegrityError
 
