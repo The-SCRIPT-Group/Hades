@@ -1,6 +1,5 @@
 from mongoengine import IntField, StringField
 
-from hades import db
 from hades.models.validate import EventMixin
 
 

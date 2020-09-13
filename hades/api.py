@@ -3,13 +3,12 @@ from json import dumps, loads
 from decouple import config
 from flask import jsonify, request
 from flask_login import login_required, current_user
-from sqlalchemy.exc import IntegrityError
 
 from . import (
     app,
     log,
 )
-from .db_utils import insert
+from .db_utils import insert, get_user, save_user
 from .utils import (
     check_access,
     delete_user,
@@ -261,7 +260,7 @@ def update_user():
         f'<code>{current_user.name}</code> is trying to update user {key} {data} in table {table_name}!'
     )
 
-    user = table.query.get(data)
+    user = get_user(table, data)
 
     log_message = f'{current_user.name} has:'
     for k, v in request.form.items():
@@ -273,13 +272,10 @@ def update_user():
             log_message += f'\nUpdated {k} of {user.name} from {o} to {v}'
 
     log(log_message)
-    try:
-        table.query.session.commit()
-    except IntegrityError:
+    success, reason = save_user(user)
+    if not success:
         return (
-            jsonify(
-                {'message': 'Integrity constraint violated, please re-check your data!'}
-            ),
+            jsonify({'message': f'Error occurred - {reason}'}),
             400,
         )
     log(

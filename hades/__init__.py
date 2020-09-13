@@ -18,13 +18,17 @@ from flask_login import (
 )
 from flask_login.utils import login_url
 from mongoengine import connect
-from sqlalchemy import inspect
 
 app = Flask(__name__)
 app.secret_key = config('SECRET_KEY')
 app.config['JSON_SORT_KEYS'] = False
 
-connect(config("DB_NAME"), 'default', host=config("DB_URI"))
+connect(
+    config("DB_NAME"),
+    host=config("DB_URI"),
+    username=config('DB_USER'),
+    password=config('DB_PASSWORD'),
+)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -40,7 +44,6 @@ from . import models
 
 # Import miscellaneous classes
 from .models.user import Users, TSG
-from .models.user_access import Access
 
 # A list of currently active events
 ACTIVE_TABLES = [models.giveaway.Coursera2020]
@@ -228,7 +231,7 @@ def submit():
         img_data = open('qr.png', 'rb').read()
         encoded = base64.b64encode(img_data).decode()
 
-    # Add the user to the database and commit the transaction, ensuring no integrity errors.
+    # Add the user to the database, ensuring no integrity errors.
     success, reason = insert(user)
     if not success:
         log(f'Could not insert user {user}')
@@ -451,6 +454,7 @@ def update():
         if 'field' not in request.form:
             table_name = request.form['table']
             table = get_table_by_name(table_name)
+
             i = inspect(table)
             fields = i.columns.keys()
             for f in fields:

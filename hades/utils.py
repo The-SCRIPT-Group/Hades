@@ -6,11 +6,10 @@ from cryptography.fernet import Fernet
 from decouple import config
 from flask import request
 from flask_login import current_user
-from flask_sqlalchemy.model import Model
+from mongoengine import DynamicDocument
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Attachment, Content, Mail
-from sqlalchemy import desc
-from sqlalchemy.exc import IntegrityError
+
 
 from .models.codex import CodexApril2019, RSC2019, CodexDecember2019, BOV2020
 from .models.csi import CSINovember2019, CSINovemberNonMember2019
@@ -19,7 +18,6 @@ from .models.giveaway import Coursera2020
 from .models.techo import EHJuly2019, P5November2019
 from .models.test import TestTable
 from .models.user import Users, TSG
-from .models.user_access import Access
 from .models.workshop import (
     CPPWSMay2019,
     CCPPWSAugust2019,
@@ -57,7 +55,6 @@ DATABASE_CLASSES = {
     'c_november_2019': CNovember2019,
     'bitgrit_december_2019': BitgritDecember2019,
     'test_users': TestTable,
-    'access': Access,
     'users': Users,
     'events': Events,
     'codex_december_2019': CodexDecember2019,
@@ -76,6 +73,7 @@ def users_to_json(users: list) -> list:
     json_data = []
     for user in users:
         user_data = {}
+        # TODO: This needs to be updated
         for k in user.__table__.columns._data.keys():
             value = getattr(user, k)
             if value is not None and value != '':
@@ -99,12 +97,13 @@ def log(message: str):
 
 def check_access(table_name: str) -> bool:
     """Returns whether or not the currently logged in user has access to `table_name`"""
+    # TODO: update for new DB
     return Access.query.filter(Access.user == current_user.username).filter(
         Access.event == table_name
     )
 
 
-def get_table_by_name(name: str) -> Model:
+def get_table_by_name(name: str) -> DynamicDocument:
     """Returns the database model class corresponding to the given name."""
     return DATABASE_CLASSES.get(name)
 
@@ -116,6 +115,7 @@ def get_table_full_name(name: str) -> str:
 
 def get_accessible_tables():
     """Returns the list of tables the currently logged in user can access"""
+    # TODO: update for new DB
     return (
         Events.query.filter(Users.username == current_user.username)
         .filter(Users.username == Access.user)
@@ -124,7 +124,7 @@ def get_accessible_tables():
     )
 
 
-def update_user(id_: int, table: Model, user_data: dict) -> (bool, str):
+def update_user(id_: int, table: DynamicDocument, user_data: dict) -> (bool, str):
     """
     :param id_ -> User ID
     :param table -> Table class
@@ -152,7 +152,7 @@ def update_user(id_: int, table: Model, user_data: dict) -> (bool, str):
 
     log(log_message)
 
-    success, reason = commit_transaction()
+    success, reason = save_user(user)
     if not success:
         log(f'Could not update {id_} in {table_name} - {reason}')
         return success, reason
@@ -185,10 +185,11 @@ def delete_user(id_: int, table_name: str) -> (bool, str):
     return success, f'{current_user.name} has deleted {user} from {table_name}'
 
 
-def get_current_id(table: Model) -> int:
+def get_current_id(table: DynamicDocument) -> int:
     """Function to return the latest ID based on the database entries. 1 if DB is empty."""
     try:
-        id_ = table.query.order_by(desc(table.id)).first().id
+        # TODO: Confirm whether this works or needs a .first() or something
+        id_ = table.objects().order_by('-id')
     except:
         id_ = 0
     return int(id_) + 1

@@ -1,9 +1,7 @@
 from typing import Union, List
 
 from mongoengine import Document
-from sqlalchemy.exc import DataError, IntegrityError
 
-from hades import db
 from hades.models.user import TSG
 
 
@@ -72,19 +70,16 @@ def delete_row_from_table(user: Document) -> (bool, str):
     return True, ''
 
 
-def commit_transaction() -> (bool, str):
+def save_user(user: Document) -> (bool, str):
     """
-    Function to commit the current changes in the database
+    Function to save the changes in given user object in the database
+    :param user: The user whose object is to be saved
     :return: success, and reason if failure (empty on success)
     """
     try:
-        db.session.commit()
-    except IntegrityError as e:
-        db.session.rollback()
-        return False, f'IntegrityError occurred - {e}'
-    except DataError as e:
-        db.session.rollback()
-        return False, f'DataError occurred - {e}'
+        user.save()
+    except Exception as e:
+        return False, f'{e.__class__} occurred - {e}'
     return True, ''
 
 

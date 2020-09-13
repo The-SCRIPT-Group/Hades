@@ -6,6 +6,8 @@ class EventMixin(DynamicDocument):
     Class with common fields and validation
     """
 
+    meta = {'allow_inheritance': True}
+
     @staticmethod
     def __validate_phone__(phone):
         """
