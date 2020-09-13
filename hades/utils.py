@@ -66,12 +66,11 @@ QR_BLACKLIST = (
 )
 
 
-def users_to_json(users: list) -> list:
+def users_to_json(users: List[Users]) -> list:
     json_data = []
     for user in users:
         user_data = {}
-        # TODO: This needs to be updated
-        for k in user.__table__.columns._data.keys():
+        for k in user._db_field_map.keys():
             value = getattr(user, k)
             if value is not None and value != '':
                 user_data[k] = value
