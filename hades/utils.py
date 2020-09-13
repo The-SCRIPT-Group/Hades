@@ -10,14 +10,14 @@ from mongoengine import DynamicDocument
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Attachment, Content, Mail
 
-
+from .db_utils import *
 from .models.codex import CodexApril2019, RSC2019, CodexDecember2019, BOV2020
 from .models.csi import CSINovember2019, CSINovemberNonMember2019
 from .models.event import Events
 from .models.giveaway import Coursera2020
 from .models.techo import EHJuly2019, P5November2019
 from .models.test import TestTable
-from .models.user import Users, TSG
+from .models.user import Users
 from .models.workshop import (
     CPPWSMay2019,
     CCPPWSAugust2019,
@@ -25,10 +25,7 @@ from .models.workshop import (
     CNovember2019,
     BitgritDecember2019,
 )
-
 from .telegram import TG
-
-from .db_utils import *
 
 # SendGrid API Key
 SENDGRID_API_KEY = config('SENDGRID_API_KEY')
@@ -97,7 +94,6 @@ def log(message: str):
 
 def check_access(table_name: str) -> bool:
     """Returns whether or not the currently logged in user has access to `table_name`"""
-    # TODO: update for new DB
     return Users.objects(access=table_name).first() is not None
 
 
@@ -108,12 +104,11 @@ def get_table_by_name(name: str) -> DynamicDocument:
 
 def get_table_full_name(name: str) -> str:
     """Returns the full name of the table"""
-    return Events.query.filter(Events.name == name).first().full_name
+    return Events.objects(name=name).first().full_name
 
 
 def get_accessible_tables():
     """Returns the list of tables the currently logged in user can access"""
-    # TODO: update for new DB
     return Users.objects(username=current_user.username).first().access
 
 
@@ -164,7 +159,7 @@ def delete_user(id_: int, table_name: str) -> (bool, str):
     if table is None:
         return False, f'Table {table_name} does not seem to exist!'
 
-    user = table.query.get(id_)
+    user = table.objects(pk=id_)
     if user is None:
         return False, f'Table {table_name} does not have a user with ID {id_}'
 
@@ -181,8 +176,7 @@ def delete_user(id_: int, table_name: str) -> (bool, str):
 def get_current_id(table: DynamicDocument) -> int:
     """Function to return the latest ID based on the database entries. 1 if DB is empty."""
     try:
-        # TODO: Confirm whether this works or needs a .first() or something
-        id_ = table.objects().order_by('-id')
+        id_ = table.objects().order_by('-id').first().id
     except:
         id_ = 0
     return int(id_) + 1
