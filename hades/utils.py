@@ -98,7 +98,7 @@ def log(message: str):
 def check_access(table_name: str) -> bool:
     """Returns whether or not the currently logged in user has access to `table_name`"""
     # TODO: update for new DB
-    return Users.objects(access__name=table_name).first() is not None
+    return Users.objects(access=table_name).first() is not None
 
 
 def get_table_by_name(name: str) -> DynamicDocument:
@@ -114,7 +114,7 @@ def get_table_full_name(name: str) -> str:
 def get_accessible_tables():
     """Returns the list of tables the currently logged in user can access"""
     # TODO: update for new DB
-    return Users.objects(username=current_user.username).access
+    return Users.objects(username=current_user.username).first().access
 
 
 def update_user(id_: int, table: DynamicDocument, user_data: dict) -> (bool, str):
