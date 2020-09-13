@@ -434,7 +434,7 @@ def events():
         )
         user_data = get_data_from_table(table)
         return render_template(
-            'users.html', users=user_data, columns=table.__table__.columns._data.keys()
+            'users.html', users=user_data, columns=table._db_field_map.keys()
         )
     return render_template('events.html', events=get_accessible_tables())
 
