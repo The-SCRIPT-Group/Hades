@@ -98,9 +98,7 @@ def log(message: str):
 def check_access(table_name: str) -> bool:
     """Returns whether or not the currently logged in user has access to `table_name`"""
     # TODO: update for new DB
-    return Access.query.filter(Access.user == current_user.username).filter(
-        Access.event == table_name
-    )
+    return Users.objects(access__name=table_name).first() is not None
 
 
 def get_table_by_name(name: str) -> DynamicDocument:
@@ -116,12 +114,7 @@ def get_table_full_name(name: str) -> str:
 def get_accessible_tables():
     """Returns the list of tables the currently logged in user can access"""
     # TODO: update for new DB
-    return (
-        Events.query.filter(Users.username == current_user.username)
-        .filter(Users.username == Access.user)
-        .filter(Access.event == Events.name)
-        .all()
-    )
+    return Users.objects(username=current_user.username).access
 
 
 def update_user(id_: int, table: DynamicDocument, user_data: dict) -> (bool, str):
