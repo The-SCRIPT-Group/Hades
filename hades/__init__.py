@@ -81,7 +81,7 @@ def load_user_from_request(request):
         except UnicodeDecodeError:
             return None
         username, password = credentials.split('|')
-        user = get_row_from_table(Users, username)
+        user = get_user(Users, username)
         if user:
             if user.check_password_hash(password.strip()):
                 log(
