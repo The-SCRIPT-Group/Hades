@@ -18,6 +18,7 @@ from flask_login import (
 )
 from flask_login.utils import login_url
 from mongoengine import connect
+from requests import post
 
 app = Flask(__name__)
 app.secret_key = config('SECRET_KEY')
@@ -46,8 +47,8 @@ from . import models
 from .models.user import Users, TSG
 
 # A list of currently active events
-ACTIVE_TABLES = [models.giveaway.Coursera2020]
-ACTIVE_EVENTS = ['Coursera 2020']
+ACTIVE_TABLES = [models.test.NewEvent]
+ACTIVE_EVENTS = ['New Event']
 
 # The list of fields that will be required for any and all form submissions
 REQUIRED_FIELDS = ('name', 'phone', 'email')
@@ -190,14 +191,14 @@ def submit():
 
     # Ensure that we only take in valid fields to create our user object
     for k, v in request.form.items():
-        if k in table.__table__.columns._data.keys():
+        if k in table._db_field_map.keys():
             data[k] = v
 
     # Instantiate our user object based on the received form data and retrived ID
     user = table(**data, id=id_)
 
     # If a separate WhatsApp number has been provided, store that in the database as well
-    if 'whatsapp_number' in request.form:
+    if 'whatsapp_number' in request.form and request.form['whatsapp_number'] != '':
         try:
             if int(user.phone) != int(request.form['whatsapp_number']):
                 user.phone += f"|{request.form['whatsapp_number']}"
@@ -219,10 +220,6 @@ def submit():
         user.email += f", {request.form['email_second_person']}"
         user.department += f", {request.form['department_second_person']}"
 
-    # Ensure that no data is duplicated. If anything is wrong, display the corresponding error to the user
-    data = user.validate()
-    if data is not True:
-        return data
 
     # Generate the QRCode based on the given data and store base64 encoded version of it to email
     if 'no_qr' not in request.form:
@@ -232,7 +229,7 @@ def submit():
         encoded = base64.b64encode(img_data).decode()
 
     # Add the user to the database, ensuring no integrity errors.
-    success, reason = insert(user)
+    success, reason = insert([user])
     if not success:
         log(f'Could not insert user {user}')
         log(reason)

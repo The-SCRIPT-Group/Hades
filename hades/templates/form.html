@@ -1,132 +1,103 @@
-<html>
-<head>
+{% extends "base.html" %}
+{% block title %}
     <title>{{ event }} Registration Form</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ url_for(endpoint='static', filename='css/w3.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for(endpoint='static', filename='css/homepage.css') }}" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-</head>
-<body>
-<div class="w3-container w3-padding-top w3-margin-top">
-    <div class="w3-container w3-card-4 w3-black w3-row w3-hide-medium w3-hide-small opacity-prop">
-        <div class="w3-col" style="width: 30%;">
-            <img src="{{ url_for(endpoint='static', filename='images/LogoTransparent.png') }}"
-                 style="float: left; width: 100%; height: auto; padding: 8px;">
-        </div>
-        <div class="w3-col w3-center" style="width: 40%;">
-            <br>
-            <h2 style="text-align: center;">{{ event }} Registration<br/>{{ date }}</h2>
-        </div>
-    </div>
-
-    <div class="w3-card-4 w3-black w3-row w3-hide-large">
-        <div class="w3-col" style="width: 30%;">
-            <img src="{{ url_for(endpoint='static', filename='images/LogoTransparent.png') }}"
-                 style="float: left; width: 100%; height: auto; padding: 8px;">
-        </div>
-        <div class="w3-col w3-center" style="width: 40%;">
-            <h6 style="text-align: center;">{{ event }} Registrations<br/>{{ date }}</h6>
-        </div>
-    </div>
-
-    <form method="post" action="/submit" enctype="multipart/form-data">
-        <div class="form-group">
-            <br>
-            <br>
-            <p>Name (required)</p>
-            <input type="text" name="name" placeholder="Enter your name" maxlength="30" required class="form-control"
-                   pattern="^\w[\w, ]+$"/>
+{% endblock %}
+{% block endpoint %}action="/submit"{% endblock %}
+{% block content %}
+    <div class="form-group">
+        <br>
+        <br>
+        <p>Name (required)</p>
+        <input type="text" name="name" placeholder="Enter your name" maxlength="30" required class="form-control"
+               pattern="^\w[\w, ]+$"/>
+        <hr>
+        <p>Email (required)</p>
+        <input type="email" name="email" placeholder="Enter your email address" maxlength="50" required
+               pattern="^.+@[^\.].*\.[a-z]{2,}$" class="form-control"/>
+        <hr>
+        {% if group %}
+            <p>2nd person's Name</p>
+            <input type="text" name="name_second_person" placeholder="Enter the second person's name" maxlength="30"
+                   class="form-control" pattern="^\w[\w, ]+$"/>
             <hr>
-            <p>Email (required)</p>
-            <input type="email" name="email" placeholder="Enter your email address" maxlength="50" required
-                   pattern="^.+@[^\.].*\.[a-z]{2,}$" class="form-control"/>
+            <p>2nd person's email</p>
+            <input type="email" name="email_second_person" placeholder="Enter the second person's email address"
+                   maxlength="50" pattern="^.+@[^\.].*\.[a-z]{2,}$" class="form-control"/>
             <hr>
-            {% if group %}
-                <p>2nd person's Name</p>
-                <input type="text" name="name_second_person" placeholder="Enter the second person's name" maxlength="30"
-                        class="form-control" pattern="^\w[\w, ]+$"/>
-                <hr>
-                <p>2nd person's email</p>
-                <input type="email" name="email_second_person" placeholder="Enter the second person's email address"
-                       maxlength="50" pattern="^.+@[^\.].*\.[a-z]{2,}$" class="form-control"/>
-                <hr>
-            {% endif %}
-            <p>Phone Number (required)</p>
-            <input type="text" name="phone" placeholder="Enter your phone number (Excluding +91)" maxlength="10"
-                   required class="form-control" pattern="[\d]{10}"/>
-            <hr>
-            <p>WhatsApp Number (if different from above)</p>
-            <input type="text" name="whatsapp_number" placeholder="Enter your WhatsApp number (Excluding +91)"
-                   maxlength="10" class="form-control" pattern="[\d]{10}"/>
-            <hr>
-            {% if department %}
-                <select name="department" class="form-control" id="department">
-                    <option value="cse" selected>Computer Science and Engineering</option>
-                    <option value="ece">Electronics and Communication Engineering</option>
-                    <option value="ee">Electrical Engineering</option>
-                    <option value="mech">Mechanical Engineering</option>
-                    <option value="r&a">Robotics and Automation Engineering</option>
-                    <option value="civil">Civil Engineering</option>
-                    <option value="chem">Chemical Engineering</option>
-                    <option value="polymer">Polymer Engineering</option>
-                    <option value="petroleum">Petroleum Engineering</option>
-                    <option value="mtech">M.Tech</option>
-                    <option value="others">Others</option>
-                </select>
-                <hr>
-            {% endif %}
-            {% if year %}
-                <select name="year" class="form-control" id="year">
-                    <option value="1st" selected>FY</option>
-                    <option value="2nd">SY</option>
-                    <option value="3rd">TY</option>
-                </select>
-                <hr>
-            {% endif %}
-            {% if miscellaneous %}
-                {{ miscellaneous|safe }}
-            {% endif %}
-        </div>
-        <div class="form-check">
-            <label class="form-check-label" for="privpolicy">By using this service, you hereby consent to our<a
-                    href="https://thescriptgroup.in/privacypolicy" class="btn btn-link" role="button">Privacy
-                Policy</a>.</label>
-        </div>
-        <input type="text" id="event" name="event" style="visibility: hidden" value="{{ event }}"
-               contenteditable="false">
-        <input type="text" id="db" name="db" style="visibility: hidden" value="{{ db }}" contenteditable="false">
-        <input type="text" id="date" name="date" style="visibility: hidden" value="{{ date }}" contenteditable="false">
-
-        {% if extra_message %}
-            <input type="text" id="extra_message" name="extra_message" style="visibility: hidden"
-                   value="{{ extra_message }}" contenteditable="false">
         {% endif %}
-        <button type="submit"
-                style="margin:auto;display:block"
-                class="btn btn-dark"
-                {% if extra_info %}onClick= "document.getElementById('message-display').style.display = 'block';"
-                {% endif %}>
-            Submit
-        </button>
-    </form>
-</div>
+        <p>Phone Number (required)</p>
+        <input type="text" name="phone" placeholder="Enter your phone number (Excluding +91)" maxlength="10"
+               required class="form-control" pattern="[\d]{10}"/>
+        <hr>
+        <p>WhatsApp Number (if different from above)</p>
+        <input type="text" name="whatsapp_number" placeholder="Enter your WhatsApp number (Excluding +91)"
+               maxlength="10" class="form-control" pattern="[\d]{10}"/>
+        <hr>
+        {% if department %}
+            <select name="department" class="form-control" id="department">
+                <option value="cse" selected>Computer Science and Engineering</option>
+                <option value="ece">Electronics and Communication Engineering</option>
+                <option value="ee">Electrical Engineering</option>
+                <option value="mech">Mechanical Engineering</option>
+                <option value="r&a">Robotics and Automation Engineering</option>
+                <option value="civil">Civil Engineering</option>
+                <option value="chem">Chemical Engineering</option>
+                <option value="polymer">Polymer Engineering</option>
+                <option value="petroleum">Petroleum Engineering</option>
+                <option value="mtech">M.Tech</option>
+                <option value="others">Others</option>
+            </select>
+            <hr>
+        {% endif %}
+        {% if year %}
+            <select name="year" class="form-control" id="year">
+                <option value="1st" selected>First</option>
+                <option value="2nd">Second</option>
+                <option value="3rd">Third</option>
+                <option value="4th">Fourth</option>
+            </select>
+            <hr>
+        {% endif %}
+        {% if miscellaneous %}
+            {{ miscellaneous|safe }}
+        {% endif %}
+    </div>
+    <div class="form-check">
+        <label class="form-check-label" for="privpolicy">By using this service, you hereby consent to our<a
+                href="https://thescriptgroup.in/privacypolicy" class="btn btn-link" role="button">Privacy
+            Policy</a>.</label>
+    </div>
+    <input type="text" id="event" name="event" style="visibility: hidden" value="{{ event }}"
+           contenteditable="false">
+    <input type="text" id="db" name="db" style="visibility: hidden" value="{{ db }}" contenteditable="false">
+    <input type="text" id="date" name="date" style="visibility: hidden" value="{{ date }}" contenteditable="false">
 
-{% if extra_info %}
-    <div id="message-display" class="w3-modal">
-        <div class="w3-modal-content w3-animate-top w3-card-4 w3-xlarge" style="width: 50%">
-            <header class="w3-container w3-red w3-center">
+    {% if extra_message %}
+        <input type="text" id="extra_message" name="extra_message" style="visibility: hidden"
+               value="{{ extra_message }}" contenteditable="false">
+    {% endif %}
+    <button type="submit"
+            style="margin:auto;display:block"
+            class="btn btn-dark"
+            {% if extra_info %}onClick= "document.getElementById('message-display').style.display = 'block';"
+            {% endif %}>
+        Submit
+    </button>
+
+    {% if extra_info %}
+        <div id="message-display" class="w3-modal">
+            <div class="w3-modal-content w3-animate-top w3-card-4 w3-xlarge" style="width: 50%">
+                <header class="w3-container w3-red w3-center">
             <span onclick="document.getElementById('message-display').style.display='none'"
                   class="w3-button w3-display-topright">&times;</span>
-                <h2 id="message-title">{{ extra_info.title }}</h2>
-            </header>
-            <div class="w3-container w3-center">
-                <p id="message-content">
-                    {{ extra_info.content|safe }}
-                </p>
+                    <h2 id="message-title">{{ extra_info.title }}</h2>
+                </header>
+                <div class="w3-container w3-center">
+                    <p id="message-content">
+                        {{ extra_info.content|safe }}
+                    </p>
+                </div>
             </div>
         </div>
-    </div>
-{% endif %}
-</body>
-</html>
+    {% endif %}
+{% endblock %}

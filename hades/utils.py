@@ -184,7 +184,7 @@ def get_current_id(table: DynamicDocument) -> int:
 def generate_qr(user):
     """Function to generate and return a QR code based on the given data."""
     data = {k: v for k, v in user.__dict__.items() if k not in QR_BLACKLIST}
-    data['table'] = user.__tablename__
+    data['table'] = user.__dict__.get('_cls', 'unknown_collection')
     return qrcode.make(base64.b64encode(dumps(data).encode()))
 
 
