@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>Delete Registrations</title>
+{% endblock %}
+
+{% block content %}
+    <h1 class="h3 mb-3 font-weight-normal">Select a user to delete!</h1>
+    <p>
+        <label for="field" class="sr-only">Event</label>
+        <select name="id" id="id" class="form-control" required>
+            {% for user in user_data %}
+                <option value="{{ user.id }}">{{ user.id }} | {{ user.name }}</option>
+            {% endfor %}
+        </select>
+    </p>
+    <input type="text" id="inputTable" name="table" style="visibility: hidden" value="{{ table_name }}" contenteditable="false">
+    <button class="btn btn-lg btn-primary btn-block" type="submit" value="">Delete</button>
+{% endblock %}

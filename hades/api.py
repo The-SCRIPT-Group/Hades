@@ -174,7 +174,7 @@ def create():
 
 @app.route('/api/delete', methods=['DELETE'])
 @login_required
-def delete():
+def delete_api():
     """Deletes the user as specified in the request data"""
 
     # TODO: use utils.delete_user()

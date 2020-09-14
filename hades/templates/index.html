@@ -9,9 +9,11 @@
         <h1 class="display-4">Welcome, {{ current_user.name }}!</h1>
         <p><a class="btn btn-primary" role="button" href="{{ url_for('events') }}">View Data</a></p>
         <p><a class="btn btn-primary" role="button" href="{{ url_for('update') }}">Update Data</a></p>
+        <p><a class="btn btn-primary" role="button" href="{{ url_for('delete') }}">Delete Data</a></p>
         <p><a class="btn btn-primary" role="button" href="{{ url_for('logout') }}">Logout</a></p>
     {% else %}
         <p><a class="btn btn-primary" role="button" href="{{ url_for('login') }}">Login</a></p>
         <p><a class="btn btn-primary" role="button" href="{{ url_for('register') }}">Register</a></p>
     {% endif %}
+    <p><a class="btn btn-primary" role="button" href="{{ url_for('form') }}">Signup for Event</a></p>
 {% endblock %}
