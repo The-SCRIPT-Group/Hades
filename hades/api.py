@@ -17,6 +17,7 @@ from .utils import (
     get_table_full_name,
     get_accessible_tables,
     get_table_by_name,
+    users_to_csv,
 )
 
 
@@ -118,6 +119,8 @@ def users_api():
     table = get_table_by_name(table_name)
     if table is None:
         return jsonify({'message': f'Table {table_name} does not exist!'}), 400
+    if request.args.get('csv'):
+        return users_to_csv(table), 200
     return jsonify(users_to_json(table.objects())), 200
 
 

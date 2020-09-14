@@ -79,6 +79,16 @@ def users_to_json(users: List[Users]) -> list:
     return json_data
 
 
+def users_to_csv(table: DynamicDocument) -> str:
+    keys = table._db_field_map.keys()
+    ret = ','.join(keys) + '\n'
+    for user in table.objects:
+        for key in keys:
+            ret += str(user[key]) + ','
+        ret += '\n'
+    return ret
+
+
 def log(message: str):
     """Logs the given `message` to our Telegram logging channel"""
     try:
