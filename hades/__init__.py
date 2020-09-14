@@ -589,4 +589,4 @@ def logout():
 @app.route('/')
 def root():
     """Root endpoint. Displays the form to the user."""
-    return '<marquee>Nothing here!</marquee>'
+    return render_template('index.html')
