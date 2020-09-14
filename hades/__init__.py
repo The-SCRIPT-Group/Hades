@@ -384,14 +384,15 @@ def register():
         u.username = username
         u.generate_password_hash(password)
         u.email = email
+        u.access = []
 
         # Add user object to list of objects to be inserted
         objects = [u]
 
         # If you're a TSG member, you get some access by default
         if is_user_tsg(email):
-            objects.append(Access(event='tsg', user=username))
-            objects.append(Access(event='test_users', user=username))
+            u.access.append(Events.objects(pk='tsg').first())
+            u.access.append(Events.objects(pk='test_users').first())
 
         success, reason = insert(objects)
 
@@ -499,7 +500,7 @@ def change_password():
             return 'Current password you entered is wrong! Please try again!'
 
         # Commit the changes we made in the object to the database
-        success, reason = commit_transaction()
+        success, reason = save_user(current_user)
         if not success:
             return f'Error occurred while changing your password - {reason}!'
 
@@ -569,7 +570,7 @@ def reset_password(slug: str):
         user.generate_password_hash(password)
 
         # Commit the changes we made in the object to the database
-        success, reason = commit_transaction()
+        success, reason = save_user(user)
         if not success:
             return f'Error occurred while changing your password - {reason}!'
         return 'Your password has been successfully changed!'

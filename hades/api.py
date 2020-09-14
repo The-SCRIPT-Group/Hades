@@ -58,7 +58,7 @@ def stats_api():
             return jsonify({'message': f'Table {table_name} does not exist'}), 400
         if check_access(table_name):
             return (
-                jsonify({get_table_full_name(table_name): len(table.query.all())}),
+                jsonify({get_table_full_name(table_name): len(table.objects)}),
                 200,
             )
         return (
@@ -74,7 +74,7 @@ def stats_api():
             'tsg',
             'users',
         ):
-            ret[table.full_name] = len(get_table_by_name(table.name).query.all())
+            ret[table.full_name] = len(get_table_by_name(table.name).objects())
     return jsonify(ret), 200
 
 
@@ -95,7 +95,7 @@ def users_api():
         for table in tables:
             if table.name in ('access', 'events', 'users'):
                 continue
-            table_users = get_table_by_name(table.name).query.all()
+            table_users = get_table_by_name(table.name).objects()
             for user in table_users:
                 phone = (
                     user.phone.split('|')[1]
@@ -118,7 +118,7 @@ def users_api():
     table = get_table_by_name(table_name)
     if table is None:
         return jsonify({'message': f'Table {table_name} does not exist!'}), 400
-    return jsonify(users_to_json(table.query.all())), 200
+    return jsonify(users_to_json(table.objects())), 200
 
 
 @app.route('/api/create', methods=['POST'])
@@ -203,7 +203,7 @@ def delete():
         )
         # Store the message to be returned
         ret = []
-        for user in table.query.all():
+        for user in table.objects():
             if delete_user(user.id, table_name):
                 ret.append(f'Deleted user {user} from {table_name}')
             else:
@@ -306,9 +306,9 @@ def sendmail():
     table = get_table_by_name(table_name)
     if 'ids' in request.form and request.form['ids'] != 'all':
         ids = list(map(lambda x: int(x), request.form['ids'].split(' ')))
-        users = table.query.filter(table.id.in_(ids)).all()
+        users = table.objects(pk__in=ids)
     else:
-        users = table.query.all()
+        users = table.objects()
 
     if 'email_address' in request.form:
         email_address = request.form['email_address']
