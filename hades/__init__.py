@@ -481,6 +481,42 @@ def update():
     return render_template('events.html', events=get_accessible_tables())
 
 
+@app.route('/delete', methods=['GET', 'POST'])
+@login_required
+def delete():
+    """
+    Displays a page with a dropdown to choose events on a GET request
+    For POST, there for 2 cases
+    If an `id` is not provided, it gets table table from the form and returns a page where user can choose an id
+    If an id is provided, it deletes that id from the table
+    """
+    if request.method == 'POST':
+        table_name = request.form['table']
+        table = get_table_by_name(table_name)
+        if 'id' not in request.form:
+            user_data = get_data_from_table(table)
+
+            return render_template(
+                'delete.html', table_name=table_name, user_data=user_data
+            )
+
+        if table is None:
+            return 'Table not chosen?'
+
+        success, reason = utils.delete_user(request.form['id'], table_name)
+
+        if not success:
+            return f'Error occurred trying to delete - {reason}'
+
+        log(
+            f"<code>{current_user.name}</code> has deleted <code>{request.form['id']}</code> from {table_name}"
+        )
+        return (
+            f"<code>{request.form['id']}</code> has been deleted from from {table_name}"
+        )
+    return render_template('events.html', events=get_accessible_tables())
+
+
 @app.route('/changepassword', methods=['GET', 'POST'])
 @login_required
 def change_password():
@@ -590,3 +626,13 @@ def logout():
 def root():
     """Root endpoint. Displays the form to the user."""
     return render_template('index.html')
+
+
+@app.route("/form")
+def form():
+    return render_template(
+        "form.html",
+        date="14th September, 2020",
+        db="new_event",
+        event="New Event",
+    )
