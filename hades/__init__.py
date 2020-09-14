@@ -220,7 +220,6 @@ def submit():
         user.email += f", {request.form['email_second_person']}"
         user.department += f", {request.form['department_second_person']}"
 
-
     # Generate the QRCode based on the given data and store base64 encoded version of it to email
     if 'no_qr' not in request.form:
         img = generate_qr(user)
@@ -233,6 +232,8 @@ def submit():
     if not success:
         log(f'Could not insert user {user}')
         log(reason)
+        if reason == 'not_unique':
+            return 'Someone else has already registered using these details! Kindly enter different values!'
         return """It appears there was an error while trying to enter your data into our database.<br/>Kindly contact someone from the team and we will have this resolved ASAP"""
 
     # Prepare the email sending

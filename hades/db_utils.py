@@ -1,6 +1,6 @@
 from typing import Union, List
 
-from mongoengine import Document
+from mongoengine import Document, errors
 
 from hades.models.user import TSG
 
@@ -15,6 +15,8 @@ def insert(objects: List[Document]) -> (bool, str):
         for doc in objects:
             doc.save()
     except Exception as e:
+        if e.__class__ == errors.NotUniqueError:
+            return False, 'not_unique'
         return False, f'{e.__class__} occurred - {e}'
     return True, ''
 
