@@ -85,6 +85,16 @@ def users_to_json(users: list) -> list:
     return json_data
 
 
+def users_to_csv(table: Model) -> str:
+    keys = table.__table__.columns._data.keys()
+    ret = ','.join(keys) + '\n'
+    for user in table.query.all():
+        for key in keys:
+            ret += str(user[key]) + ','
+        ret += '\n'
+    return ret
+
+
 def log(message: str):
     """Logs the given `message` to our Telegram logging channel"""
     try:
