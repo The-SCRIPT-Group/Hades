@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>Welcome</title>
+{% endblock %}
+
+{% block content %}
+    {% if current_user.is_authenticated %}
+        <h1 class="display-4">Welcome, {{ current_user.name }}!</h1>
+        <p><a class="btn btn-primary" role="button" href="{{ url_for('events') }}">View Data</a></p>
+        <p><a class="btn btn-primary" role="button" href="{{ url_for('update') }}">Update Data</a></p>
+        <p><a class="btn btn-primary" role="button" href="{{ url_for('logout') }}">Logout</a></p>
+    {% else %}
+        <p><a class="btn btn-primary" role="button" href="{{ url_for('login') }}">Login</a></p>
+        <p><a class="btn btn-primary" role="button" href="{{ url_for('register') }}">Register</a></p>
+    {% endif %}
+{% endblock %}
