@@ -3,10 +3,9 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-from hades import app, db, EVENT_CLASSES
+from hades import app
 
-# Import event related classes
-# Import miscellaneous classes
+# TODO: Let this actually work
 
 # Source is taken from app
 src = input('Enter source DB URI: ')
