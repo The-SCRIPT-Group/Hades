@@ -6,7 +6,7 @@ jobs:
     steps:
     - uses: actions/setup-python@master
       with:
-        python-version: 3.7
+        python-version: 3.8
     - uses: actions/checkout@master
     - run: |
           sudo apt install libpq-dev python3-psycopg2 -y
