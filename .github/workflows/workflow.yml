@@ -1,7 +1,7 @@
 name: Hades Check and Deploy
 on: [pull_request, push]
+runs-on: ubuntu-latest
 jobs:
-  runs-on: ubuntu-latest
   test:
     steps:
     - uses: actions/setup-python@master
