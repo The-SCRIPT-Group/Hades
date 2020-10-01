@@ -1,8 +1,8 @@
 name: Hades Check and Deploy
 on: [pull_request, push]
-runs-on: ubuntu-latest
 jobs:
   test:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/setup-python@master
       with:
@@ -13,6 +13,7 @@ jobs:
           black --check hades
 
   deploy:
+    runs-on: ubuntu-latest
     needs: test
     if: github.ref == 'refs/heads/master'
     env:
