@@ -34,11 +34,11 @@ server {
     }
 
     location ^~ / {
-        if ($http_origin ~* (^https:\/\/thescriptgroup\.in$)) {
+        if (\$http_origin ~* (^https:\/\/thescriptgroup\.in$)) {
             add_header Access-Control-Allow-Origin $http_origin;
         }
 
-        if ($http_origin ~* (^https:\/\/charon\.thescriptgroup\.in$)) {
+        if (\$http_origin ~* (^https:\/\/charon\.thescriptgroup\.in$)) {
             add_header Access-Control-Allow-Origin $http_origin;
             add_header Access-Control-Allow-Headers "credentials";
         }
