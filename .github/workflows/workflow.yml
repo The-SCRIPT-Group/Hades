@@ -1,8 +1,8 @@
-name: check-code
+name: Hades Check and Deploy
 on: [pull_request, push]
 jobs:
+  runs-on: ubuntu-latest
   test:
-    runs-on: ubuntu-latest
     steps:
     - uses: actions/setup-python@master
       with:
@@ -11,3 +11,12 @@ jobs:
     - run: |
           pip install -r requirements.txt
           black --check hades
+
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/master'
+    env:
+        SSH_KEY: ${{ secrets.SSH_KEY }}
+        SERVER_IP: ${{ secrets.SERVER_IP }}
+    uses: actions/checkout@master
+    run: bash deploy.sh
