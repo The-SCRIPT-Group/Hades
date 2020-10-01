@@ -9,6 +9,5 @@ jobs:
         python-version: 3.8
     - uses: actions/checkout@master
     - run: |
-          sudo apt install libpq-dev python3-psycopg2 -y
           pip install -r requirements.txt
           black --check hades
