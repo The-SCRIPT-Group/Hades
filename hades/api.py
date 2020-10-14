@@ -308,7 +308,7 @@ def sendmail():
     if access is None:
         return jsonify({'message': 'Unauthorized'}), 401
 
-    log(f'<code>{current_user.name}</code> is send a mail to table {table_name}!')
+    log(f'<code>{current_user.name}</code> is sending a mail to table {table_name}!')
 
     table = get_table_by_name(table_name)
     if 'ids' in request.form and request.form['ids'] != 'all':
