@@ -20,7 +20,7 @@ MarkupSafe==1.1.1
 mypy-extensions==0.4.3
 mysql-connector-python==8.0.21
 pathspec==0.8.0
-Pillow==7.2.0
+Pillow==8.1.1
 protobuf==3.13.0
 psycopg2-binary==2.8.6
 pycparser==2.20
