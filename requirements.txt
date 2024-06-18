@@ -37,5 +37,5 @@ starkbank-ecdsa==2.0.1
 toml==0.10.2
 typed-ast==1.4.3
 typing-extensions==3.7.4.3
-urllib3==1.26.18
+urllib3==1.26.19
 Werkzeug==3.0.3
