@@ -29,7 +29,7 @@ python-decouple==3.4
 python-http-client==3.3.2
 qrcode==6.1
 regex==2021.4.4
-requests==2.32.0
+requests==2.32.4
 sendgrid==6.7.0
 six==1.15.0
 SQLAlchemy==1.4.11
