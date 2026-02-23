@@ -38,4 +38,4 @@ toml==0.10.2
 typed-ast==1.4.3
 typing-extensions==3.7.4.3
 urllib3==2.6.3
-Werkzeug==3.1.5
+Werkzeug==3.1.6
