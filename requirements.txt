@@ -1,7 +1,7 @@
 appdirs==1.4.4
 attrs==20.3.0
 bcrypt==3.2.0
-black==26.3.1
+black==26.10.1
 certifi==2026.10.19
 cffi==1.14.5
 chardet==4.0.0
